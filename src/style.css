@@ -1,0 +1,23 @@
+@font-face {
+    font-family: 'Noto Sans';
+    src: url('fonts/NotoSans-Regular.ttf');
+}
+
+div.background
+{
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(162deg, rgba(255,75,75,1) 0%, rgba(54,68,255,1) 100%); 
+}
+
+div.title
+{
+    font-size: 40px;
+    font-family: 'Noto Sans', sans-serif;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    user-select: none;
+    color: white;
+}
