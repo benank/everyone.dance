@@ -1,5 +1,6 @@
 const PORT = 2053;
 const dotenv = require("dotenv")
+const fs = require('fs');
 dotenv.config();
 
 class Server
@@ -8,13 +9,15 @@ class Server
     {
         console.log("Starting server...");
 
-        // Create socket
-        this.io = require('socket.io')(PORT, {
-            cors: {
-                origin: ["http://localhost", "https://everyone.dance"],
-                credentials: true
-            },
-        });
+        const app = require('express')();
+        const https = require('https');
+
+        const secureServer = https.createServer({
+            key: fs.readFileSync('./../server.key'),
+            cert: fs.readFileSync('./../server.cert')
+        }, app);
+
+        this.io = require('socket.io')(secureServer);
 
         // Create listener
         this.io.on('connect', (client) => 
@@ -22,7 +25,9 @@ class Server
             this.client_connected(client);
         })
 
-        console.log("Started server successfully! Listening for connections now.")
+        secureServer.listen(PORT, () => {
+            console.log(`Started server successfully at ${PORT}! Listening for connections now.`);
+        })
     }
 
     client_connected(client)
