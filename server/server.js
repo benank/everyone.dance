@@ -17,7 +17,12 @@ class Server
             cert: fs.readFileSync('./../server.cert')
         }, app);
 
-        this.io = require('socket.io')(secureServer);
+        this.io = require('socket.io')(secureServer, {
+            cors: {
+                origin: ["https://everyone.dance", "https://everyone.dance:443", "https://everyone.dance:2053"],
+                methods: ["GET", "POST"]
+            }
+        });
 
         // Create listener
         this.io.on('connect', (client) => 
