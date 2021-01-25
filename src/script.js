@@ -1,6 +1,6 @@
 $(document).ready(function () {
 
-    const socket = io("https://everyone.dance:2053");
+    const socket = io("https://everyone.dance:2053", {secure: true});
     console.log(socket);
 
     const IS_ELECTRON = typeof require != 'undefined';
@@ -18,11 +18,14 @@ $(document).ready(function () {
             window = remote.getCurrentWindow();
             window.close();
         })
+
+        $('div.button.download').remove();
     }
     else
     {
         // Browser only code
         $('div.close-button').remove();
+        $('div.button.install').remove();
     }
 
     function ToggleGameCodeDisplay(enabled)

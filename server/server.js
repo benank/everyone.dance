@@ -1,4 +1,6 @@
 const PORT = 2053;
+const dotenv = require("dotenv")
+dotenv.config();
 
 class Server
 {
