@@ -2,15 +2,17 @@ const { app, BrowserWindow } = require('electron');
 
 function createWindow () {
     const win = new BrowserWindow({
-        width: 800,
-        height: 600,
+        width: 1024,
+        height: 720,
         webPreferences: {
-        nodeIntegration: true
+            nodeIntegration: true,
+            enableRemoteModule: true
         },
-        icon: "src/favicon.ico"
+        icon: "src/favicon.ico",
+        frame: false
     })
 
-    win.removeMenu();
+    // win.removeMenu(); // Disable for now. If uncommented, removes the devtools menu.
     win.loadFile('src/index.html');
 }
 

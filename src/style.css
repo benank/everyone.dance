@@ -3,21 +3,96 @@
     src: url('fonts/NotoSans-Regular.ttf');
 }
 
+*
+{
+    font-family: 'Noto Sans', sans-serif;
+}
+
 div.background
 {
+    font-family: 'Noto Sans', sans-serif;
     width: 100vw;
     height: 100vh;
     background: linear-gradient(162deg, rgba(255,75,75,1) 0%, rgba(54,68,255,1) 100%); 
+    -webkit-app-region: drag;
+}
+
+div.background *
+{
+    -webkit-app-region: no-drag;
 }
 
 div.title
 {
     font-size: 40px;
-    font-family: 'Noto Sans', sans-serif;
+    user-select: none;
+    color: white;
+    animation: 1s ease-in-out title-anim;
+}
+
+@keyframes title-anim
+{
+    0% {opacity: 0; transform: translateY(-20px)}
+    100% {opacity: 1; transform: translateY(0)}
+}
+
+div.close-button
+{
+    position: fixed;
+    top: 0;
+    right: 0;
+    cursor: pointer;
+    background-image: url('icons/close-24px.svg');
+    width: 24px;
+    height: 24px;
+    transition: 0.1s ease-in-out background-color;
+}
+
+div.close-button:hover
+{
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+div.title-container
+{
+    text-align: center;
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+}
+
+div.buttons-container
+{
+    position: relative;
+    text-align: center;
+    margin-top: 40px;
+    animation: 1s ease-in-out buttons-anim;
+}
+
+div.button
+{
+    display: inline-block;
+    width: 200px;
+    padding: 14px;
+    color: black;
+    font-size: 22px;
+    text-align: center;
+    margin: 10px;
+    cursor: pointer;
     user-select: none;
-    color: white;
+    border-radius: 6px;
+    background-color: #f0f0f0;
+    transition: 0.2s ease-in-out box-shadow;
+}
+
+@keyframes buttons-anim
+{
+    0% {opacity: 0; transform: translateY(20px)}
+    100% {opacity: 1; transform: translateY(0)}
+}
+
+div.button:hover
+{
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
 }
