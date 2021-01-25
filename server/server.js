@@ -1,9 +1,9 @@
-const PORT = 3000;
+const PORT = 2053;
 
 class Server
 {
     constructor()
-    {http://localhost/
+    {
         console.log("Starting server...");
 
         // Create socket

@@ -1,6 +1,6 @@
 $(document).ready(function () {
 
-    const socket = io("https://everyone.dance");
+    const socket = io("https://everyone.dance:2053");
     console.log(socket);
 
     const IS_ELECTRON = typeof require != 'undefined';
