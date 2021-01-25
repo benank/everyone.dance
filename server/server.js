@@ -26,7 +26,7 @@ class Server
         })
 
         secureServer.listen(PORT, () => {
-            console.log(`Started server successfully at ${PORT}! Listening for connections now.`);
+            console.log(`Started server successfully at port ${PORT}! Listening for connections now.`);
         })
     }
 

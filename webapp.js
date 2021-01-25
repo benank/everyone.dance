@@ -2,6 +2,14 @@ const express = require('express');
 
 const app = express();
 app.use(express.static('src'));
- 
-const port = process.env.PORT || 80;
-app.listen(port, () => console.log(`Webapp listening on port ${port}..`));
+
+const https = require('https');
+const fs = require('fs');
+
+const secureServer = https.createServer({
+    key: fs.readFileSync('./../server.key'),
+    cert: fs.readFileSync('./../server.cert')
+}, app);
+
+const port = 443;
+secureServer.listen(port, () => console.log(`Webapp listening on port ${port}..`));
