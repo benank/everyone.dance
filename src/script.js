@@ -1,5 +1,7 @@
 $(document).ready(function () {
 
+    const socket = io("https://everyone.dance:3000");
+
     const IS_ELECTRON = typeof require != 'undefined';
 
     $('input.gamecode').hide();
