@@ -1,6 +1,7 @@
 $(document).ready(function () {
 
-    const socket = io("https://everyone.dance:2053", {secure: true});
+    localStorage.debug = '*';
+    const socket = io("https://everyone.dance:2083");
     console.log(socket);
 
     const IS_ELECTRON = typeof require != 'undefined';
