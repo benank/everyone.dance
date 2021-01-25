@@ -13,14 +13,18 @@
         <script>if (window.module) {module = window.module;}</script>
     </head>
     <body>
-        <div class="background">
-            <div class="close-button"></div>
-            <div class="title-container">
-                <div class="title">everyone.dance</div>
-                <div class="buttons-container">
-                    <div class="button join">Join a Game</div>
-                    <div class="button create">Create a Game</div>
+        <div class="background"></div>
+        <div class="close-button"></div>
+        <div class="title-container">
+            <div class="title">everyone.dance</div>
+            <div class="buttons-container">
+                <div class="button join">Join a Game</div>
+                <div class="gamecode-container">
+                    <input class="gamecode" type="text" pattern="[^A-Z]+" maxlength="4" placeholder="Game Code">
+                    <div class="submit-gamecode-button"></div>
                 </div>
+                <div class="button create">Create a Game</div>
+                <div class="button install">Install</div>
             </div>
         </div>
     </body>

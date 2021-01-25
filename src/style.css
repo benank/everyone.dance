@@ -10,15 +10,17 @@
 
 div.background
 {
-    font-family: 'Noto Sans', sans-serif;
+    position: fixed;
     width: 100vw;
     height: 100vh;
     background: linear-gradient(162deg, rgba(255,75,75,1) 0%, rgba(54,68,255,1) 100%); 
     -webkit-app-region: drag;
 }
 
-div.background *
+
+body *
 {
+    font-family: 'Noto Sans', sans-serif;
     -webkit-app-region: no-drag;
 }
 
@@ -28,6 +30,7 @@ div.title
     user-select: none;
     color: white;
     animation: 1s ease-in-out title-anim;
+    -webkit-app-region: drag;
 }
 
 @keyframes title-anim
@@ -43,8 +46,11 @@ div.close-button
     right: 0;
     cursor: pointer;
     background-image: url('icons/close-24px.svg');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
     width: 24px;
     height: 24px;
+    padding: 4px;
     transition: 0.1s ease-in-out background-color;
 }
 
@@ -53,13 +59,35 @@ div.close-button:hover
     background-color: rgba(0, 0, 0, 0.5);
 }
 
+div.submit-gamecode-button
+{
+    position: absolute;
+    right: -10px;
+    top: 0;
+    background-color: #f0f0f0;
+    border-radius: 50px;
+    cursor: pointer;
+    background-image: url('icons/arrow_forward-24px.svg');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    width: 28px;
+    height: 28px;
+    padding: 6px;
+    transform: translate(100%, 0);
+    transition: 0.1s ease-in-out transform;
+}
+
+div.submit-gamecode-button:hover
+{
+    transform: translate(100%, 0) scale(1.05);
+}
+
 div.title-container
 {
-    text-align: center;
     position: fixed;
     top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    left: 20px;
+    transform: translate(0, -50%);
 }
 
 div.buttons-container
@@ -67,26 +95,28 @@ div.buttons-container
     position: relative;
     text-align: center;
     margin-top: 40px;
-    animation: 1s ease-in-out buttons-anim;
+    max-width: 220px;
+    animation: 1s ease-in-out button-anim;
 }
 
-div.button
+div.button, input.gamecode
 {
+    position: relative;
     display: inline-block;
     width: 200px;
-    padding: 14px;
+    padding: 12px;
     color: black;
-    font-size: 22px;
+    font-size: 18px;
     text-align: center;
-    margin: 10px;
+    margin-bottom: 20px;
     cursor: pointer;
     user-select: none;
-    border-radius: 6px;
     background-color: #f0f0f0;
-    transition: 0.2s ease-in-out box-shadow;
+    clip-path: polygon(5% 5%, 100% 5%, 95% 100%, 0% 100%);
+    transition: 0.1s ease-in-out transform;
 }
 
-@keyframes buttons-anim
+@keyframes button-anim
 {
     0% {opacity: 0; transform: translateY(20px)}
     100% {opacity: 1; transform: translateY(0)}
@@ -94,5 +124,23 @@ div.button
 
 div.button:hover
 {
-    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
+    transform: scale(1.05);
+}
+
+input.gamecode
+{
+    padding-top: 8.4px;
+    padding-bottom: 8.4px;
+    cursor: auto;
+    outline: none;
+    border: none;
+    border-radius: 0;
+    text-transform: capitalize;
+    animation: none;
+}
+
+div.gamecode-container
+{
+    width: fit-content;
+    height: fit-content;
 }
