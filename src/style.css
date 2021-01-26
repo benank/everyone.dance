@@ -21,7 +21,6 @@ div.background
 body *
 {
     font-family: 'Noto Sans', sans-serif;
-    -webkit-app-region: no-drag;
 }
 
 div.title
@@ -52,11 +51,33 @@ div.close-button
     height: 24px;
     padding: 4px;
     transition: 0.1s ease-in-out background-color;
+    -webkit-app-region: no-drag;
 }
 
 div.close-button:hover
 {
     background-color: rgba(0, 0, 0, 0.5);
+}
+
+div.connecting-icon
+{
+    position: fixed;
+    top: 0;
+    left: 0;
+    cursor: pointer;
+    background-image: url('icons/autorenew-24px.svg');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    width: 24px;
+    height: 24px;
+    padding: 4px;
+    animation: spin-anim 1.5s ease-in-out infinite;
+}
+
+@keyframes spin-anim
+{
+    0% {transform: rotate(0deg);}
+    100% {transform: rotate(360deg);}
 }
 
 div.submit-gamecode-button
@@ -75,6 +96,7 @@ div.submit-gamecode-button
     padding: 6px;
     transform: translate(100%, 0);
     transition: 0.1s ease-in-out transform;
+    -webkit-app-region: no-drag;
 }
 
 div.submit-gamecode-button:hover
@@ -114,6 +136,7 @@ div.button, input.gamecode
     background-color: #f0f0f0;
     clip-path: polygon(5% 5%, 100% 5%, 95% 100%, 0% 100%);
     transition: 0.1s ease-in-out transform;
+    -webkit-app-region: no-drag;
 }
 
 @keyframes button-anim
@@ -127,6 +150,17 @@ div.button:hover
     transform: scale(1.05);
 }
 
+div.button.disabled
+{
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+div.button.disabled:hover
+{
+    transform: none;
+}
+
 input.gamecode
 {
     padding-top: 8.4px;
@@ -137,6 +171,7 @@ input.gamecode
     border-radius: 0;
     text-transform: capitalize;
     animation: none;
+    -webkit-app-region: no-drag;
 }
 
 div.gamecode-container

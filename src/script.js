@@ -29,6 +29,7 @@ $(document).ready(function () {
 
     function ToggleGameCodeDisplay(enabled)
     {
+        $(`input.gamecode`).val("");
         if (enabled)
         {
             $('div.button.join').hide();
@@ -46,37 +47,60 @@ $(document).ready(function () {
     }
 
     // User clicks the join button
-    $('div.button.join').on('click', (e) => 
+    $('div.button.join').on('click', function(e)
     {
         ToggleGameCodeDisplay(true);
     })
     
     // User clicks the create button
-    $('div.button.create').on('click', (e) => 
+    $('div.button.create').on('click', function(e)
     {
         ToggleGameCodeDisplay(false);
+        if (!socket.connected) {return;}
     })
     
     // User clicks the install button
-    $('div.button.install').on('click', (e) => 
+    $('div.button.install').on('click', function(e)
     {
+        if ($(this).hasClass('disabled')) {return;}
+        ToggleGameCodeDisplay(false);
+    })
+
+    // User clicks the download button
+    $('div.button.download').on('click', function(e)
+    {
+        if ($(this).hasClass('disabled')) {return;}
         ToggleGameCodeDisplay(false);
     })
 
     $('input.gamecode').on('input keyup blur', function(e)
     {
         const input = $(this);
-        input.val(input.val().toUpperCase().replace(/[^A-Z]/g,'') );
+        input.val(input.val().toUpperCase().replace(/[^A-Z]/g,''));
+    })
+
+    // User clicks the arrow to submit gamecode button
+    $('div.submit-gamecode-button').on('click', function(e)
+    {
+        const game_code = $(`input.gamecode`).val().toUpperCase().trim();
+
+        if (game_code.length != 4) {return;}
+        if (!socket.connected) {return;}
+
+        // Try to enter game
+        // TODO: block spammed requests
+
+        ToggleGameCodeDisplay(false);
     })
 
     socket.on('connect', () => 
     {
-        console.log('Connected!')
+        $('div.connecting-icon').fadeOut(200);
     })
 
     socket.on('disconnect', () => 
     {
-        console.log('Disconnected!')
+        $('div.connecting-icon').fadeIn(200);
     })
 
 })

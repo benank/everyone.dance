@@ -1,19 +1,19 @@
 {
-  "name": "everyone.dance.client",
+  "name": "everyone.dance",
   "version": "1.0.0",
-  "description": "Client for everyone.dance",
+  "description": "everyone.dance",
   "main": "main.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/benank/everyone.dance.client.git"
+    "url": "git+https://github.com/benank/everyone.dance.git"
   },
   "keywords": [],
   "author": "benank",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/benank/everyone.dance.client/issues"
+    "url": "https://github.com/benank/everyone.dance/issues"
   },
-  "homepage": "https://github.com/benank/everyone.dance.client#readme",
+  "homepage": "https://github.com/benank/everyone.dance#readme",
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
@@ -42,7 +42,7 @@
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
-            "name": "everyone.dance.client"
+            "name": "everyone.dance"
           }
         },
         {

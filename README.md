@@ -11,6 +11,8 @@ npm install
 
 ## Running
 
+First, get yourself a signed certificate/key and place them in the directory above this one. My setup uses Cloudflare to enable HTTPS on the server, so everything else must be HTTPS. Cloudflare's strict policy requires a signed certificate, so we have to use one here as well. A signed certificate is not required to run the Electron app in development mode.
+
 ### Run Electron App
 
 This runs the Electron app. This should be used when developing.
@@ -29,7 +31,7 @@ npm run make
 
 ### Deploy Webapp
 
-This deploys the app to a website. This is good if you want to display the spectator mode on your own domain.
+This deploys the app to a website. This is good if you want to display the spectator mode on your own domain. Probably won't work when developing on a local machine because it requires HTTPS and a signed certificate/key. This requirement is due to socket.io using an HTTPS connection that expects the signed certificate. 
 
 ```
 npm run webapp
@@ -37,7 +39,7 @@ npm run webapp
 
 ### Start Server
 
-This starts the main server for game management. Players connect to this server to create and join games. 
+This starts the main server for game management. Players connect to this server to create and join games. This server probably won't work unless you set up a remote server and get a signed certificate. You could set this all up a bit easier if you didn't use a secure connection and just used HTTP, because you wouldn't need certificates.
 
 ```
 npm run server
