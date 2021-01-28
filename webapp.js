@@ -1,7 +1,7 @@
 const express = require('express');
 
 const app = express();
-app.use(express.static('src'));
+app.use("/build", express.static(__dirname + '/build'));
 
 const https = require('https');
 const fs = require('fs');

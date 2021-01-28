@@ -17,14 +17,14 @@ function createWindow() {
             nodeIntegration: true,
             enableRemoteModule: true,
             contextIsolation: true,
-            preload: path.join(__dirname, 'preload.js'),
+            preload: path.join(__dirname, 'src', 'js', 'preload.js'),
         },
-        icon: "src/favicon.ico",
+        icon: "favicon.ico",
         frame: false
     })
 
     // win.removeMenu(); // Disable for now. If uncommented, removes the devtools menu.
-    win.loadFile('src/index.html');
+    win.loadFile('index.html');
 }
 
 app.whenReady().then(createWindow);
