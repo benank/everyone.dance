@@ -1,11 +1,6 @@
 @font-face {
     font-family: 'Noto Sans';
-    src: url('fonts/NotoSans-Regular.ttf');
-}
-
-*
-{
-    font-family: 'Noto Sans', sans-serif;
+    src: url('../fonts/NotoSans-Regular.ttf');
 }
 
 div.background
@@ -18,11 +13,6 @@ div.background
 }
 
 
-body *
-{
-    font-family: 'Noto Sans', sans-serif;
-}
-
 div.title
 {
     font-size: 40px;
@@ -30,6 +20,7 @@ div.title
     color: white;
     animation: 1s ease-in-out title-anim;
     -webkit-app-region: drag;
+    font-family: 'Noto Sans', sans-serif;
 }
 
 @keyframes title-anim
@@ -38,13 +29,13 @@ div.title
     100% {opacity: 1; transform: translateY(0)}
 }
 
-div.close-button
+img.close-button
 {
     position: fixed;
     top: 0;
     right: 0;
     cursor: pointer;
-    background-image: url('icons/close-24px.svg');
+    // background-image: url('../icons/close-24px.svg');
     background-repeat: no-repeat;
     background-size: 100% 100%;
     width: 24px;
@@ -54,18 +45,18 @@ div.close-button
     -webkit-app-region: no-drag;
 }
 
-div.close-button:hover
+img.close-button:hover
 {
     background-color: rgba(0, 0, 0, 0.5);
 }
 
-div.connecting-icon
+img.connecting-icon
 {
     position: fixed;
     top: 0;
     left: 0;
     cursor: pointer;
-    background-image: url('icons/autorenew-24px.svg');
+    // background-image: url('../icons/autorenew-24px.svg');
     background-repeat: no-repeat;
     background-size: 100% 100%;
     width: 24px;
@@ -80,7 +71,7 @@ div.connecting-icon
     100% {transform: rotate(360deg);}
 }
 
-div.submit-gamecode-button
+img.submit-gamecode-button
 {
     position: absolute;
     right: -10px;
@@ -88,7 +79,7 @@ div.submit-gamecode-button
     background-color: #f0f0f0;
     border-radius: 50px;
     cursor: pointer;
-    background-image: url('icons/arrow_forward-24px.svg');
+    // background-image: url('../icons/arrow_forward-24px.svg');
     background-repeat: no-repeat;
     background-size: 100% 100%;
     width: 28px;
@@ -99,7 +90,7 @@ div.submit-gamecode-button
     -webkit-app-region: no-drag;
 }
 
-div.submit-gamecode-button:hover
+img.submit-gamecode-button:hover
 {
     transform: translate(100%, 0) scale(1.05);
 }
@@ -114,6 +105,7 @@ div.title-container
 
 div.buttons-container
 {
+    font-family: 'Noto Sans', sans-serif;
     position: relative;
     text-align: center;
     margin-top: 40px;

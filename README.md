@@ -13,13 +13,15 @@ npm install
 
 First, get yourself a signed certificate/key and place them in the directory above this one. My setup uses Cloudflare to enable HTTPS on the server, so everything else must be HTTPS. Cloudflare's strict policy requires a signed certificate, so we have to use one here as well. A signed certificate is not required to run the Electron app in development mode.
 
-### Run Electron App
+### Start Developing
 
-This runs the Electron app. This should be used when developing.
+Start the development scripts with:
 
 ```
-npm run start
+npm run dev
 ```
+
+This will start a watcher service for changes in the React code and also start the Electron process. The Electron process will automatically update with any new changes you make in React.
 
 ### Build Electron App
 
@@ -31,10 +33,10 @@ npm run make
 
 ### Deploy Webapp
 
-This deploys the app to a website. This is good if you want to display the spectator mode on your own domain. Probably won't work when developing on a local machine because it requires HTTPS and a signed certificate/key. This requirement is due to socket.io using an HTTPS connection that expects the signed certificate. 
+This deploys the app to a website. This is good if you want to display the spectator mode on your own domain. Probably won't work when developing on a local machine because it requires HTTPS and a signed certificate/key. This requirement is due to socket.io using an HTTPS connection that expects the signed certificate. The commend first bundles the React code together and then runs the web app.
 
 ```
-npm run webapp
+npm run deploy
 ```
 
 ### Start Server

@@ -1,12 +1,23 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain, Notification } = require('electron');
 
-function createWindow () {
+const path = require('path');
+const isDev = !app.isPackaged;
+
+if (isDev) {
+    require('electron-reload')(__dirname, {
+        electron: path.join(__dirname, 'node_modules', '.bin', 'electron')
+    })
+}
+
+function createWindow() {
     const win = new BrowserWindow({
         width: 1024,
         height: 720,
         webPreferences: {
             nodeIntegration: true,
-            enableRemoteModule: true
+            enableRemoteModule: true,
+            contextIsolation: true,
+            preload: path.join(__dirname, 'preload.js'),
         },
         icon: "src/favicon.ico",
         frame: false
@@ -28,4 +39,8 @@ app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
         createWindow();
     }
+})
+
+ipcMain.on('close-window', (_, message) => {
+    app.quit();
 })

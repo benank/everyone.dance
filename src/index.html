@@ -2,37 +2,13 @@
 <html>
     <head>
         <title>everyone.dance</title>
-        <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' https://everyone.dance https://everyone.dance:443 https://everyone.dance:2053">
+        <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' https://everyone.dance https://everyone.dance:443 https://everyone.dance:2053">
         <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
-        <link rel="stylesheet" href="reset.css" />
-        <link rel="stylesheet" href="style.css" />
-
-        <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
-        <script type="text/javascript" src="lib/jquery-3.5.1.min.js"></script>
-        <script type="text/javascript" src="lib/socket.io.min.js"></script>
-        <script type="text/javascript" src="script.js"></script>
-        <script>if (window.module) {module = window.module;}</script>
+        <!-- <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+        <script>if (window.module) {module = window.module;}</script> -->
     </head>
     <body>
-        <div class="background"></div>
-        <div class="close-button"></div>
-        <div class='connecting-icon'></div>
-        <div class="title-container">
-            <div class="title">everyone.dance</div>
-            <div class="buttons-container">
-                <div class="button join">Join a Game</div>
-                <div class="gamecode-container">
-                    <input class="gamecode" type="text" pattern="[^A-Z]+" maxlength="4" placeholder="Game Code">
-                    <div class="submit-gamecode-button"></div>
-                </div>
-                <div class="button create">Create a Game</div>
-                <div class="button install disabled">Install</div>
-                <div class="button download disabled">Download</div>
-            </div>
-        </div>
-        <div class="game-room-container">
-            
-                
-        </div>
+        <div id ="root"></div>
     </body>
+    <script src="../build/app.js" async defer></script>
 </html>
