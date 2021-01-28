@@ -1,0 +1,50 @@
+div.background
+{
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(162deg, rgba(255,75,75,1) 0%, rgba(54,68,255,1) 100%); 
+    -webkit-app-region: drag;
+}
+
+img.close-button
+{
+    position: fixed;
+    top: 0;
+    right: 0;
+    cursor: pointer;
+    // background-image: url('../icons/close-24px.svg');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    width: 24px;
+    height: 24px;
+    padding: 4px;
+    transition: 0.1s ease-in-out background-color;
+    -webkit-app-region: no-drag;
+}
+
+img.close-button:hover
+{
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+img.connecting-icon
+{
+    position: fixed;
+    top: 0;
+    left: 0;
+    cursor: pointer;
+    // background-image: url('../icons/autorenew-24px.svg');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    width: 24px;
+    height: 24px;
+    padding: 4px;
+    animation: spin-anim 1.5s ease-in-out infinite;
+}
+
+@keyframes spin-anim
+{
+    0% {transform: rotate(0deg);}
+    100% {transform: rotate(360deg);}
+}
