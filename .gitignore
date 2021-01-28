@@ -70,4 +70,4 @@ ts-gen
 # Used to accelerate builds after sync
 patches/mtime-cache.json
 
-/build/
+*/build/

@@ -2,8 +2,10 @@ const express = require('express');
 
 const app = express();
 app.use(express.static('src'));
-app.use("/build", express.static(__dirname + '/build'));
-app.use(express.static(__dirname + '/index.html'));
+// Yes, this serves all the source code.
+// No, I am not going to fix this right now.
+// The issue is allowing the index.html to load the compiled script on both electron and in the served webapp.
+// Might look into it more later.
 
 const https = require('https');
 const fs = require('fs');

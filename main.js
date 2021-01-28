@@ -19,12 +19,12 @@ function createWindow() {
             contextIsolation: true,
             preload: path.join(__dirname, 'src', 'js', 'preload.js'),
         },
-        icon: "favicon.ico",
+        icon: path.join(__dirname, 'src', 'favicon.ico'),
         frame: false
     })
 
     // win.removeMenu(); // Disable for now. If uncommented, removes the devtools menu.
-    win.loadFile('index.html');
+    win.loadFile('src/index.html');
 }
 
 app.whenReady().then(createWindow);
