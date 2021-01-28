@@ -71,7 +71,7 @@ export default class App extends React.Component {
         return (
             <>
                 <div className="background"></div>
-                <img src={close_icon} className="close-button" onClick={() => electron.closeWindow()}></img>
+                {typeof electron != 'undefined' && <img src={close_icon} className="close-button" onClick={() => electron.closeWindow()}></img>}
                 {!this.state.connected && <img src={loading_icon} className='connecting-icon'></img>}
                 <div className="title-container">
                     <div className="title">everyone.dance</div>
