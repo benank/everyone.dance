@@ -1,7 +1,10 @@
 import React, {useState, useEffect} from 'react';
+import '../styles/font.scss'
 import "../styles/main_menu.scss"
 
 import forward_arrow_icon from '../icons/arrow_forward-24px.svg'
+import { APP_STATE } from './constants/app_state'
+
 
 export default class MainMenu extends React.Component {
 
@@ -52,7 +55,7 @@ export default class MainMenu extends React.Component {
                                 onChange={(event) => this.input_code_field_changed(event)}></input>
                             <img src={forward_arrow_icon} className="submit-gamecode-button"></img>
                         </div>}
-                        <div className="button create">Create a Game</div>
+                        <div className="button create" onClick={() => this.props.setAppState(APP_STATE.GAME_ROOM)}>Create a Game</div>
                         {typeof electron != 'undefined' ? 
                             <div className="button install disabled">Install</div> :
                             <div className="button download disabled">Download</div>}

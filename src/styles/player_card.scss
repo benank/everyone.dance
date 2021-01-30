@@ -1,0 +1,134 @@
+div.player-card-container
+{
+    display: inline-block;
+    width: fit-content;
+    height: fit-content;
+    border-radius: 12px;
+    padding: 12px;
+    flex: 1 0 30%;
+    min-width: 350px;
+    max-width: max(30vw, 700px);
+    background-image: linear-gradient(45deg, rgb(255, 151, 92) 0%, rgb(255, 252, 50) 100%); 
+    user-select: none;
+}
+
+div.player-card-container div.top-bar div.cardicon-container
+{
+    margin-left: 8px;
+}
+
+div.player-card-container div.top-bar *
+{
+    display: inline-block;
+}
+
+div.player-card-container div.top-bar div.player-name
+{
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+div.player-card-container div.top-bar div.nav-items
+{
+    float: right;
+}
+
+div.player-card-container div.song-info
+{
+    position: relative;
+}
+
+div.player-card-container div.song-info img
+{
+    width: 24px;
+    height: 24px;
+}
+
+div.player-card-container div.song-info div.cardicon-container
+{
+    margin-right: 10px;
+}
+
+div.player-card-container div.song-info>div.info
+{
+    display: flex;
+    justify-content: left;
+    align-content: center;
+    align-items: center;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    font-size: 20px;
+}
+
+div.player-card-container div.song-info div.song-score
+{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    font-size: 48px;
+    margin: 0;
+}
+
+div.player-card-container div.song-progress-bar
+{
+    position: relative;
+    margin-top: 6px;
+    margin-bottom: 6px;
+    width: 100%;
+    border-radius: 20px;
+    height: 8px;
+    background-color: rgba($color: #000000, $alpha: 0.5);
+}
+
+div.player-card-container div.song-progress-bar div.song-progress-bar-fill
+{
+    height: 100%;
+    border-radius: 20px;
+    background-color: white;
+    transition: 0.5s ease-in-out width;
+}
+
+div.player-card-container div.step-scores-container
+{
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+}
+
+div.player-card-container div.step-score-container
+{
+    display: inline-block;
+    position: relative;
+    width: fit-content;
+    background-color: rgba($color: #ffffff, $alpha: 0.5);
+    padding: 6px;
+    margin-left: 2.5px;
+    margin-right: 2.5px;
+    text-align: center;
+    flex: 1 1 0px;
+    border-radius: 8px;
+}
+
+div.player-card-container div.step-score-container:last-child
+{
+    margin-right: 0;
+}
+
+div.player-card-container div.step-score-container:first-child
+{
+    margin-left: 0;
+}
+
+div.player-card-container div.step-score-container div.step-score-title
+{
+    font-size: 12px;
+    margin-top: 2px;
+}
+
+div.player-card-container div.step-score-container div.step-score
+{
+    margin-top: 2px;
+    margin-bottom: 2px;
+    font-size: 22px;
+}

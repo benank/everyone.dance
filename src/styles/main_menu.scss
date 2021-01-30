@@ -1,17 +1,3 @@
-@font-face {
-    font-family: 'Noto Sans';
-    src: url('../fonts/NotoSans-Regular.ttf');
-}
-
-div.background
-{
-    position: fixed;
-    width: 100vw;
-    height: 100vh;
-    background: linear-gradient(162deg, rgba(255,75,75,1) 0%, rgba(54,68,255,1) 100%); 
-    -webkit-app-region: drag;
-}
-
 
 div.title
 {
@@ -20,7 +6,6 @@ div.title
     color: white;
     animation: 1s ease-in-out title-anim;
     -webkit-app-region: drag;
-    font-family: 'Noto Sans', sans-serif;
 }
 
 @keyframes title-anim
@@ -57,17 +42,18 @@ div.title-container
 {
     position: fixed;
     top: 50%;
-    left: 20px;
-    transform: translate(0, -50%);
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
 }
 
 div.buttons-container
 {
-    font-family: 'Noto Sans', sans-serif;
     position: relative;
+    display: inline-block;
     text-align: center;
     margin-top: 40px;
-    max-width: 220px;
+    width: 300px;
     animation: 1s ease-in-out button-anim;
 }
 
@@ -84,7 +70,8 @@ div.button, input.gamecode
     cursor: pointer;
     user-select: none;
     background-color: #f0f0f0;
-    clip-path: polygon(5% 5%, 100% 5%, 95% 100%, 0% 100%);
+    // clip-path: polygon(5% 5%, 100% 5%, 95% 100%, 0% 100%);
+    border-radius: 12px;
     transition: 0.1s ease-in-out transform;
     -webkit-app-region: no-drag;
 }
@@ -97,7 +84,7 @@ div.button, input.gamecode
 
 div.button:hover
 {
-    transform: scale(1.05);
+    // transform: scale(1.05);
 }
 
 div.button.disabled
@@ -113,12 +100,12 @@ div.button.disabled:hover
 
 input.gamecode
 {
-    padding-top: 8.4px;
-    padding-bottom: 8.4px;
+    padding-top: 9px;
+    padding-bottom: 9px;
     cursor: auto;
     outline: none;
     border: none;
-    border-radius: 0;
+    border-radius: 12px;
     text-transform: capitalize;
     animation: none;
     -webkit-app-region: no-drag;
@@ -126,6 +113,6 @@ input.gamecode
 
 div.gamecode-container
 {
-    width: fit-content;
-    height: fit-content;
+    position: relative;
+    display: inline-block;
 }

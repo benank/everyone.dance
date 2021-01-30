@@ -20,10 +20,14 @@ function createWindow() {
             preload: path.join(__dirname, 'src', 'js', 'preload.js'),
         },
         icon: path.join(__dirname, 'src', 'favicon.ico'),
-        frame: false
+        // frame: false // Looks nice, but the drag css properties have issues. Might look into later
     })
 
-    // win.removeMenu(); // Disable for now. If uncommented, removes the devtools menu.
+    if (!isDev)
+    {
+        win.removeMenu(); // Only enable in dev mode. Otherwise, it removes the devtools menu
+    }
+    
     win.loadFile('src/index.html');
 }
 
