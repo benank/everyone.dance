@@ -28,12 +28,10 @@ export default class App extends React.Component {
 
     componentDidMount()
     {
-        console.log("starting io")
         this.socket = io(ENDPOINT);
 
         this.socket.on("connect", () => 
         {
-            console.log("connected")
             this.setState({connected: true});
         })
 
