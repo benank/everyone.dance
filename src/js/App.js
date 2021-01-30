@@ -37,7 +37,7 @@ export default class App extends React.Component {
 
         this.socket.on("disconnect", () => 
         {
-            this.setState({connected: false});
+            this.setState({connected: false, app_state: APP_STATE.MAIN_MENU});
         })
     }
 
