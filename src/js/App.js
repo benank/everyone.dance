@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { io } from "socket.io-client";
+import * as io from "socket.io-client";
 import "../styles/app.scss"
 
 import loading_icon from '../icons/autorenew-24px.svg'
@@ -28,10 +28,12 @@ export default class App extends React.Component {
 
     componentDidMount()
     {
+        console.log("starting io")
         this.socket = io(ENDPOINT);
 
         this.socket.on("connect", () => 
         {
+            console.log("connected")
             this.setState({connected: true});
         })
 
