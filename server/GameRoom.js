@@ -34,9 +34,16 @@ module.exports = class GameRoom
         this.server.io.to(this.game_code).emit('remove player', player.client.id);
         player.client.leave(this.game_code);
 
-        if (Object.keys(this.players).length == 0)
+        // Get all non spectating players
+        if (!this.removed && Object.keys(this.players).filter((key) => !this.players[key].spectate).length == 0)
         {
+            Object.keys(this.players).forEach((key) => 
+            {
+                this.remove_player(this.players[key]);
+            })
+
             this.server.remove_game_room(this);
+            this.removed = true;
         }
     }
 

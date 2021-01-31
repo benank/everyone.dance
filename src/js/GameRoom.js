@@ -88,7 +88,6 @@ export default class GameRoom extends React.Component {
                         <div className="cards-container">
                             {Object.keys(this.state.players).map((key) => 
                             {
-                                console.log(this.state.players[key].spectate)
                                 return !this.state.players[key].spectate && <PlayerCard key={key} player_data={this.state.players[key]}></PlayerCard>
                             })}
                         </div>
