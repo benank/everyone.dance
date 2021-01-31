@@ -20,6 +20,7 @@ module.exports = class Player
         this.progress = 0;
         this.score = 0;
         this.ingame = false;
+        this.spectate = false; // If this player joined through the website and is spectating
     }
 
     
@@ -50,7 +51,8 @@ module.exports = class Player
             steps_info: this.steps_info,
             progress: this.progress,
             score: this.score,
-            ingame: this.ingame
+            ingame: this.ingame,
+            spectate: this.spectate
         }
 
         return typeof field == 'undefined' ? sync_data : {[field]: sync_data[field]}

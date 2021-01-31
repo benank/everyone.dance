@@ -34,6 +34,7 @@ export default class PlayerCard extends React.Component {
                     name: "Flowers",
                     artist: "HANA RAMAN",
                     pack: "Assorted",
+                    charter: "Konami",
                     difficulty: 10,
                     steps: 567
                 },
@@ -60,7 +61,7 @@ export default class PlayerCard extends React.Component {
             portrait: false, // If the player card is portrait mode in streamer view
             visible: true, // If the player card is visible in streamer view
             dark_theme: false, // If this card has dark background colors and thus requires white text instead of black
-            background_color: this.getRandomBackgroundColor()
+            background_color: props.player_data.background_color
         }
     }
 
@@ -154,10 +155,10 @@ export default class PlayerCard extends React.Component {
                 <div className="content">
                     <div className="song-info">
                         <div className="info song-name"><CardIcon icon_type={ICON_TYPE.MUSIC}/>{this.state.player_data.song_info.name || "--"}</div>
-                        <div className="info song-artist"><CardIcon icon_type={ICON_TYPE.FACE}/>{this.state.player_data.song_info.artist || "--"}</div>
+                        <div className="info song-artist"><CardIcon icon_type={ICON_TYPE.ARTIST}/>{this.state.player_data.song_info.artist || "--"}</div>
+                        <div className="info song-charter"><CardIcon icon_type={ICON_TYPE.CHARTER}/>{this.state.player_data.song_info.charter || "--"}</div>
                         <div className="info song-pack"><CardIcon icon_type={ICON_TYPE.FOLDER}/>{this.state.player_data.song_info.pack || "--"}</div>
-                        <div className="info song-difficulty"><CardIcon icon_type={ICON_TYPE.STEPS}/>Difficulty {this.state.player_data.song_info.difficulty || "--"}</div>
-                        <div className="info song-steps"><CardIcon icon_type={ICON_TYPE.FEET}/>{this.state.player_data.song_info.steps || "--"}</div>
+                        <div className="info song-difficulty"><CardIcon icon_type={ICON_TYPE.LEVEL}/>Level {this.state.player_data.song_info.difficulty || "--"} ({this.state.player_data.song_info.steps || "--"})</div>
                         {this.state.player_data.ingame && <div className="song-score">{this.state.player_data.score}%</div>}
                     </div>
                     <div className="song-progress-bar">

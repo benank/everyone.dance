@@ -66,12 +66,14 @@ class Server
 
         client.on('create game room', (name) => 
         {
+            client.player.spectate = false;
             this.client_create_game_room(client);
         })
 
-        client.on('enter game code', (game_code) => 
+        client.on('enter game code', (args) => 
         {
-            this.client_enter_game_code(client, game_code);
+            client.player.spectate = args.spectate;
+            this.client_enter_game_code(client, args.game_code);
         })
         
         client.on('leave game room', () => 

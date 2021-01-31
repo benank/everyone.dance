@@ -28,7 +28,7 @@ export default class MainMenu extends React.Component {
         if (this.state.game_code_input_value.length != 4) {return;}
         if (!this.props.socket.connected) {return;}
 
-        this.props.socket.emit("enter game code", this.state.game_code_input_value);
+        this.props.socket.emit("enter game code", {game_code: this.state.game_code_input_value, spectate: typeof 'electron' == undefined});
         this.state.game_code_input_value = "";
     }
 
@@ -51,7 +51,9 @@ export default class MainMenu extends React.Component {
                 <div className="title-container">
                     <div className="title">everyone.dance</div>
                     <div className="buttons-container">
-                        {!this.state.game_code_open && <div className="button join" onClick={() => this.click_join_game()}>Join a Game</div>}
+                        {!this.state.game_code_open && <div className="button join" onClick={() => this.click_join_game()}>
+                            {typeof electron != 'undefined' ? "Join a Game" : "Spectate a Game"}
+                        </div>}
                         {this.state.game_code_open && <div className="gamecode-container">
                             <input 
                                 className="gamecode" 
@@ -63,7 +65,7 @@ export default class MainMenu extends React.Component {
                                 onChange={(event) => this.input_code_field_changed(event)}></input>
                             <img src={forward_arrow_icon} className="submit-gamecode-button" onClick={() => this.click_submit_gamecode()}></img>
                         </div>}
-                        <div className="button create" onClick={() => this.click_create_game_room()}>Create a Game</div>
+                        {typeof electron != 'undefined' && <div className="button create" onClick={() => this.click_create_game_room()}>Create a Game</div>}
                         {typeof electron != 'undefined' ? 
                             <div className="button install" onClick={() => this.props.setAppState(APP_STATE.INSTALL_VIEW)}>Install</div> :
                             <div className="button download disabled">Download</div>}
