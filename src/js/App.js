@@ -11,6 +11,7 @@ import '../styles/font.scss'
 
 import MainMenu from './MainMenu'
 import GameRoom from './GameRoom'
+import InstallMenu from './InstallMenu';
 
 const ENDPOINT = "https://everyone.dance:2053"
 
@@ -39,6 +40,16 @@ export default class App extends React.Component {
         {
             this.setState({connected: false, app_state: APP_STATE.MAIN_MENU});
         })
+
+        
+        // Called when the server puts the player in a game room
+        this.socket.on("enter game room", (data) => 
+        {
+            console.log(data);
+            console.log("ENTER GAME ROOM!")
+            this.setAppState(APP_STATE.GAME_ROOM);
+        })
+        
     }
 
     setAppState(state)
@@ -52,8 +63,9 @@ export default class App extends React.Component {
                 <div className="background"></div>
                 {/* {typeof electron != 'undefined' && <img src={close_icon} className="close-button" onClick={() => electron.closeWindow()}></img>} */}
                 {!this.state.connected && <img src={loading_icon} className='connecting-icon'></img>}
-                {this.state.app_state == APP_STATE.MAIN_MENU && <MainMenu setAppState={(state) => this.setAppState(state)}></MainMenu>}
-                {this.state.app_state == APP_STATE.GAME_ROOM && <GameRoom setAppState={(state) => this.setAppState(state)}></GameRoom>}
+                {this.state.app_state == APP_STATE.MAIN_MENU && <MainMenu socket={this.socket} setAppState={(state) => this.setAppState(state)}></MainMenu>}
+                {this.state.app_state == APP_STATE.GAME_ROOM && <GameRoom socket={this.socket} setAppState={(state) => this.setAppState(state)}></GameRoom>}
+                {this.state.app_state == APP_STATE.INSTALL_VIEW && <InstallMenu setAppState={(state) => this.setAppState(state)}></InstallMenu>}
             </>
         )
     }

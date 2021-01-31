@@ -1,7 +1,10 @@
-const { ipcRenderer, contextBridge } = require('electron');
+const electron = require('electron');
 
-contextBridge.exposeInMainWorld('electron', {
+electron.contextBridge.exposeInMainWorld('electron', {
     closeWindow() {
-        ipcRenderer.send('close-window');
-    }
+        electron.ipcRenderer.send('close-window');
+    },
+    fs: electron.remote.require('fs'),
+    dialog: electron.remote.dialog,
+    clipboard: electron.remote.clipboard
 })

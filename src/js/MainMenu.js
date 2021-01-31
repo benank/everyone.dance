@@ -25,16 +25,31 @@ export default class MainMenu extends React.Component {
 
     click_submit_gamecode()
     {
-        
-        // if (game_code.length != 4) {return;}
-        // if (!socket.connected) {return;}
+        if (this.state.game_code_input_value.length != 4) {return;}
+        if (!socket.connected) {return;}
 
+        this.props.socket.emit("enter game code", {game_code: this.state.game_code_input_value, name: this.get_localplayer_name()});
+        this.state.game_code_input_value = "";
     }
 
     input_code_field_changed(event)
     {
         const input = event.target.value.toUpperCase().replace(/[^A-Z]/g,'');
         this.setState({game_code_input_value: input});
+    }
+
+    click_create_game_room()
+    {
+        if (!this.props.socket.connected) {return;}
+
+        this.props.socket.emit("create game room", this.get_localplayer_name());
+
+        // this.props.setAppState(APP_STATE.GAME_ROOM)
+    }
+
+    get_localplayer_name()
+    {
+        return localStorage.getItem("player_name") || `Player ${Math.ceil(Math.random() * 1000)}`;
     }
 
     render () {
@@ -55,9 +70,9 @@ export default class MainMenu extends React.Component {
                                 onChange={(event) => this.input_code_field_changed(event)}></input>
                             <img src={forward_arrow_icon} className="submit-gamecode-button"></img>
                         </div>}
-                        <div className="button create" onClick={() => this.props.setAppState(APP_STATE.GAME_ROOM)}>Create a Game</div>
+                        <div className="button create" onClick={() => this.click_create_game_room()}>Create a Game</div>
                         {typeof electron != 'undefined' ? 
-                            <div className="button install disabled">Install</div> :
+                            <div className="button install" onClick={() => this.props.setAppState(APP_STATE.INSTALL_VIEW)}>Install</div> :
                             <div className="button download disabled">Download</div>}
                     </div>
                 </div>

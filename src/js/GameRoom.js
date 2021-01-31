@@ -98,7 +98,7 @@ export default class GameRoom extends React.Component {
                             <img src={popout_icon} className="navitem popout"></img>
                         </div>
                     </div>
-                    <div className="title-container">
+                    <div className="title-container" onClick={() => electron.clipboard.writeText(this.state.game_code)}>
                         Game Code: <span className="code-bold">{this.state.game_code}</span>
                     </div>
                     <div className="cards-container-outer">

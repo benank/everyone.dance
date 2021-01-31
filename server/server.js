@@ -2,6 +2,7 @@ const PORT = 2053;
 const dotenv = require("dotenv");
 const fs = require('fs');
 const GameRoom = require('./GameRoom');
+const Player = require("./Player");
 
 dotenv.config();
 
@@ -50,11 +51,50 @@ class Server
         {
             this.client_disconnected(client);
         })
+
+        client.on('create game room', (name) => 
+        {
+            this.client_create_game_room(client, name);
+        })
+
+        client.on('enter game code', (data) => 
+        {
+            this.client_enter_game_code(client, data.name, data.game_code);
+        })
     }
 
     client_disconnected(client)
     {
         console.log("Disconnected " + client.id);
+    }
+
+    client_create_game_room(client, name)
+    {
+        if (client.in_game) {return;}
+
+        const game_code = this.get_new_game_room_code();
+
+        const game_room = new GameRoom(game_code, this.io)
+        this.game_rooms[game_code] = game_room;
+
+        const player = new Player(client, name);
+        game_room.add_player(player);
+    }
+
+    client_enter_game_code(client, name, game_code)
+    {
+        if (client.in_game) {return;}
+
+        // Invalid game code
+        if (typeof game_code == 'undefined') {return;}
+
+        const game_room = this.game_rooms[game_code];
+
+        // Game room does not exist
+        if (typeof game_room == 'undefined') {return;}
+
+        const player = new Player(client, name);
+        game_room.add_player(player);
     }
 
     /**

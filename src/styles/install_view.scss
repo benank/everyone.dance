@@ -1,0 +1,99 @@
+div.installview-main-container
+{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: calc(60vw - 100px);
+    height: calc(60vh - 100px);
+    min-height: 200px;
+    min-width: 300px;
+    border-radius: 20px;
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
+    background-color: white;
+    transform: translate(-50%, -50%);
+    animation: 0.5s ease-in-out container-appear;
+    -webkit-app-region: no-drag;
+    padding: 16px;
+}
+
+// Nice appear animation :)
+@keyframes container-appear
+{
+    0% {opacity: 0; transform: translate(-50%, -50%) scale(0.8);}
+    50% {transform: translate(-50%, -50%) scale(1.02);}
+    100% {opacity: 1; transform: translate(-50%, -50%) scale(1);}
+}
+
+div.installview-main-container div.content
+{
+    position: relative;
+    width: 100%;
+    height: calc(100% - 60px);
+}
+
+div.installview-main-container div.navbar-left-container
+{
+    width: fit-content;
+    display: inline-block;
+}
+
+div.installview-main-container div.navbar-right-container
+{
+    width: fit-content;
+    float: right;
+}
+
+div.installview-main-container div.title-container
+{
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: fit-content;
+    margin-top: 2px;
+    font-size: 28px;
+    user-select: none;
+}
+
+div.installview-main-container span.code-bold
+{
+    font-weight: bold;
+}
+
+div.installview-main-container div.cards-container-outer
+{
+    position: relative;
+    margin-top: 24px;
+    height: 100%;
+    overflow-y: auto;
+}
+
+div.installview-main-container div.cards-container
+{
+    position: relative;
+    display: flex;
+    column-gap: 20px;
+    row-gap: 20px;
+    flex-flow: row wrap;
+}
+
+
+::-webkit-scrollbar {
+    width: 14px;
+    height: 18px;
+}
+::-webkit-scrollbar-thumb {
+    height: 6px;
+    border: 5px solid rgba(0, 0, 0, 0);
+    background-clip: padding-box;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 20px;
+}
+::-webkit-scrollbar-button {
+    width: 0;
+    height: 0;
+    display: none;
+}
+::-webkit-scrollbar-corner {
+    background-color: transparent;
+}

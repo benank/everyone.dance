@@ -4,7 +4,7 @@ div.title
     font-size: 40px;
     user-select: none;
     color: white;
-    animation: 1s ease-in-out title-anim;
+    animation: 0.7s ease-in-out title-anim;
     -webkit-app-region: drag;
 }
 
@@ -54,7 +54,7 @@ div.buttons-container
     text-align: center;
     margin-top: 40px;
     width: 300px;
-    animation: 1s ease-in-out button-anim;
+    animation: 0.7s ease-in-out button-anim;
 }
 
 div.button, input.gamecode
