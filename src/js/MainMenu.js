@@ -28,7 +28,7 @@ export default class MainMenu extends React.Component {
         if (this.state.game_code_input_value.length != 4) {return;}
         if (!this.props.socket.connected) {return;}
 
-        this.props.socket.emit("enter game code", {game_code: this.state.game_code_input_value, spectate: typeof electron == undefined});
+        this.props.socket.emit("enter game code", {game_code: this.state.game_code_input_value, spectate: typeof electron == 'undefined'});
         this.state.game_code_input_value = "";
     }
 
