@@ -14,7 +14,6 @@ export default class GameRoom extends React.Component {
     constructor (props)
     {
         super(props);
-        console.log(props);
         this.state = 
         {
             game_code: props.game_room_data.game_code,
@@ -89,6 +88,7 @@ export default class GameRoom extends React.Component {
                         <div className="cards-container">
                             {Object.keys(this.state.players).map((key) => 
                             {
+                                console.log(this.state.players[key].spectate)
                                 return !this.state.players[key].spectate && <PlayerCard key={key} player_data={this.state.players[key]}></PlayerCard>
                             })}
                         </div>

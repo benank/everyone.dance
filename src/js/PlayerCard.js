@@ -55,6 +55,7 @@ export default class PlayerCard extends React.Component {
                 progress = 0.7, // Current song progress betwen 0 and 1
                 score: 99.20,
                 is_me: true, // If the player card is this player's card (used for name editing)
+                spectate: false // If the player joined through web view and is spectating
 
             */
 
