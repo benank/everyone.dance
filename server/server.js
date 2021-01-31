@@ -45,6 +45,7 @@ class Server
     client_connected(client)
     {
         console.log("Connected " + client.id);
+        client.player = new Player(client);
 
         // Client disconnected
         client.on('disconnect', () => 
@@ -52,38 +53,66 @@ class Server
             this.client_disconnected(client);
         })
 
-        client.on('create game room', (name) => 
+        client.on('set name', (name) => 
         {
-            this.client_create_game_room(client, name);
+            name = name.trim();
+            client.player.name = name;
+            
+            if (client.player.game)
+            {
+                this.io.to(client.player.game.game_code).emit("change player name", {id: client.id, name: client.player.name});
+            }
         })
 
-        client.on('enter game code', (data) => 
+        client.on('create game room', (name) => 
         {
-            this.client_enter_game_code(client, data.name, data.game_code);
+            this.client_create_game_room(client);
+        })
+
+        client.on('enter game code', (game_code) => 
+        {
+            this.client_enter_game_code(client, game_code);
+        })
+        
+        client.on('leave game room', () => 
+        {
+            if (client.player.game)
+            {
+                Object.keys(client.rooms).forEach((room) => 
+                {
+                    if (typeof this.game_rooms[room] != 'undefined')
+                    {
+                        this.game_rooms[room].remove_player(client.player);
+                    }
+                })
+            }
         })
     }
 
     client_disconnected(client)
     {
         console.log("Disconnected " + client.id);
+        if (client.player && client.player.game)
+        {
+            client.player.game.remove_player(client.player);
+        }
     }
 
-    client_create_game_room(client, name)
+    client_create_game_room(client)
     {
-        if (client.in_game) {return;}
+        if (client.player.game) {return;}
 
         const game_code = this.get_new_game_room_code();
 
-        const game_room = new GameRoom(game_code, this.io)
+        const game_room = new GameRoom(game_code, this)
         this.game_rooms[game_code] = game_room;
 
-        const player = new Player(client, name);
-        game_room.add_player(player);
+        game_room.add_player(client.player);
     }
 
-    client_enter_game_code(client, name, game_code)
+    client_enter_game_code(client, game_code)
     {
-        if (client.in_game) {return;}
+        if (client.player.game) {return;}
 
         // Invalid game code
         if (typeof game_code == 'undefined') {return;}
@@ -93,8 +122,20 @@ class Server
         // Game room does not exist
         if (typeof game_room == 'undefined') {return;}
 
-        const player = new Player(client, name);
-        game_room.add_player(player);
+        game_room.add_player(client.player);
+    }
+
+    /**
+     * Removes a game room. Called when a game room becomes empty.
+     * @param {*} game_room 
+     */
+    remove_game_room(game_room)
+    {
+        if (this.game_rooms[game_room.game_code])
+        {
+            console.log(`Removed game room ${game_room.game_code} because it was empty`);
+            delete this.game_rooms[game_room.game_code];
+        }
     }
 
     /**

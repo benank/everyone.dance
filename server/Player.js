@@ -1,12 +1,22 @@
 module.exports = class Player
 {
-    constructor(client, name)
+    constructor(client)
     {
         this.client = client;
         this.background_color = this.getRandomBackgroundColor();
-        this.name = name;
+        this.name = `Player ${Math.ceil(Math.random() * 1000)}`;
         this.song_info = {};
-        this.steps_info = {};
+        this.steps_info = 
+        {
+            TapNoteScore_W1: 0,
+            TapNoteScore_W2: 0,
+            TapNoteScore_W3: 0,
+            TapNoteScore_W4: 0,
+            TapNoteScore_W5: 0,
+            TapNoteScore_Miss: 0,
+            HoldNoteScore_Held: 0,
+            HoldNoteScore_LetGo: 0
+        },
         this.progress = 0;
         this.score = 0;
         this.ingame = false;
@@ -33,6 +43,7 @@ module.exports = class Player
     getSyncData(field)
     {
         const sync_data = {
+            id: this.client.id,
             name: this.name,
             background_color: this.background_color,
             song_info: this.song_info,

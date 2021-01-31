@@ -37,7 +37,7 @@ export default class PlayerCard extends React.Component {
                     difficulty: 10,
                     steps: 567
                 },
-                ingame: false, // If this player is currently in the gameplay screen in stepmania
+                ingame: false, // If this player is currently in the gameplay or scores screen in stepmania
                 steps_info: { // All info about a player's current steps in a song
                     TapNoteScore_W1: 0,
                     TapNoteScore_W2: 0,
@@ -64,10 +64,10 @@ export default class PlayerCard extends React.Component {
         }
     }
 
-    componentDidUpdate(props)
-    {
-        this.setState({player_data: props.player_data});
-    }
+    // componentDidUpdate(props)
+    // {
+    //     this.setState({player_data: props.player_data});
+    // }
 
     getRandomBackgroundColor()
     {
@@ -132,7 +132,7 @@ export default class PlayerCard extends React.Component {
             return (
                 <div className="step-score-container" key={key}>
                     <div className="step-score-title">{key}</div>
-                    <div className="step-score">{judgement_map[key]}</div>
+                    <div className="step-score">{judgement_map[key] || "--"}</div>
                 </div>
             )
         })
@@ -153,15 +153,15 @@ export default class PlayerCard extends React.Component {
                 </div>
                 <div className="content">
                     <div className="song-info">
-                        <div className="info song-name"><CardIcon icon_type={ICON_TYPE.MUSIC}/>{this.state.player_data.song_info.name}</div>
-                        <div className="info song-artist"><CardIcon icon_type={ICON_TYPE.FACE}/>{this.state.player_data.song_info.artist}</div>
-                        <div className="info song-pack"><CardIcon icon_type={ICON_TYPE.FOLDER}/>{this.state.player_data.song_info.pack}</div>
-                        <div className="info song-difficulty"><CardIcon icon_type={ICON_TYPE.STEPS}/>Difficulty {this.state.player_data.song_info.difficulty}</div>
-                        <div className="info song-steps"><CardIcon icon_type={ICON_TYPE.FEET}/>{this.state.player_data.song_info.steps}</div>
-                        <div className="song-score">{this.state.player_data.score}%</div> {/* abs positioning */}
+                        <div className="info song-name"><CardIcon icon_type={ICON_TYPE.MUSIC}/>{this.state.player_data.song_info.name || "--"}</div>
+                        <div className="info song-artist"><CardIcon icon_type={ICON_TYPE.FACE}/>{this.state.player_data.song_info.artist || "--"}</div>
+                        <div className="info song-pack"><CardIcon icon_type={ICON_TYPE.FOLDER}/>{this.state.player_data.song_info.pack || "--"}</div>
+                        <div className="info song-difficulty"><CardIcon icon_type={ICON_TYPE.STEPS}/>Difficulty {this.state.player_data.song_info.difficulty || "--"}</div>
+                        <div className="info song-steps"><CardIcon icon_type={ICON_TYPE.FEET}/>{this.state.player_data.song_info.steps || "--"}</div>
+                        {this.state.player_data.ingame && <div className="song-score">{this.state.player_data.score}%</div>}
                     </div>
                     <div className="song-progress-bar">
-                        <div className="song-progress-bar-fill" style={{width: `${this.state.player_data.progress * 100}%`}}></div>
+                        {this.state.player_data.ingame && <div className="song-progress-bar-fill" style={{width: `${this.state.player_data.progress * 100}%`}}></div>}
                     </div>
                     <div className="step-scores-container">
                         {this.renderJudgements()}

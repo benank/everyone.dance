@@ -26,9 +26,9 @@ export default class MainMenu extends React.Component {
     click_submit_gamecode()
     {
         if (this.state.game_code_input_value.length != 4) {return;}
-        if (!socket.connected) {return;}
+        if (!this.props.socket.connected) {return;}
 
-        this.props.socket.emit("enter game code", {game_code: this.state.game_code_input_value, name: this.get_localplayer_name()});
+        this.props.socket.emit("enter game code", this.state.game_code_input_value);
         this.state.game_code_input_value = "";
     }
 
@@ -40,16 +40,9 @@ export default class MainMenu extends React.Component {
 
     click_create_game_room()
     {
-        if (!this.props.socket.connected) {return;}
+        if (!this.props.socket || !this.props.socket.connected) {return;}
 
-        this.props.socket.emit("create game room", this.get_localplayer_name());
-
-        // this.props.setAppState(APP_STATE.GAME_ROOM)
-    }
-
-    get_localplayer_name()
-    {
-        return localStorage.getItem("player_name") || `Player ${Math.ceil(Math.random() * 1000)}`;
+        this.props.socket.emit("create game room");
     }
 
     render () {
@@ -68,7 +61,7 @@ export default class MainMenu extends React.Component {
                                 placeholder="Game Code" 
                                 value={this.state.game_code_input_value}
                                 onChange={(event) => this.input_code_field_changed(event)}></input>
-                            <img src={forward_arrow_icon} className="submit-gamecode-button"></img>
+                            <img src={forward_arrow_icon} className="submit-gamecode-button" onClick={() => this.click_submit_gamecode()}></img>
                         </div>}
                         <div className="button create" onClick={() => this.click_create_game_room()}>Create a Game</div>
                         {typeof electron != 'undefined' ? 

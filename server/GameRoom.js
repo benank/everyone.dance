@@ -1,9 +1,9 @@
 module.exports = class GameRoom
 {
-    constructor(game_code, io)
+    constructor(game_code, server)
     {
         console.log(`Create game room ${game_code}`);
-        this.io = io;
+        this.server = server;
         this.game_code = game_code;
         this.players = {}
     }
@@ -16,11 +16,10 @@ module.exports = class GameRoom
     {
         console.log(`Add player ${player.name} to game room ${this.game_code}`);
         this.players[player.client.id] = player;
-        player.client.ingame = true;
-        player.client.game_code = this.game_code;
+        player.game = this;
         player.client.join(this.game_code);
-        io.to(this.game_code).broadcast('add player', player.getSyncData());
-        player.client.emit('enter game room', this.get_all_players_sync_data(player));
+        this.server.io.to(this.game_code).emit('add player', player.getSyncData());
+        player.client.emit('enter game room', {players: this.get_all_players_sync_data(player), game_code: this.game_code});
     }
 
     /**
@@ -29,10 +28,16 @@ module.exports = class GameRoom
      */
     remove_player(player)
     {
-        delete this.players[client.id];
-        delete client.game_code;
-        client.ingame = false;
-        // TODO: send events
+        console.log(`Remove player ${player.name} from game room ${this.game_code}`);
+        delete this.players[player.client.id];
+        delete player.game;
+        this.server.io.to(this.game_code).emit('remove player', player.client.id);
+        player.client.leave(this.game_code);
+
+        if (Object.keys(this.players).length == 0)
+        {
+            this.server.remove_game_room(this);
+        }
     }
 
     /**
@@ -47,7 +52,7 @@ module.exports = class GameRoom
             data[key] = this.players[key].getSyncData();
 
             // If a player is specified, then check if that player matches - this will tell that player which one they are
-            if (typeof player != 'undefined' && data[key].client.id == player.client.id)
+            if (typeof player != 'undefined' && this.players[key].client.id == player.client.id)
             {
                 data[key].is_me = true;
             }
