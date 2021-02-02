@@ -6,5 +6,9 @@ electron.contextBridge.exposeInMainWorld('electron', {
     },
     fs: electron.remote.require('fs'),
     dialog: electron.remote.dialog,
-    clipboard: electron.remote.clipboard
+    clipboard: electron.remote.clipboard,
+    getAppDataPath()
+    {
+        return (electron.app || electron.remote.app).getPath('appData')
+    }
 })

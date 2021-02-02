@@ -9,6 +9,12 @@ import back_arrow_icon from "../icons/back_arrow.svg"
 import popout_icon from "../icons/popout.svg"
 import info_icon from "../icons/info.svg"
 
+// Raw SM import data from txt file
+let sm_data = ""
+let sm_check_interval;
+const SM_CHECK_INTERVAL_TIME = 1000; // Check every second for updates
+const SM_FILE_PATH = "/StepMania 5/Save/everyone.dance.txt"
+
 export default class GameRoom extends React.Component {
 
     constructor (props)
@@ -48,6 +54,17 @@ export default class GameRoom extends React.Component {
             }
         })
 
+        this.props.socket.on("sync player data", (args) => 
+        {
+            if (this.state.players[args.id])
+            {
+                const players_copy = JSON.parse(JSON.stringify(this.state.players));
+                players_copy[args.id].data = args.data;
+
+                this.setState({players: players_copy});
+            }
+        })
+
         this.props.socket.on("change player name", (data) => 
         {
             const players_copy = JSON.parse(JSON.stringify(this.state.players));
@@ -58,6 +75,79 @@ export default class GameRoom extends React.Component {
                 this.setState({players: players_copy});
             }
         })
+
+        sm_check_interval = setInterval(() => {
+            this.check_for_sm_updates();
+        }, SM_CHECK_INTERVAL_TIME);
+
+    }
+
+    check_for_sm_updates()
+    {
+        const file_path = electron.getAppDataPath() + SM_FILE_PATH;
+
+        // File does not exist
+        if (!electron.fs.existsSync(file_path)) {return;}
+
+        const file = electron.fs.readFileSync(file_path, 'utf8').toString();
+
+        // No changes to file
+        if (file == sm_data) {return;}
+
+        sm_data = file;
+        const lines = file.split("\n");
+
+        let player = "";
+
+        const data = {}
+
+        for (let i = 0; i < lines.length; i++)
+        {
+            const line = lines[i].trim();
+
+            // Empty line
+            if (line.length == 0) {continue;}
+
+            if (line.includes("PlayerNumber"))
+            {
+                player = line;
+                data[player] = {}
+                continue;
+            }
+
+            const split = line.split(":")
+
+            // Depth of data for this line
+            const depth = split.length == 2 ? 1 : 2; // Maximum depth of 2
+
+            if (depth == 1)
+            {
+                const data_after_separator = line.replace(split[0] + ":", "");
+                data[player][split[0]] = data_after_separator;
+            }
+            else if (depth == 2)
+            {
+                const data_after_two_separators = line.replace(split[0] + ":" + split[1] + ":", "");
+
+                if (!data[player][split[0]])
+                {
+                    data[player][split[0]] = {}
+                }
+
+                data[player][split[0]][split[1]] = data_after_two_separators;
+            }
+
+        }
+
+        this.props.socket.emit("sync data", data)
+    }
+
+    componentWillUnmount()
+    {
+        if (sm_check_interval != undefined)
+        {
+            clearInterval(sm_check_interval);
+        }
     }
 
     leave_game_room()
@@ -88,7 +178,15 @@ export default class GameRoom extends React.Component {
                         <div className="cards-container">
                             {Object.keys(this.state.players).map((key) => 
                             {
-                                return !this.state.players[key].spectate && <PlayerCard key={key} player_data={this.state.players[key]}></PlayerCard>
+                                const player = this.state.players[key];
+                                if (player.spectate) {return;}
+
+                                return player["PlayerNumber_P2"] != undefined ? 
+                                        <React.Fragment>
+                                            <PlayerCard key={key} player_data={player} data={player["PlayerNumber_P1"]}/>
+                                            <PlayerCard key={key} player_data={player} p2={true} data={player["PlayerNumber_P2"]}/>
+                                        </React.Fragment> :
+                                        <PlayerCard key={key} player_data={player} data={player["PlayerNumber_P1"]}/>
                             })}
                         </div>
                     </div>

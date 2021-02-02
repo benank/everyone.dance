@@ -8,6 +8,12 @@ module.exports = class GameRoom
         this.players = {}
     }
 
+    sync_player_data(player)
+    {
+        if (!this.players[player.client.id]) {return;}
+        this.server.io.to(this.game_code).emit('sync player data', player.getSyncData());
+    }
+
     /**
      * Adds a new player to the game room
      * @param {*} player 

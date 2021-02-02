@@ -25,6 +25,8 @@ export default class PlayerCard extends React.Component {
         this.state = 
         {
             player_data: props.player_data,
+            data: props.data,
+            p2: props.p2 == true,
             id: props.id,
             /*
                 player_data is a map that includes:
@@ -108,7 +110,7 @@ export default class PlayerCard extends React.Component {
     {
         const judgement_map = {}
 
-        Object.keys(this.state.player_data.steps_info).forEach((judgement_name) => 
+        Object.keys(this.state.data.steps_info).forEach((judgement_name) => 
         {
             const nice_judgement_name = notescore_names[judgement_name];
             if (typeof nice_judgement_name != 'undefined')
@@ -118,7 +120,7 @@ export default class PlayerCard extends React.Component {
                     judgement_map[nice_judgement_name] = 0
                 }
 
-                judgement_map[nice_judgement_name] += this.state.player_data.steps_info[judgement_name]
+                judgement_map[nice_judgement_name] += this.state.data.steps_info[judgement_name]
             }
         })
 
@@ -144,7 +146,7 @@ export default class PlayerCard extends React.Component {
         return (
             <div className="player-card-container" key={this.state.id} style={{backgroundImage: this.state.background_color}}>
                 <div className="top-bar">
-                    <div className="player-name">{this.state.player_data.name}</div>
+                    <div className="player-name">{this.state.player_data.name}{this.state.p2 && " (2)"}</div>
                     <div className="nav-items">
                         <CardIcon icon_type={ICON_TYPE.ROTATE_PORTRAIT} callback={() => this.pressRotateButton()}></CardIcon>
                         <CardIcon icon_type={this.state.visible ? ICON_TYPE.VISIBLE : ICON_TYPE.HIDDEN} callback={() => this.pressVisibilityButton()}></CardIcon>
@@ -155,18 +157,18 @@ export default class PlayerCard extends React.Component {
                 </div>
                 <div className="content">
                     <div className="song-info">
-                        <div className="info song-name"><CardIcon icon_type={ICON_TYPE.MUSIC}/>{this.state.player_data.song_info.name || "--"}</div>
-                        <div className="info song-artist"><CardIcon icon_type={ICON_TYPE.ARTIST}/>{this.state.player_data.song_info.artist || "--"}</div>
-                        <div className="info song-charter"><CardIcon icon_type={ICON_TYPE.CHARTER}/>{this.state.player_data.song_info.charter || "--"}</div>
-                        <div className="info song-pack"><CardIcon icon_type={ICON_TYPE.FOLDER}/>{this.state.player_data.song_info.pack || "--"}</div>
-                        <div className="info song-difficulty"><CardIcon icon_type={ICON_TYPE.LEVEL}/>{this.state.player_data.song_info.difficulty_name || "--"} {this.state.player_data.song_info.difficulty || "--"} ({this.state.player_data.song_info.steps || "--"})</div>
-                        {this.state.player_data.ingame && <div className="song-score">{this.state.player_data.score}%</div>}
+                        <div className="info song-name"><CardIcon icon_type={ICON_TYPE.MUSIC}/>{this.state.data.song_info.name || "--"}</div>
+                        <div className="info song-artist"><CardIcon icon_type={ICON_TYPE.ARTIST}/>{this.state.data.song_info.artist || "--"}</div>
+                        <div className="info song-charter"><CardIcon icon_type={ICON_TYPE.CHARTER}/>{this.state.data.song_info.charter || "--"}</div>
+                        <div className="info song-pack"><CardIcon icon_type={ICON_TYPE.FOLDER}/>{this.state.data.song_info.pack || "--"}</div>
+                        <div className="info song-difficulty"><CardIcon icon_type={ICON_TYPE.LEVEL}/>{this.state.data.song_info.difficulty_name || "--"} {this.state.player_data.song_info.difficulty || "--"} ({this.state.player_data.song_info.steps || "--"})</div>
+                        {this.state.data.ingame && <div className="song-score">{this.state.data.score}%</div>}
                     </div>
-                    {this.state.player_data.ingame && <div className="song-progress-bar">
-                        <div className="song-progress-bar-fill" style={{width: `${this.state.player_data.progress * 100}%`}}></div>
+                    {this.state.data.ingame && <div className="song-progress-bar">
+                        <div className="song-progress-bar-fill" style={{width: `${this.state.data.progress * 100}%`}}></div>
                     </div>}
-                    {this.state.player_data.ingame && <div className="step-scores-container">
-                        {this.state.player_data.ingame && this.renderJudgements()}
+                    {this.state.data.ingame && <div className="step-scores-container">
+                        {this.state.data.ingame && this.renderJudgements()}
                     </div>}
                 </div>
             </div>

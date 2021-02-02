@@ -5,21 +5,7 @@ module.exports = class Player
         this.client = client;
         this.background_color = this.getRandomBackgroundColor();
         this.name = `Player ${Math.ceil(Math.random() * 1000)}`;
-        this.song_info = {};
-        this.steps_info = 
-        {
-            TapNoteScore_W1: 0,
-            TapNoteScore_W2: 0,
-            TapNoteScore_W3: 0,
-            TapNoteScore_W4: 0,
-            TapNoteScore_W5: 0,
-            TapNoteScore_Miss: 0,
-            HoldNoteScore_Held: 0,
-            HoldNoteScore_LetGo: 0
-        },
-        this.progress = 0;
-        this.score = 0;
-        this.ingame = false;
+        this.data = {"PlayerNumber_P1": {}}
         this.spectate = false; // If this player joined through the website and is spectating
     }
 
@@ -47,11 +33,7 @@ module.exports = class Player
             id: this.client.id,
             name: this.name,
             background_color: this.background_color,
-            song_info: this.song_info,
-            steps_info: this.steps_info,
-            progress: this.progress,
-            score: this.score,
-            ingame: this.ingame,
+            data: this.data,
             spectate: this.spectate
         }
 
@@ -64,9 +46,8 @@ module.exports = class Player
     getIngameSyncData()
     {
         return {
-            steps_info: this.steps_info,
-            progress: this.progress,
-            score: this.score
+            id: this.client.id,
+            data: this.data
         }
     }
 

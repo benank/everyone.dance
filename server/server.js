@@ -89,6 +89,22 @@ class Server
                 })
             }
         })
+
+        client.on('sync data', (data) => 
+        {
+            this.client_sync_data(client, data)
+        })
+    }
+
+    // Called when a client syncs their data from stepmania to server
+    client_sync_data(client, data)
+    {
+        client.player.data = data;
+        
+        if (client.player.game)
+        {
+            client.player.game.sync_player_data(client.player);
+        }
     }
 
     client_disconnected(client)
