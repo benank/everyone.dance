@@ -1,21 +1,22 @@
 import React from 'react';
 import "../styles/player_card.scss"
+import CountUp from 'react-countup';
 
 import "../styles/navitem.scss"
 
 import { CardIcon, ICON_TYPE } from "./CardIcon"
 
 const notescore_names = 
-{
-    "TapNoteScore_W1": "Marvelous",
-    "TapNoteScore_W2": "Perfect",
-    "TapNoteScore_W3": "Great",
-    "TapNoteScore_W4": "Good",
-    "TapNoteScore_W5": "Good",
-    "TapNoteScore_Miss": "Miss",
-    "HoldNoteScore_Held": "OK",
-    "HoldNoteScore_LetGo": "NG"
-}
+[
+    "Marvelous",
+    "Perfect",
+    "Great",
+    "Good",
+    "Good",
+    "Miss",
+    "OK",
+    "NG"
+]
 
 export default class PlayerCard extends React.Component {
 
@@ -25,7 +26,7 @@ export default class PlayerCard extends React.Component {
         this.state = 
         {
             player_data: props.player_data,
-            data: props.data,
+            old_player_data: props.player_data,
             p2: props.p2 == true,
             id: props.id,
             /*
@@ -68,10 +69,15 @@ export default class PlayerCard extends React.Component {
         }
     }
 
-    // componentDidUpdate(props)
-    // {
-    //     this.setState({player_data: props.player_data});
-    // }
+    componentDidUpdate()
+    {
+        // Apparently react doesn't like updating complex objects without either changing key or doing this
+        // I opted for doing this
+        if (!Object.is(this.props.player_data, this.state.player_data))
+        {
+            this.setState({player_data: this.props.player_data, old_player_data: this.state.player_data})
+        }
+    }
 
     getRandomBackgroundColor()
     {
@@ -106,37 +112,30 @@ export default class PlayerCard extends React.Component {
         
     }
 
-    getJudgementMap()
+    get_player_data()
     {
-        const judgement_map = {}
+        return this.state.player_data.data[this.state.p2 ? "PlayerNumber_P2" : "PlayerNumber_P1"]
+    }
 
-        Object.keys(this.state.data.steps_info).forEach((judgement_name) => 
-        {
-            const nice_judgement_name = notescore_names[judgement_name];
-            if (typeof nice_judgement_name != 'undefined')
-            {
-                if (typeof judgement_map[nice_judgement_name] == 'undefined')
-                {
-                    judgement_map[nice_judgement_name] = 0
-                }
-
-                judgement_map[nice_judgement_name] += this.state.data.steps_info[judgement_name]
-            }
-        })
-
-        return judgement_map
+    get_old_player_data()
+    {
+        return this.state.old_player_data.data[this.state.p2 ? "PlayerNumber_P2" : "PlayerNumber_P1"]
     }
 
     renderJudgements()
     {
-        const judgement_map = this.getJudgementMap();
+        const judgement_map = this.get_player_data().steps_info;
         
-        return Object.keys(judgement_map).map((key) => 
+        return notescore_names.map((key) => 
         {
             return (
                 <div className="step-score-container" key={key}>
                     <div className="step-score-title">{key}</div>
-                    <div className="step-score">{judgement_map[key] || "--"}</div>
+                    <div className="step-score"><CountUp 
+                        start={parseInt(this.get_old_player_data().steps_info[key])} 
+                        duration={1.2} 
+                        useEasing={false} 
+                        end={parseInt(this.get_player_data().steps_info[key])}/></div>
                 </div>
             )
         })
@@ -157,18 +156,18 @@ export default class PlayerCard extends React.Component {
                 </div>
                 <div className="content">
                     <div className="song-info">
-                        <div className="info song-name"><CardIcon icon_type={ICON_TYPE.MUSIC}/>{this.state.data.song_info.name || "--"}</div>
-                        <div className="info song-artist"><CardIcon icon_type={ICON_TYPE.ARTIST}/>{this.state.data.song_info.artist || "--"}</div>
-                        <div className="info song-charter"><CardIcon icon_type={ICON_TYPE.CHARTER}/>{this.state.data.song_info.charter || "--"}</div>
-                        <div className="info song-pack"><CardIcon icon_type={ICON_TYPE.FOLDER}/>{this.state.data.song_info.pack || "--"}</div>
-                        <div className="info song-difficulty"><CardIcon icon_type={ICON_TYPE.LEVEL}/>{this.state.data.song_info.difficulty_name || "--"} {this.state.player_data.song_info.difficulty || "--"} ({this.state.player_data.song_info.steps || "--"})</div>
-                        {this.state.data.ingame && <div className="song-score">{this.state.data.score}%</div>}
+                        <div className="info song-name"><CardIcon icon_type={ICON_TYPE.MUSIC}/>{this.get_player_data().song_info.name || "--"}</div>
+                        <div className="info song-artist"><CardIcon icon_type={ICON_TYPE.ARTIST}/>{this.get_player_data().song_info.artist || "--"}</div>
+                        <div className="info song-charter"><CardIcon icon_type={ICON_TYPE.CHARTER}/>{this.get_player_data().song_info.charter || "--"}</div>
+                        <div className="info song-pack"><CardIcon icon_type={ICON_TYPE.FOLDER}/>{this.get_player_data().song_info.pack || "--"}</div>
+                        <div className="info song-difficulty"><CardIcon icon_type={ICON_TYPE.LEVEL}/>{this.get_player_data().song_info.difficulty_name || "--"} {this.get_player_data().song_info.difficulty || "--"} ({this.get_player_data().song_info.steps || "--"})</div>
+                        {this.get_player_data().ingame == "true" && <div className="song-score"><CountUp start={parseInt(this.get_old_player_data().score) / 10000} duration={1.5} useEasing={false} end={this.get_player_data().score / 10000} decimals={2}/>%</div>}
                     </div>
-                    {this.state.data.ingame && <div className="song-progress-bar">
-                        <div className="song-progress-bar-fill" style={{width: `${this.state.data.progress * 100}%`}}></div>
+                    {this.get_player_data().ingame == "true" && <div className="song-progress-bar">
+                        <div className="song-progress-bar-fill" style={{width: `${this.get_player_data().progress * 100}%`}}></div>
                     </div>}
-                    {this.state.data.ingame && <div className="step-scores-container">
-                        {this.state.data.ingame && this.renderJudgements()}
+                    {this.get_player_data().ingame == "true" && <div className="step-scores-container">
+                        {this.get_player_data().ingame && this.renderJudgements()}
                     </div>}
                 </div>
             </div>

@@ -204,7 +204,7 @@ local function OnSongBeat(s)
 
     time = GetTimeSinceStart() - start_time
 
-    if time - last_check_time >= 1 then
+    if time - last_check_time >= 0.5 then
         -- One second elapsed, call the function
         OnSecondTick(s)
         last_check_time = time

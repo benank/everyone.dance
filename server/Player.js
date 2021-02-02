@@ -5,7 +5,7 @@ module.exports = class Player
         this.client = client;
         this.background_color = this.getRandomBackgroundColor();
         this.name = `Player ${Math.ceil(Math.random() * 1000)}`;
-        this.data = {"PlayerNumber_P1": {}}
+        this.data = {"PlayerNumber_P1": {song_info: {}, steps_info: {}}}
         this.spectate = false; // If this player joined through the website and is spectating
     }
 

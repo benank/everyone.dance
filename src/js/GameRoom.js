@@ -12,7 +12,7 @@ import info_icon from "../icons/info.svg"
 // Raw SM import data from txt file
 let sm_data = ""
 let sm_check_interval;
-const SM_CHECK_INTERVAL_TIME = 1000; // Check every second for updates
+const SM_CHECK_INTERVAL_TIME = 250;
 const SM_FILE_PATH = "/StepMania 5/Save/everyone.dance.txt"
 
 export default class GameRoom extends React.Component {
@@ -181,12 +181,15 @@ export default class GameRoom extends React.Component {
                                 const player = this.state.players[key];
                                 if (player.spectate) {return;}
 
-                                return player["PlayerNumber_P2"] != undefined ? 
-                                        <React.Fragment>
-                                            <PlayerCard key={key} player_data={player} data={player["PlayerNumber_P1"]}/>
-                                            <PlayerCard key={key} player_data={player} p2={true} data={player["PlayerNumber_P2"]}/>
-                                        </React.Fragment> :
-                                        <PlayerCard key={key} player_data={player} data={player["PlayerNumber_P1"]}/>
+                                return <PlayerCard key={key} player_data={player} p2={false} update={true}/>
+                            })}
+                            {Object.keys(this.state.players).map((key) => 
+                            {
+                                const player = this.state.players[key];
+                                if (player.spectate) {return;}
+
+                                return player.data["PlayerNumber_P2"] != undefined &&
+                                        <PlayerCard key={key + "2"} player_data={player} p2={true}/>
                             })}
                         </div>
                     </div>

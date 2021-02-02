@@ -73,8 +73,8 @@ div.player-card-container div.song-info div.song-score
 div.player-card-container div.song-progress-bar
 {
     position: relative;
-    margin-top: 6px;
-    margin-bottom: 6px;
+    margin-top: 10px;
+    margin-bottom: 10px;
     width: 100%;
     border-radius: 20px;
     height: 8px;
@@ -86,7 +86,7 @@ div.player-card-container div.song-progress-bar div.song-progress-bar-fill
     height: 100%;
     border-radius: 20px;
     background-color: white;
-    transition: 0.5s ease-in-out width;
+    transition: 1.5s linear width;
 }
 
 div.player-card-container div.step-scores-container
