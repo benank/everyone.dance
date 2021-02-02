@@ -64,7 +64,7 @@ export default class MainMenu extends React.Component {
                                 placeholder="Game Code" 
                                 value={this.state.game_code_input_value}
                                 onChange={(event) => this.input_code_field_changed(event)}></input>
-                            <img src={forward_arrow_icon} className="submit-gamecode-button" onClick={() => this.click_submit_gamecode()}></img>
+                            {this.state.game_code_input_value.length == 4 && <img src={forward_arrow_icon} className="submit-gamecode-button" onClick={() => this.click_submit_gamecode()}></img>}
                         </div>}
                         {typeof electron != 'undefined' && <div className="button create" onClick={() => this.click_create_game_room()}>Create a Game</div>}
                         {typeof electron != 'undefined' ? 

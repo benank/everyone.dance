@@ -159,15 +159,15 @@ export default class PlayerCard extends React.Component {
                         <div className="info song-artist"><CardIcon icon_type={ICON_TYPE.ARTIST}/>{this.state.player_data.song_info.artist || "--"}</div>
                         <div className="info song-charter"><CardIcon icon_type={ICON_TYPE.CHARTER}/>{this.state.player_data.song_info.charter || "--"}</div>
                         <div className="info song-pack"><CardIcon icon_type={ICON_TYPE.FOLDER}/>{this.state.player_data.song_info.pack || "--"}</div>
-                        <div className="info song-difficulty"><CardIcon icon_type={ICON_TYPE.LEVEL}/>Level {this.state.player_data.song_info.difficulty || "--"} ({this.state.player_data.song_info.steps || "--"})</div>
+                        <div className="info song-difficulty"><CardIcon icon_type={ICON_TYPE.LEVEL}/>{this.state.player_data.song_info.difficulty_name || "--"} {this.state.player_data.song_info.difficulty || "--"} ({this.state.player_data.song_info.steps || "--"})</div>
                         {this.state.player_data.ingame && <div className="song-score">{this.state.player_data.score}%</div>}
                     </div>
-                    <div className="song-progress-bar">
-                        {this.state.player_data.ingame && <div className="song-progress-bar-fill" style={{width: `${this.state.player_data.progress * 100}%`}}></div>}
-                    </div>
-                    <div className="step-scores-container">
-                        {this.renderJudgements()}
-                    </div>
+                    {this.state.player_data.ingame && <div className="song-progress-bar">
+                        <div className="song-progress-bar-fill" style={{width: `${this.state.player_data.progress * 100}%`}}></div>
+                    </div>}
+                    {this.state.player_data.ingame && <div className="step-scores-container">
+                        {this.state.player_data.ingame && this.renderJudgements()}
+                    </div>}
                 </div>
             </div>
         )

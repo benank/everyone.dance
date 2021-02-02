@@ -29,13 +29,14 @@ img.submit-gamecode-button
     height: 28px;
     padding: 6px;
     transform: translate(100%, 0);
-    transition: 0.1s ease-in-out transform;
     -webkit-app-region: no-drag;
+    animation: 0.5s ease-in-out gamecode-submit-anim;
 }
 
-img.submit-gamecode-button:hover
+@keyframes gamecode-submit-anim
 {
-    transform: translate(100%, 0) scale(1.05);
+    0% {opacity: 0; transform: translate(50%, 0)}
+    100% {opacity: 1; transform: translate(100%, 0)}
 }
 
 div.title-container

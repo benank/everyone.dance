@@ -1,0 +1,1 @@
+export const ENDPOINT = "https://everyone.dance:2053";

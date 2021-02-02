@@ -11,9 +11,9 @@ import '../styles/font.scss'
 
 import MainMenu from './MainMenu'
 import GameRoom from './GameRoom'
-import InstallMenu from './InstallMenu';
+import InstallMenu from './InstallMenu'
 
-const ENDPOINT = "https://everyone.dance:2053"
+import { ENDPOINT } from "./constants/endpoint"
 
 export default class App extends React.Component {
 
