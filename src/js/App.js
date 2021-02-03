@@ -55,13 +55,17 @@ export default class App extends React.Component {
         {
             this.setState({app_state: APP_STATE.GAME_ROOM, game_room_data: data})
         })
-        
-        electron.on("update ready", (args) => 
-        {
-            this.setState({update_ready: true, current_version: args.current_version, latest_version: args.latest_version})
-        })
 
-        electron.send("ready")
+        if (typeof electron != 'undefined')
+        {
+            electron.on("update ready", (args) => 
+            {
+                this.setState({update_ready: true, current_version: args.current_version, latest_version: args.latest_version})
+            })
+
+            electron.send("ready")
+        }
+        
     }
 
     setAppState(state)
