@@ -22,6 +22,9 @@ These themes have been tested to work with this system and the installation proc
 - Default
 - 5.3 Default
 
+## StepMania 5.3
+StepMania 5.3 is supported! However, when installing, please select the Appearance folder within the StepMania directory instead of the root directory.
+
 ## Scoring
 Please note that the current implementation of this uses dance points as the percentage score on the player cards. This might change in the future or there might be an option to switch to raw score.
 
