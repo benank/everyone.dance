@@ -152,7 +152,10 @@ local function RefreshActiveSongData()
         -- player_data.score = player_stats:GetScore()
         player_data.score = tonumber(dance_points) * 100
         
-        local mw = SCREENMAN:GetTopScreen():GetChild("MusicWheel")
+        local mw = nil --Initialize the object
+        if SCREENMAN:GetTopScreen() then -- Verify that the screen exists first before doing anything.
+            mw = SCREENMAN:GetTopScreen():GetChild("MusicWheel") --Check that the object is valid.
+        end
         player_data.ingame = mw == nil
 
         local failed = player_stats:GetFailed()
