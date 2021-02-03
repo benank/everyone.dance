@@ -83,6 +83,8 @@ export default class MainMenu extends React.Component {
                         {typeof electron != 'undefined' ? 
                             <div className="button install" onClick={() => this.props.setAppState(APP_STATE.INSTALL_VIEW)}>Installation</div> :
                             <div className="button download" onClick={() => this.click_download()}>Download</div>}
+                        {typeof electron == 'undefined' && 
+                            <div className="button github" onClick={() => window.open("https://github.com/benank/everyone.dance", "_blank")}>GitHub</div>}
                     </div>
                 </div>
             </>
