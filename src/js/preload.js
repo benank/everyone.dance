@@ -11,6 +11,7 @@ electron.contextBridge.exposeInMainWorld('electron', {
         electron.ipcRenderer.send(event, ...args);
     },
     fs: electron.remote.require('fs'),
+    dirname: __dirname,
     dialog: electron.remote.dialog,
     clipboard: electron.remote.clipboard,
     getAppDataPath()

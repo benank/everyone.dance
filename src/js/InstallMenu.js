@@ -313,7 +313,9 @@ export default class InstallMenu extends React.Component {
     update_selected_theme()
     {
         const theme = this.state.themes[this.state.selected_theme_name];
+        this.write_lua_file_to_path(theme.path)
 
+        this.get_themes_info();
     }
 
     uninstall_selected_theme()
@@ -324,9 +326,17 @@ export default class InstallMenu extends React.Component {
     // Writes the everyone.dance lua file to the given path (minus the name)
     write_lua_file_to_path(path)
     {
-        const lua_file_path = "../lua/everyone.dance.lua"
+        const lua_file_path = electron.dirname + "/../lua/everyone.dance.lua"
+        const dest_path = path + "/BGAnimations/everyone.dance.lua"
 
+        // Copy lua file over
+        electron.fs.copyFileSync(lua_file_path, dest_path);
 
+        // Now write version to the copied lua file
+        let data = electron.fs.readFileSync(dest_path, 'utf8').toString();
+        data = `${SCRIPT_VERSION_PREFIX}${SCRIPT_VERSION}\n` + data;
+
+        electron.fs.writeFileSync(dest_path, data);
     }
 
     render () {
@@ -361,7 +371,7 @@ export default class InstallMenu extends React.Component {
                                         const theme = this.state.themes[key];
                                         const icon_type = install_icon_types[theme.status]
 
-                                        return <div key={theme.name} className={`theme-entry ${this.state.selected_theme_name == key ? 'active' : ''}`} 
+                                        return <div key={theme.name + icon_type} className={`theme-entry ${this.state.selected_theme_name == key ? 'active' : ''}`} 
                                                 onClick={() => this.select_theme(key)}>
                                             {theme.name}
                                             {theme.status != INSTALL_STATUS.NOT_INSTALLED && <div className="theme-icon-leftalign">
@@ -384,10 +394,12 @@ export default class InstallMenu extends React.Component {
                             <div className="theme-version">
                                 Version: {this.get_selected_version()} ({this.get_latest_version_string()})
                             </div>
-                            {this.get_selected_status() == INSTALL_STATUS.UPDATE_READY && <div className="button update">Update</div>}
-                            {this.get_selected_status() == INSTALL_STATUS.NOT_INSTALLED && <div className="button install">Install</div>}
+                            {this.get_selected_status() == INSTALL_STATUS.UPDATE_READY && 
+                                <div className="button update" onClick={() => this.update_selected_theme()}>Update</div>}
+                            {this.get_selected_status() == INSTALL_STATUS.NOT_INSTALLED && 
+                                <div className="button install" onClick={() => this.install_to_selected_theme()}>Install</div>}
                             {(this.get_selected_status() == INSTALL_STATUS.UPDATE_READY || this.get_selected_status() == INSTALL_STATUS.INSTALLED) &&
-                                <div className="button uninstall">Uninstall</div>}
+                                <div className="button uninstall" onClick={() => this.install_to_selected_theme()}>Uninstall</div>}
                         </div>}
                     </div>
                 </div>
