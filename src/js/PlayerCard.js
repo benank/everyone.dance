@@ -64,7 +64,9 @@ export default class PlayerCard extends React.Component {
             portrait: false, // If the player card is portrait mode in streamer view
             visible: true, // If the player card is visible in streamer view
             dark_theme: false, // If this card has dark background colors and thus requires white text instead of black
-            background_color: props.player_data.background_color
+            background_color: props.player_data.background_color,
+            editing: false,
+            name_input: props.player_data.name
         }
     }
 
@@ -98,7 +100,20 @@ export default class PlayerCard extends React.Component {
 
     pressEditButton()
     {
+        this.setState({editing: true})
+    }
 
+    stop_editing()
+    {
+        this.setState({editing: false});
+        this.props.socket.emit("set name", localStorage.getItem("player_name"))
+    }
+
+    input_code_field_changed(event)
+    {
+        const input = event.target.value.trim();
+        localStorage.setItem("player_name", input);
+        this.setState({name_input: input});
     }
 
     pressRotateButton()
@@ -144,15 +159,24 @@ export default class PlayerCard extends React.Component {
         return (
             <div className="player-card-container" key={this.state.id} style={{backgroundImage: this.state.background_color}}>
                 <div className="top-bar">
-                    <div className="player-name">{this.state.player_data.name}{this.state.p2 && " (2)"}</div>
-                    {/* <div className="nav-items">
-                        <CardIcon icon_type={ICON_TYPE.ROTATE_PORTRAIT} callback={() => this.pressRotateButton()}></CardIcon>
-                        <CardIcon icon_type={this.state.visible ? ICON_TYPE.VISIBLE : ICON_TYPE.HIDDEN} callback={() => this.pressVisibilityButton()}></CardIcon>
+                    {!this.state.editing ? 
+                        <div className="player-name">{this.state.player_data.name}{this.state.p2 && " (2)"}</div> :
+                        <input 
+                        className="player-name name-input" 
+                        type="text" 
+                        maxLength="20" 
+                        placeholder={this.state.player_data.name} 
+                        value={this.state.name_input}
+                        onChange={(event) => this.input_code_field_changed(event)}></input>}
+                    <div className="nav-items">
+                        {/* <CardIcon icon_type={ICON_TYPE.ROTATE_PORTRAIT} callback={() => this.pressRotateButton()}></CardIcon>
+                        <CardIcon icon_type={this.state.visible ? ICON_TYPE.VISIBLE : ICON_TYPE.HIDDEN} callback={() => this.pressVisibilityButton()}></CardIcon> */}
                         {!this.state.player_data.is_me ? 
-                            <CardIcon icon_type={ICON_TYPE.GOTO} callback={() => this.pressGotoButton()}></CardIcon> : 
-                            <CardIcon icon_type={ICON_TYPE.EDIT} callback={() => this.pressEditButton()}></CardIcon>}
-                    </div> */}
+                            /*<CardIcon icon_type={ICON_TYPE.GOTO} callback={() => this.pressGotoButton()}></CardIcon>*/<></> : 
+                            <CardIcon icon_type={ICON_TYPE.EDIT} callback={() => this.pressEditButton()}></CardIcon> }
+                    </div>
                 </div>
+                {this.state.editing && <div className="stop-editing-container" onClick={() => this.stop_editing()}></div>}
                 <div className="content">
                     <div className="song-info">
                         <div className="info song-name"><CardIcon icon_type={ICON_TYPE.MUSIC}/>{this.get_player_data().song_info.name || "--"}</div>

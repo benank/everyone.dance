@@ -181,7 +181,7 @@ export default class GameRoom extends React.Component {
                                 const player = this.state.players[key];
                                 if (player.spectate) {return;}
 
-                                return <PlayerCard key={key} player_data={player} p2={false} update={true}/>
+                                return <PlayerCard {...this.props} key={key} player_data={player} p2={false} update={true}/>
                             })}
                             {Object.keys(this.state.players).map((key) => 
                             {
@@ -189,7 +189,7 @@ export default class GameRoom extends React.Component {
                                 if (player.spectate) {return;}
 
                                 return player.data["PlayerNumber_P2"] != undefined &&
-                                        <PlayerCard key={key + "2"} player_data={player} p2={true}/>
+                                        <PlayerCard {...this.props} key={key + "2"} player_data={player} p2={true}/>
                             })}
                         </div>
                     </div>

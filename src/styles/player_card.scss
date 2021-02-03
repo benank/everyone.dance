@@ -1,5 +1,6 @@
 div.player-card-container
 {
+    position: relative;
     display: inline-block;
     width: fit-content;
     height: fit-content;
@@ -10,6 +11,18 @@ div.player-card-container
     max-width: max(30vw, 700px);
     background-image: linear-gradient(45deg, rgb(255, 151, 92) 0%, rgb(255, 252, 50) 100%); 
     user-select: none;
+    z-index: 0;
+}
+
+div.player-card-container div.stop-editing-container
+{
+    z-index: 1;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    margin-top: -12px;
+    margin-left: -12px;
+    border-radius: 12px;
 }
 
 div.player-card-container div.top-bar div.cardicon-container
@@ -20,13 +33,30 @@ div.player-card-container div.top-bar div.cardicon-container
 div.player-card-container div.top-bar *
 {
     display: inline-block;
+    z-index: 5;
 }
 
-div.player-card-container div.top-bar div.player-name
+div.player-card-container div.top-bar div.player-name,
+div.player-card-container div.top-bar input.player-name
 {
     font-size: 24px;
     font-weight: bold;
     margin-bottom: 10px;
+}
+
+div.player-card-container div.top-bar input.player-name.name-input
+{
+    padding: 4px;
+    padding-left: 10px;
+    z-index: 10;
+    cursor: auto;
+    outline: none;
+    border: none;
+    border-radius: 12px;
+    text-transform: capitalize;
+    animation: none;
+    user-select: all;
+    -webkit-app-region: no-drag;
 }
 
 div.player-card-container div.top-bar div.nav-items
