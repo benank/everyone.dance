@@ -12,7 +12,6 @@ const notescore_names =
     "Perfect",
     "Great",
     "Good",
-    "Good",
     "Miss",
     "OK",
     "NG"
@@ -161,7 +160,7 @@ export default class PlayerCard extends React.Component {
                         <div className="info song-charter"><CardIcon icon_type={ICON_TYPE.CHARTER}/>{this.get_player_data().song_info.charter || "--"}</div>
                         <div className="info song-pack"><CardIcon icon_type={ICON_TYPE.FOLDER}/>{this.get_player_data().song_info.pack || "--"}</div>
                         <div className="info song-difficulty"><CardIcon icon_type={ICON_TYPE.LEVEL}/>{this.get_player_data().song_info.difficulty_name || "--"} {this.get_player_data().song_info.difficulty || "--"} ({this.get_player_data().song_info.steps || "--"})</div>
-                        {this.get_player_data().ingame == "true" && <div className="song-score"><CountUp start={parseInt(this.get_old_player_data().score) / 10000} duration={1.5} useEasing={false} end={this.get_player_data().score / 10000} decimals={2}/>%</div>}
+                        {this.get_player_data().ingame == "true" && <div className="song-score">{parseFloat(this.get_old_player_data().score).toFixed(2)}%</div>}
                     </div>
                     {this.get_player_data().ingame == "true" && <div className="song-progress-bar">
                         <div className="song-progress-bar-fill" style={{width: `${this.get_player_data().progress * 100}%`}}></div>

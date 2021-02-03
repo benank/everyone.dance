@@ -139,7 +139,6 @@ export default class InstallMenu extends React.Component {
 
             const data = this.getThemeData(theme_path);
             data.name = theme_name;
-            console.log(data);
 
             all_theme_data[data.name] = data
         });
@@ -307,20 +306,113 @@ export default class InstallMenu extends React.Component {
 
     install_to_selected_theme()
     {
+        const theme = this.state.themes[this.state.selected_theme_name];
 
+        // Install lua file to theme
+        this.write_lua_file_to_path(theme.path)
+
+        // Now edit the existing lua files to load the new file
+        for (let i = 0; i < theme.install_paths.length; i++)
+        {
+            const default_path = theme.install_paths[i] + "/default.lua";
+            const file = electron.fs.readFileSync(default_path, 'utf8').toString();
+            const lines = file.split("\n");
+
+            const new_file_contents = "";
+            const inserted = false;
+
+            for (let line_index = 0; line_index < lines.length; line_index++)
+            {
+                const line = lines[line_index];
+                console.log(line)
+                new_file_contents += line + "\n";
+
+                if (inserted) {continue;}
+
+                // Add support below for more themes
+
+                // General Support
+                if (line.includes("local t = Def.ActorFrame{}") 
+                || line.includes("local t = Def.ActorFrame {}")
+                || line.includes("local t = LoadFallbackB()"))
+                {
+                    new_file_contents += `t[#t+1] = LoadActor("../everyone.dance.lua")\n`;
+                    inserted = true;
+                }
+
+                // General Support
+                if (line.includes("local af = Def.ActorFrame{}"))
+                {
+                    new_file_contents += `af[#af+1] = LoadActor("../everyone.dance.lua")\n`;
+                    inserted = true;
+                }
+
+                // Simply Love Support
+                if (line.includes(`LoadActor("./MenuTimer.lua"),`))
+                {
+                    new_file_contents += `LoadActor("../everyone.dance.lua"),\n`;
+                    inserted = true;
+                }
+            }
+
+            // Write new contents with the added line to the file
+            electron.fs.writeFileSync(default_path, new_file_contents);
+        }
+
+        // Refresh themes info
+        this.get_themes_info();
     }
 
     update_selected_theme()
     {
+        // Get selected theme and write the lua file to the path, overwriting the old one
         const theme = this.state.themes[this.state.selected_theme_name];
         this.write_lua_file_to_path(theme.path)
 
+        // Refresh themes info
         this.get_themes_info();
     }
 
     uninstall_selected_theme()
     {
+        const theme = this.state.themes[this.state.selected_theme_name];
 
+        // Remove everyone.dance.lua
+        const lua_path = theme.path + "/BGAnimations/everyone.dance.lua"
+        electron.fs.unlinkSync(lua_path)
+
+        // Remove extra lines of code that load our lua file
+        
+        // Now edit the existing lua files to load the new file
+        for (let i = 0; i < theme.install_paths.length; i++)
+        {
+            const default_path = theme.install_paths[i] + "/default.lua";
+            const file = electron.fs.readFileSync(default_path, 'utf8').toString();
+            const lines = file.split("\n");
+
+            const new_file_contents = "";
+            const inserted = false;
+
+            for (let line_index = 0; line_index < lines.length; line_index++)
+            {
+                const line = lines[line_index];
+
+                // Don't write line if it contains the load script
+                if (line.includes(`LoadActor("../everyone.dance.lua")`) )
+                {
+                    continue;
+                }
+
+                new_file_contents += line + "\n";
+            }
+
+            // Write new contents with the added line to the file
+            electron.fs.writeFileSync(default_path, new_file_contents);
+        }
+
+
+        // Refresh themes info
+        this.get_themes_info();
     }
 
     // Writes the everyone.dance lua file to the given path (minus the name)
@@ -399,7 +491,7 @@ export default class InstallMenu extends React.Component {
                             {this.get_selected_status() == INSTALL_STATUS.NOT_INSTALLED && 
                                 <div className="button install" onClick={() => this.install_to_selected_theme()}>Install</div>}
                             {(this.get_selected_status() == INSTALL_STATUS.UPDATE_READY || this.get_selected_status() == INSTALL_STATUS.INSTALLED) &&
-                                <div className="button uninstall" onClick={() => this.install_to_selected_theme()}>Uninstall</div>}
+                                <div className="button uninstall" onClick={() => this.uninstall_selected_theme()}>Uninstall</div>}
                         </div>}
                     </div>
                 </div>

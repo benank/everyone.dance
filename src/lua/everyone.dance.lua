@@ -41,7 +41,7 @@ local function remove(tbl, num_to_remove)
     return new_tbl
 end
 
-local DEBUG_ON = false
+local DEBUG_ON = true
 
 -- Print for debugging, only enabled if DEBUG_ON is true
 local function print(t)
@@ -146,7 +146,11 @@ local function RefreshActiveSongData()
         local player_stats = cur_stats:GetPlayerStageStats(pn);
 
         player_data.fc = FullComboType(player_stats); -- Returns nil if no FC
-        player_data.score = player_stats:GetScore()
+
+        
+        local dance_points = player_stats:GetPercentDancePoints()
+        -- player_data.score = player_stats:GetScore()
+        player_data.score = tonumber(dance_points) * 100
         
         local mw = SCREENMAN:GetTopScreen():GetChild("MusicWheel")
         player_data.ingame = mw == nil

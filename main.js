@@ -68,10 +68,8 @@ ipcMain.on('start update', (_, ...args) => {
     console.log("Starting update...")
 
     const url = latest_release.assets[0].browser_download_url;
-    const { parse } = require('url')
     const https = require('follow-redirects').https
     const fs = require('fs')
-    const { basename } = require('path')
     const dir = path.join(process.env.APPDATA || process.env.HOME, "everyone.dance");
     const zip_path = path.join(dir, latest_release.assets[0].name)
     const unzip_path = path.join(dir, "unzip")
