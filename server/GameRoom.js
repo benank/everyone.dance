@@ -20,7 +20,7 @@ module.exports = class GameRoom
      */
     add_player(player)
     {
-        console.log(`Add player ${player.name} to game room ${this.game_code}`);
+        console.log(`Add player ${player.getName()} to game room ${this.game_code}`);
         this.players[player.client.id] = player;
         player.game = this;
         player.client.join(this.game_code);
@@ -34,7 +34,7 @@ module.exports = class GameRoom
      */
     remove_player(player)
     {
-        console.log(`Remove player ${player.name} from game room ${this.game_code}`);
+        console.log(`Remove player ${player.getName()} from game room ${this.game_code}`);
         delete this.players[player.client.id];
         delete player.game;
         this.server.io.to(this.game_code).emit('remove player', player.client.id);

@@ -60,7 +60,7 @@ class Server
             
             if (client.player.game)
             {
-                this.io.to(client.player.game.game_code).emit("change player name", {id: client.id, name: client.player.name});
+                this.io.to(client.player.game.game_code).emit("change player name", {id: client.id, name: client.player.getName()});
             }
         })
 

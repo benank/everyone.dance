@@ -9,6 +9,10 @@ module.exports = class Player
         this.spectate = false; // If this player joined through the website and is spectating
     }
 
+    getName()
+    {
+        return (typeof this.name != 'undefined' && this.name.length > 0) ? this.name : "???"
+    }
     
     getRandomBackgroundColor()
     {
