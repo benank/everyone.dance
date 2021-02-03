@@ -67,7 +67,7 @@ export default class InstallMenu extends React.Component {
         {
             themes: {}, // All info about each theme
             stepmania_folder: localStorage.getItem(LOCALSTORAGE_STEPMANIA_DIR) || "",
-            selected_theme_name: ""
+            selected_theme_path: ""
         }
 
     }
@@ -112,7 +112,7 @@ export default class InstallMenu extends React.Component {
         const theme_folders = electron.fs.readdirSync(themes_path, { withFileTypes: true })
             .filter((dirent => !exclude_themes[dirent.name] && is_theme_dir(themes_path + "/" + dirent.name)));
         
-        const getThemeNameFromPath = (path) => 
+        const getThemeNameAndVersionFromPath = (path) => 
         {
             try
             {
@@ -121,11 +121,20 @@ export default class InstallMenu extends React.Component {
                 if (!electron.fs.existsSync(theme_info_path)) {return null;}
 
                 const file = electron.fs.readFileSync(theme_info_path, 'utf8').toString();
-                const line = file.split("\n").filter((line) => line.includes("DisplayName="))[0].replace("DisplayName=", "").trim();
-                return line
+                const name = file.split("\n").filter((line) => line.includes("DisplayName="))[0].replace("DisplayName=", "").trim();
+
+                const version_arr = file.split("\n").filter((line) => line.includes("Version="));
+
+                if (version_arr.length > 0)
+                {
+                    return {name: name, version: version_arr[0].replace("Version=", "").trim()}
+                }
+
+                return {name: name, version: "Default"}
             }
             catch (e)
             {
+                console.log(e)
                 return null;
             }
             
@@ -135,14 +144,19 @@ export default class InstallMenu extends React.Component {
         theme_folders.forEach((dirent) => {
             const theme_path = themes_path + "/" + dirent.name;
 
-            const theme_name = getThemeNameFromPath(theme_path);
+            const theme_name_version = getThemeNameAndVersionFromPath(theme_path);
+            
+            if (theme_name_version != null)
+            {
+                console.log(`Getting theme data for ${theme_name_version.name}...`);
 
-            console.log(`Getting theme data for ${theme_name}...`);
+                const data = this.getThemeData(theme_path);
+                data.name = theme_name_version.name;
+                data.theme_version = theme_name_version.version;
 
-            const data = this.getThemeData(theme_path);
-            data.name = theme_name;
+                all_theme_data[theme_path] = data
+            }
 
-            all_theme_data[data.name] = data
         });
         
         this.setState({themes: all_theme_data})
@@ -267,12 +281,12 @@ export default class InstallMenu extends React.Component {
 
     select_theme(theme_name)
     {
-        this.setState({selected_theme_name: theme_name})
+        this.setState({selected_theme_path: theme_name})
     }
 
     get_selected_status()
     {
-        return this.state.themes[this.state.selected_theme_name].status
+        return this.state.themes[this.state.selected_theme_path].status
     }
 
     get_selected_icon_type()
@@ -292,12 +306,12 @@ export default class InstallMenu extends React.Component {
 
     get_selected_version()
     {
-        return this.state.themes[this.state.selected_theme_name].version;
+        return this.state.themes[this.state.selected_theme_path].version;
     }
 
     get_latest_version_string()
     {
-        if (this.state.themes[this.state.selected_theme_name].version != SCRIPT_VERSION)
+        if (this.state.themes[this.state.selected_theme_path].version != SCRIPT_VERSION)
         {
             return `Latest: ${SCRIPT_VERSION}`
         }
@@ -309,7 +323,7 @@ export default class InstallMenu extends React.Component {
 
     install_to_selected_theme()
     {
-        const theme = this.state.themes[this.state.selected_theme_name];
+        const theme = this.state.themes[this.state.selected_theme_path];
 
         // Install lua file to theme
         this.write_lua_file_to_path(theme.path)
@@ -369,7 +383,7 @@ export default class InstallMenu extends React.Component {
     update_selected_theme()
     {
         // Get selected theme and write the lua file to the path, overwriting the old one
-        const theme = this.state.themes[this.state.selected_theme_name];
+        const theme = this.state.themes[this.state.selected_theme_path];
         this.write_lua_file_to_path(theme.path)
 
         // Refresh themes info
@@ -378,7 +392,7 @@ export default class InstallMenu extends React.Component {
 
     uninstall_selected_theme()
     {
-        const theme = this.state.themes[this.state.selected_theme_name];
+        const theme = this.state.themes[this.state.selected_theme_path];
 
         // Remove everyone.dance.lua
         const lua_path = theme.path + "/BGAnimations/everyone.dance.lua"
@@ -466,9 +480,9 @@ export default class InstallMenu extends React.Component {
                                         const theme = this.state.themes[key];
                                         const icon_type = install_icon_types[theme.status]
 
-                                        return <div key={theme.name + icon_type + this.state.stepmania_folder} className={`theme-entry ${this.state.selected_theme_name == key ? 'active' : ''}`} 
+                                        return <div key={theme.path + icon_type + this.state.stepmania_folder} className={`theme-entry ${this.state.selected_theme_path == key ? 'active' : ''}`} 
                                                 onClick={() => this.select_theme(key)}>
-                                            {theme.name}
+                                            {theme.name} ({theme.theme_version})
                                             {theme.status != INSTALL_STATUS.NOT_INSTALLED && <div className="theme-icon-leftalign">
                                                 <CardIcon icon_type={icon_type} color={icon_color[icon_type]} />
                                             </div>}
@@ -477,8 +491,8 @@ export default class InstallMenu extends React.Component {
                                 </div>
                             </div>
                         </div>
-                        {this.state.selected_theme_name.length > 0 && <div className="right-container">
-                            <div className="theme-title">{this.state.selected_theme_name}</div>
+                        {this.state.selected_theme_path.length > 0 && <div className="right-container">
+                            <div className="theme-title">{this.state.themes[this.state.selected_theme_path].name} ({this.state.themes[this.state.selected_theme_path].theme_version})</div>
                             <div className="theme-status">
                                 Status:
                                 <CardIcon key={this.get_selected_icon_type() + this.get_selected_color()}
