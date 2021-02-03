@@ -153,7 +153,8 @@ ipcMain.on('start update', (_, ...args) => {
             const fse = require('fs-extra');
 
             const srcDir = unzip_path;
-            const destDir = isDev ? path.join(__dirname, "out", "everyone.dance-win32-x64") : __dirname;
+            const destDir = isDev ? path.join(__dirname, "out", "everyone.dance-win32-x64") : __dirname + "/../../";
+            // Have to go up 2 directories for the copy directory (resources/app since this is main)
 
             // I need to create a batch file to run separate from the electron process
             // so it can update and overwrite everything. 
