@@ -4,6 +4,7 @@ import "../styles/main_menu.scss"
 
 import forward_arrow_icon from '../icons/arrow_forward-24px.svg'
 import { APP_STATE } from './constants/app_state'
+import { VERSION } from "./constants/version"
 
 
 export default class MainMenu extends React.Component {
@@ -52,6 +53,11 @@ export default class MainMenu extends React.Component {
         electron.send("start update");
     }
 
+    click_download()
+    {
+        window.open(`https://github.com/benank/everyone.dance/releases/download/${VERSION}/everyone.dance-win32-x64.zip`, "_blank");
+    }
+
     render () {
         return (
             <>
@@ -75,8 +81,8 @@ export default class MainMenu extends React.Component {
                         {typeof electron != 'undefined' && <div className="button create" onClick={() => this.click_create_game_room()}>Create a Game</div>}
                         {(typeof electron != 'undefined' && this.props.update_ready) && <div className="button update" onClick={() => this.click_update()}>Update</div>}
                         {typeof electron != 'undefined' ? 
-                            <div className="button install" onClick={() => this.props.setAppState(APP_STATE.INSTALL_VIEW)}>Install</div> :
-                            <div className="button download disabled">Download</div>}
+                            <div className="button install" onClick={() => this.props.setAppState(APP_STATE.INSTALL_VIEW)}>Installation</div> :
+                            <div className="button download" onClick={() => this.click_download()}>Download</div>}
                     </div>
                 </div>
             </>

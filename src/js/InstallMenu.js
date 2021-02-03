@@ -6,12 +6,13 @@ import { APP_STATE } from './constants/app_state'
 
 import back_arrow_icon from "../icons/back_arrow.svg"
 import { CardIcon, ICON_TYPE } from "./CardIcon"
+import { VERSION } from "./constants/version"
 
 
 const LOCALSTORAGE_STEPMANIA_DIR = "stepmania_dir"
 
 // Current Stepmania lua script version.
-const SCRIPT_VERSION = "0.0.1-alpha"
+const SCRIPT_VERSION = VERSION
 const SCRIPT_VERSION_PREFIX = "-- everyone.dance Version: "
 
 // The everyone.dance.lua script is copied to Themes/Theme/BGAnimations
@@ -33,6 +34,30 @@ const INSTALL_STATUS =
     UPDATE_READY: 4
 }
 
+const install_status_strings = 
+{
+    [INSTALL_STATUS.INSTALLED]: "Installed",
+    [INSTALL_STATUS.NOT_INSTALLED]: "Not Installed",
+    [INSTALL_STATUS.INCOMPATIBLE]: "Incompatible",
+    [INSTALL_STATUS.UPDATE_READY]: "Update Ready"
+}
+
+const install_icon_types = 
+{
+    [INSTALL_STATUS.INSTALLED]: ICON_TYPE.CHECK,
+    [INSTALL_STATUS.NOT_INSTALLED]: ICON_TYPE.CHARTER,
+    [INSTALL_STATUS.INCOMPATIBLE]: ICON_TYPE.X,
+    [INSTALL_STATUS.UPDATE_READY]: ICON_TYPE.UPDATE_READY
+}
+
+const icon_color = 
+{
+    [ICON_TYPE.CHECK]: "#00BC13",
+    [ICON_TYPE.UPDATE_READY]: "#EB9514",
+    [ICON_TYPE.CHARTER]: "rgba(0, 0, 0, 0)",
+    [ICON_TYPE.X]: "#E54C4C",
+}
+
 export default class InstallMenu extends React.Component {
 
     constructor (props)
@@ -41,14 +66,15 @@ export default class InstallMenu extends React.Component {
         this.state = 
         {
             themes: {}, // All info about each theme
-            stepmania_folder: localStorage.getItem(LOCALSTORAGE_STEPMANIA_DIR) || ""
+            stepmania_folder: localStorage.getItem(LOCALSTORAGE_STEPMANIA_DIR) || "",
+            selected_theme_name: ""
         }
 
     }
 
     componentDidMount()
     {
-
+        this.get_themes_info();
     }
 
     selectStepmaniaFolder()
@@ -64,6 +90,14 @@ export default class InstallMenu extends React.Component {
         localStorage.setItem(LOCALSTORAGE_STEPMANIA_DIR, stepmania_dir);
         this.setState({stepmania_folder: stepmania_dir});
 
+        this.get_themes_info();
+    }
+
+    get_themes_info()
+    {
+        this.setState({themes: {}})
+        const stepmania_dir = this.state.stepmania_folder;
+
         const is_theme_dir = (path) => 
         {
             return electron.fs.existsSync(path + "/ThemeInfo.ini");
@@ -71,6 +105,8 @@ export default class InstallMenu extends React.Component {
 
         // Now read all themes
         const themes_path = stepmania_dir + "/Themes"
+        if (!electron.fs.existsSync(themes_path)) {return;}
+
         const theme_folders = electron.fs.readdirSync(themes_path, { withFileTypes: true })
             .filter((dirent => !exclude_themes[dirent.name] && is_theme_dir(themes_path + "/" + dirent.name)));
         
@@ -130,7 +166,7 @@ export default class InstallMenu extends React.Component {
         // Valid install paths
         const valid_install_paths = 
         {
-            'ScreenEvaluation': ['decorations', 'common', 'overlay'],
+            // 'ScreenEvaluation': ['decorations', 'common', 'overlay'], // Currently unused because Init/Begin causes the game to hang
             'ScreenGameplay': ['decorations', 'overlay'],
             'ScreenSelectMusic': ['decorations', 'overlay'],
         }
@@ -163,8 +199,6 @@ export default class InstallMenu extends React.Component {
             console.log(`Found install path (${theme_data.install_paths.length}/${Object.keys(valid_install_paths).length}): ${path}`)
         }
 
-        // TODO: in these checks, also check for install patterns to see if this theme is compatible
-
         // Didn't find all the install paths, so this theme is incompatible
         if (theme_data.install_paths.length != Object.keys(valid_install_paths).length)
         {
@@ -192,6 +226,34 @@ export default class InstallMenu extends React.Component {
             theme_data.status = INSTALL_STATUS.NOT_INSTALLED;
         }
 
+        // Now check to see if we find an acceptable pattern to insert at
+        for (let i = 0; i < theme_data.install_paths.length; i++)
+        {
+            const path = theme_data.install_paths[i];
+            const default_file = path + "/default.lua";
+
+            console.log(`Checking if ${default_file} exists...`);
+
+            // Could not find default.lua in the folder
+            if (!electron.fs.existsSync(default_file))
+            {
+                console.log(`File does not exist`)
+                theme_data.status = INSTALL_STATUS.INCOMPATIBLE;
+                return theme_data;
+            }
+
+            const file = electron.fs.readFileSync(default_file, 'utf8').toString();
+            const installable = file.split("\n").filter((line) => line.includes("LoadActor")).length > 0
+
+            if (!installable)
+            {
+                console.log(`Unable to find entry point`)
+                theme_data.status = INSTALL_STATUS.INCOMPATIBLE;
+                return theme_data;
+            }
+
+        }
+
         // They have an old version
         if (theme_data.version != SCRIPT_VERSION && theme_data.version != '--')
         {
@@ -199,6 +261,72 @@ export default class InstallMenu extends React.Component {
         }
 
         return theme_data;
+    }
+
+    select_theme(theme_name)
+    {
+        this.setState({selected_theme_name: theme_name})
+    }
+
+    get_selected_status()
+    {
+        return this.state.themes[this.state.selected_theme_name].status
+    }
+
+    get_selected_icon_type()
+    {
+        return install_icon_types[this.get_selected_status()];
+    }
+
+    get_selected_color()
+    {
+        return icon_color[this.get_selected_icon_type()];
+    }
+
+    get_selected_install_string()
+    {
+        return install_status_strings[this.get_selected_status()];
+    }
+
+    get_selected_version()
+    {
+        return this.state.themes[this.state.selected_theme_name].version;
+    }
+
+    get_latest_version_string()
+    {
+        if (this.state.themes[this.state.selected_theme_name].version != SCRIPT_VERSION)
+        {
+            return `Latest: ${SCRIPT_VERSION}`
+        }
+        else
+        {
+            return "Latest"
+        }
+    }
+
+    install_to_selected_theme()
+    {
+
+    }
+
+    update_selected_theme()
+    {
+        const theme = this.state.themes[this.state.selected_theme_name];
+
+    }
+
+    uninstall_selected_theme()
+    {
+
+    }
+
+    // Writes the everyone.dance lua file to the given path (minus the name)
+    write_lua_file_to_path(path)
+    {
+        const lua_file_path = "../lua/everyone.dance.lua"
+
+
     }
 
     render () {
@@ -215,14 +343,14 @@ export default class InstallMenu extends React.Component {
                     </div>
                     <div className="container">
                         <div className="left-container">
-                            <div className="select-container">
-                                <div className="select-title" onClick={() => this.selectStepmaniaFolder()}>
+                            <div className="left-half-container dir" onClick={() => this.selectStepmaniaFolder()}>
+                                <div className="select-title">
                                     <CardIcon icon_type={ICON_TYPE.OPEN_FOLDER} />
                                     Select StepMania Folder
                                 </div>
-                                <div className="select-output"></div>
+                                <div className="select-output">{this.state.stepmania_folder}</div>
                             </div>
-                            <div className="theme-select-container">
+                            <div className="left-half-container">
                                 <div className="select-title">
                                     <CardIcon icon_type={ICON_TYPE.THEME} />
                                     Select Theme to Use
@@ -231,23 +359,36 @@ export default class InstallMenu extends React.Component {
                                     {Object.keys(this.state.themes).map((key) => 
                                     {
                                         const theme = this.state.themes[key];
-                                        const icon_type = theme.status == INSTALL_STATUS.INSTALLED ? 
-                                            ICON_TYPE.CHECK : 
-                                            theme.status == INSTALL_STATUS.UPDATE_READY ? 
-                                            ICON_TYPE.UPDATE_READY : 
-                                            ICON_TYPE.X;
+                                        const icon_type = install_icon_types[theme.status]
 
-                                        return <div key={theme.name} className="theme-entry">
+                                        return <div key={theme.name} className={`theme-entry ${this.state.selected_theme_name == key ? 'active' : ''}`} 
+                                                onClick={() => this.select_theme(key)}>
                                             {theme.name}
                                             {theme.status != INSTALL_STATUS.NOT_INSTALLED && <div className="theme-icon-leftalign">
-                                                <CardIcon icon_type={icon_type} />
+                                                <CardIcon icon_type={icon_type} color={icon_color[icon_type]} />
                                             </div>}
                                         </div>
                                     })}
                                 </div>
                             </div>
                         </div>
-                        <div className="right-container"></div>
+                        {this.state.selected_theme_name.length > 0 && <div className="right-container">
+                            <div className="theme-title">{this.state.selected_theme_name}</div>
+                            <div className="theme-status">
+                                Status:
+                                <CardIcon key={this.get_selected_icon_type() + this.get_selected_color()}
+                                    icon_type={this.get_selected_icon_type()} 
+                                    color={this.get_selected_color()} />
+                                ({this.get_selected_install_string()})
+                            </div>
+                            <div className="theme-version">
+                                Version: {this.get_selected_version()} ({this.get_latest_version_string()})
+                            </div>
+                            {this.get_selected_status() == INSTALL_STATUS.UPDATE_READY && <div className="button update">Update</div>}
+                            {this.get_selected_status() == INSTALL_STATUS.NOT_INSTALLED && <div className="button install">Install</div>}
+                            {(this.get_selected_status() == INSTALL_STATUS.UPDATE_READY || this.get_selected_status() == INSTALL_STATUS.INSTALLED) &&
+                                <div className="button uninstall">Uninstall</div>}
+                        </div>}
                     </div>
                 </div>
             </div>

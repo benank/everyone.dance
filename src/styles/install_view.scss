@@ -14,6 +14,7 @@ div.installview-main-container
     animation: 0.5s ease-in-out container-appear;
     -webkit-app-region: no-drag;
     padding: 16px;
+    user-select: none;
 }
 
 // Nice appear animation :)
@@ -28,19 +29,22 @@ div.installview-main-container div.content
 {
     position: relative;
     width: 100%;
-    height: calc(100% - 60px);
+    height: calc(100% - 30px);
+}
+
+div.installview-main-container div.container
+{
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-content: center;
 }
 
 div.installview-main-container div.navbar-left-container
 {
     width: fit-content;
     display: inline-block;
-}
-
-div.installview-main-container div.navbar-right-container
-{
-    width: fit-content;
-    float: right;
 }
 
 div.installview-main-container div.title-container
@@ -55,28 +59,145 @@ div.installview-main-container div.title-container
     user-select: none;
 }
 
-div.installview-main-container span.code-bold
+div.installview-main-container div.left-container
 {
-    font-weight: bold;
+    display: inline-block;
+    width: 45%;
 }
 
-div.installview-main-container div.cards-container-outer
+div.installview-main-container div.left-half-container
 {
-    position: relative;
-    margin-top: 24px;
-    height: 100%;
+    padding-left: 4px;
+    padding-right: 10px;
+}
+
+div.installview-main-container div.left-half-container.dir
+{
+    cursor: pointer;
+}
+
+div.installview-main-container div.left-half-container div.select-title
+{
+    display: flex;
+    flex: 1 0;
+    align-items: center;
+    font-size: 26px;
+}
+
+div.installview-main-container div.left-half-container div.select-title div.cardicon-container
+{
+    width: 28px;
+    height: 28px;
+    margin-right: 6px;
+}
+
+div.installview-main-container div.left-half-container div.select-output
+{
+    flex: 1;
+    width: calc(100% + 16px);
+    margin-top: 10px;
+    margin-bottom: 40px;
+    padding: 8px;
+    border-radius: 8px;
+    font-style: italic;
+    color: rgb(85, 85, 85);
+    background-color: rgba($color: #000000, $alpha: 0.1);
+}
+
+div.installview-main-container div.left-half-container div.themes-container
+{
+    margin-top: 10px;
+    width: 100%;
+    background-color: rgba($color: #000000, $alpha: 0.1);
+    border-radius: 8px;
+    padding: 16px;
+    height: 270px;
     overflow-y: auto;
 }
 
-div.installview-main-container div.cards-container
+div.installview-main-container div.left-half-container div.themes-container div.theme-entry
 {
-    position: relative;
-    display: flex;
-    column-gap: 20px;
-    row-gap: 20px;
-    flex-flow: row wrap;
+    background-color: rgba($color: white, $alpha: 0.6);
+    border-radius: 8px;
+    font-size: 18px;
+    padding: 10px;
+    padding-left: 8px;
+    margin-bottom: 10px;
+    cursor: pointer;
 }
 
+div.installview-main-container div.left-half-container div.themes-container div.theme-entry.active
+{
+    background-color: rgba($color: black, $alpha: 0.1);
+}
+
+div.installview-main-container div.left-half-container div.themes-container div.theme-icon-leftalign
+{
+    display: inline-block;
+    float: right;
+}
+
+div.installview-main-container div.left-half-container div.themes-container div.theme-icon-leftalign div.cardicon-container
+{
+    margin-right: 4px;
+    width: 18px;
+    height: 18px;
+}
+
+div.installview-main-container div.right-container
+{
+    display: inline-block;
+    width: 40%;
+    height: 400px;
+    margin-left: 80px;
+}
+
+div.installview-main-container div.right-container div.theme-title
+{
+    font-size: 26px;
+}
+
+div.installview-main-container div.right-container div.theme-status,
+div.installview-main-container div.right-container div.theme-version
+{
+    margin-top: 20px;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+}
+
+div.installview-main-container div.right-container div.theme-version
+{
+    margin-top: 2px;
+}
+
+div.installview-main-container div.right-container div.theme-status div.cardicon-container
+{
+    margin: 6px;
+} 
+
+div.installview-main-container div.button
+{
+    width: 100%;
+    margin: 0;
+    margin-top: 20px;
+    color: white;
+}
+
+div.installview-main-container div.button.install
+{
+    background-color: #4A7ECC;
+}
+
+div.installview-main-container div.button.uninstall
+{
+    background-color: #DB4468;
+}
+
+div.installview-main-container div.button.update
+{
+    background-color: #5D51D2;
+}
 
 ::-webkit-scrollbar {
     width: 14px;
