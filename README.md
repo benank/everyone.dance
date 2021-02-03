@@ -1,7 +1,7 @@
 # everyone.dance
 A synchronized near-realtime score sharing system for Stepmania. It's meant to be an easily accessible and usable platform for playing with others in Stepmania without hassle.
 
-Please note: this is a very highly WIP system right now. It will be available in the future at [everyone.dance](https://everyone.dance/). This readme and repo will be updated as progress continues.
+This is available at at [everyone.dance](https://everyone.dance/). Please keep reading for usage instructions. You can download from that website or from the releases page here.
 
 ## How to Install / Use
 
