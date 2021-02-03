@@ -145,13 +145,13 @@ export default class PlayerCard extends React.Component {
             <div className="player-card-container" key={this.state.id} style={{backgroundImage: this.state.background_color}}>
                 <div className="top-bar">
                     <div className="player-name">{this.state.player_data.name}{this.state.p2 && " (2)"}</div>
-                    <div className="nav-items">
+                    {/* <div className="nav-items">
                         <CardIcon icon_type={ICON_TYPE.ROTATE_PORTRAIT} callback={() => this.pressRotateButton()}></CardIcon>
                         <CardIcon icon_type={this.state.visible ? ICON_TYPE.VISIBLE : ICON_TYPE.HIDDEN} callback={() => this.pressVisibilityButton()}></CardIcon>
                         {!this.state.player_data.is_me ? 
                             <CardIcon icon_type={ICON_TYPE.GOTO} callback={() => this.pressGotoButton()}></CardIcon> : 
                             <CardIcon icon_type={ICON_TYPE.EDIT} callback={() => this.pressEditButton()}></CardIcon>}
-                    </div>
+                    </div> */}
                 </div>
                 <div className="content">
                     <div className="song-info">

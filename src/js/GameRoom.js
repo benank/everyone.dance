@@ -164,10 +164,10 @@ export default class GameRoom extends React.Component {
                         <div className="navbar-left-container">
                             <img src={back_arrow_icon} className="navitem leave" onClick={() => this.leave_game_room()}></img>
                         </div>
-                        <div className="navbar-right-container">
+                        {/* <div className="navbar-right-container">
                             <img src={info_icon} className="navitem info"></img>
                             <img src={popout_icon} className="navitem popout"></img>
-                        </div>
+                        </div> */}
                     </div>
                     <div className="title-container" onClick={() => typeof electron != 'undefined' ?
                         electron.clipboard.writeText(this.state.game_code) : 
