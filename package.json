@@ -1,11 +1,12 @@
 {
     "name": "everyone.dance",
-    "version": "1.0.0",
+    "version": "0.0.1",
     "description": "everyone.dance",
     "main": "main.js",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/benank/everyone.dance.git"
+        "url": "git+https://github.com/benank/everyone.dance.git",
+        "author_reponame": "benank/everyone.dance"
     },
     "keywords": [],
     "author": "benank",
@@ -29,11 +30,15 @@
         "dotenv": "^8.2.0",
         "electron-squirrel-startup": "^1.0.0",
         "express": "^4.17.1",
+        "follow-redirects": "^1.13.2",
+        "fs-extra": "^9.1.0",
+        "gh-latest-release": "^1.0.0",
         "react": "^17.0.1",
         "react-countup": "^4.3.3",
         "react-dom": "^17.0.1",
         "socket.io": "^2.3.0",
-        "socket.io-client": "^2.3.0"
+        "socket.io-client": "^2.3.0",
+        "unzipper": "^0.10.11"
     },
     "devDependencies": {
         "@babel/core": "^7.12.10",
@@ -59,7 +64,9 @@
     },
     "config": {
         "forge": {
-            "packagerConfig": {},
+            "packagerConfig": {
+                "icon": "src/favicon.ico"
+            },
             "makers": [
                 {
                     "name": "@electron-forge/maker-squirrel",

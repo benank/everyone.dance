@@ -46,6 +46,12 @@ export default class MainMenu extends React.Component {
         this.props.socket.emit("create game room");
     }
 
+    click_update()
+    {
+        this.props.setAppState(APP_STATE.UPDATE_VIEW);
+        electron.send("start update");
+    }
+
     render () {
         return (
             <>
@@ -67,6 +73,7 @@ export default class MainMenu extends React.Component {
                             {this.state.game_code_input_value.length == 4 && <img src={forward_arrow_icon} className="submit-gamecode-button" onClick={() => this.click_submit_gamecode()}></img>}
                         </div>}
                         {typeof electron != 'undefined' && <div className="button create" onClick={() => this.click_create_game_room()}>Create a Game</div>}
+                        {(typeof electron != 'undefined' && this.props.update_ready) && <div className="button update" onClick={() => this.click_update()}>Update</div>}
                         {typeof electron != 'undefined' ? 
                             <div className="button install" onClick={() => this.props.setAppState(APP_STATE.INSTALL_VIEW)}>Install</div> :
                             <div className="button download disabled">Download</div>}

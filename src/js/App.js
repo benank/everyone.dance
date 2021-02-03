@@ -12,6 +12,7 @@ import '../styles/font.scss'
 import MainMenu from './MainMenu'
 import GameRoom from './GameRoom'
 import InstallMenu from './InstallMenu'
+import UpdateMenu from './UpdateMenu'
 
 import { ENDPOINT } from "./constants/endpoint"
 
@@ -24,7 +25,10 @@ export default class App extends React.Component {
         {
             connected: false,
             app_state: APP_STATE.MAIN_MENU,
-            game_room_data: {}
+            game_room_data: {},
+            update_ready: false,
+            current_version: "",
+            latest_version: ""
         }
     }
 
@@ -45,7 +49,6 @@ export default class App extends React.Component {
         {
             this.setState({connected: false, app_state: APP_STATE.MAIN_MENU});
         })
-
         
         // Called when the server puts the player in a game room
         this.socket.on("enter game room", (data) => 
@@ -53,6 +56,12 @@ export default class App extends React.Component {
             this.setState({app_state: APP_STATE.GAME_ROOM, game_room_data: data})
         })
         
+        electron.on("update ready", (args) => 
+        {
+            this.setState({update_ready: true, current_version: args.current_version, latest_version: args.latest_version})
+        })
+
+        electron.send("ready")
     }
 
     setAppState(state)
@@ -66,9 +75,14 @@ export default class App extends React.Component {
                 <div className="background"></div>
                 {/* {typeof electron != 'undefined' && <img src={close_icon} className="close-button" onClick={() => electron.closeWindow()}></img>} */}
                 {!this.state.connected && <img src={loading_icon} className='connecting-icon'></img>}
-                {this.state.app_state == APP_STATE.MAIN_MENU && <MainMenu socket={this.socket} setAppState={(state) => this.setAppState(state)}></MainMenu>}
+                {this.state.app_state == APP_STATE.MAIN_MENU && <MainMenu update_ready={this.state.update_ready} socket={this.socket} setAppState={(state) => this.setAppState(state)}></MainMenu>}
                 {this.state.app_state == APP_STATE.GAME_ROOM && <GameRoom game_room_data={this.state.game_room_data} socket={this.socket} setAppState={(state) => this.setAppState(state)}></GameRoom>}
                 {this.state.app_state == APP_STATE.INSTALL_VIEW && <InstallMenu setAppState={(state) => this.setAppState(state)}></InstallMenu>}
+                {this.state.app_state == APP_STATE.UPDATE_VIEW && <UpdateMenu 
+                    update_ready={this.state.update_ready} 
+                    current_version={this.state.current_version}
+                    latest_version={this.state.latest_version}
+                    setAppState={(state) => this.setAppState(state)}></UpdateMenu>}
             </>
         )
     }
