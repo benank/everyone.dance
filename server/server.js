@@ -55,7 +55,7 @@ class Server
 
         client.on('set name', (name) => 
         {
-            name = name.trim();
+            name = name != null ? name.trim() : "???";
             client.player.name = name;
             
             if (client.player.game)
