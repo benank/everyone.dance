@@ -88,9 +88,11 @@ export default class InstallMenu extends React.Component {
         const stepmania_dir = folders[0];
         
         localStorage.setItem(LOCALSTORAGE_STEPMANIA_DIR, stepmania_dir);
-        this.setState({stepmania_folder: stepmania_dir});
+        this.setState({stepmania_folder: stepmania_dir, selected_theme_name: ""});
 
-        this.get_themes_info();
+        setTimeout(() => {
+            this.get_themes_info();
+        }, 100);
     }
 
     get_themes_info()
@@ -190,7 +192,8 @@ export default class InstallMenu extends React.Component {
             // No path found - cannot install
             if (path.length == 0)
             {
-                return;
+                theme_data.status = INSTALL_STATUS.INCOMPATIBLE;
+                return theme_data;
             }
             
             // Add this path to the list of install paths
@@ -450,7 +453,7 @@ export default class InstallMenu extends React.Component {
                                     <CardIcon icon_type={ICON_TYPE.OPEN_FOLDER} />
                                     Select StepMania Folder
                                 </div>
-                                <div className="select-output">{this.state.stepmania_folder}</div>
+                                <div className="select-output" key={this.state.stepmania_folder}>{this.state.stepmania_folder}</div>
                             </div>
                             <div className="left-half-container">
                                 <div className="select-title">
@@ -463,7 +466,7 @@ export default class InstallMenu extends React.Component {
                                         const theme = this.state.themes[key];
                                         const icon_type = install_icon_types[theme.status]
 
-                                        return <div key={theme.name + icon_type} className={`theme-entry ${this.state.selected_theme_name == key ? 'active' : ''}`} 
+                                        return <div key={theme.name + icon_type + this.state.stepmania_folder} className={`theme-entry ${this.state.selected_theme_name == key ? 'active' : ''}`} 
                                                 onClick={() => this.select_theme(key)}>
                                             {theme.name}
                                             {theme.status != INSTALL_STATUS.NOT_INSTALLED && <div className="theme-icon-leftalign">
