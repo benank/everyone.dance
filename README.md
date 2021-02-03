@@ -20,6 +20,7 @@ These themes have been tested to work with this system and the installation proc
 - Waterfall
 - DDR Supernova 3
 - Default
+- 5.3 Default
 
 ## Scoring
 Please note that the current implementation of this uses dance points as the percentage score on the player cards. This might change in the future or there might be an option to switch to raw score.

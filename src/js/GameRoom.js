@@ -13,7 +13,8 @@ import info_icon from "../icons/info.svg"
 let sm_data = ""
 let sm_check_interval;
 const SM_CHECK_INTERVAL_TIME = 250;
-const SM_FILE_PATH = "/StepMania 5/Save/everyone.dance.txt"
+let SM_FILE_PATH = "/StepMania 5/Save/everyone.dance.txt"
+let NOT_APPDATA = false
 
 export default class GameRoom extends React.Component {
 
@@ -80,11 +81,29 @@ export default class GameRoom extends React.Component {
             this.check_for_sm_updates();
         }, SM_CHECK_INTERVAL_TIME);
 
+        const dir = localStorage.getItem("stepmania_dir");
+        if (dir && dir.includes("5.3"))
+        {
+            // StepMania 5.3, so update path
+            const sm_dir_path = dir.replace("Appearance", "")
+            const portable_path = sm_dir_path + "/portable.ini"
+
+            // If they are in portable mode
+            if (electron.fs.existsSync(portable_path))
+            {
+                SM_FILE_PATH = sm_dir_path + "Save/everyone.dance.txt"
+                NOT_APPDATA = true;
+            }
+            else
+            {
+                SM_FILE_PATH = "/StepMania 5.3/Save/everyone.dance.txt"
+            }
+        }
     }
 
     check_for_sm_updates()
     {
-        const file_path = electron.getAppDataPath() + SM_FILE_PATH;
+        const file_path = NOT_APPDATA ? SM_FILE_PATH : electron.getAppDataPath() + SM_FILE_PATH;
 
         // File does not exist
         if (!electron.fs.existsSync(file_path)) {return;}
