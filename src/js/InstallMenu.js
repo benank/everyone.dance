@@ -146,7 +146,7 @@ export default class InstallMenu extends React.Component {
 
             const theme_name_version = getThemeNameAndVersionFromPath(theme_path);
             
-            if (theme_name_version != null)
+            if (typeof theme_name_version != 'undefined')
             {
                 console.log(`Getting theme data for ${theme_name_version.name}...`);
 
@@ -491,7 +491,8 @@ export default class InstallMenu extends React.Component {
                                 </div>
                             </div>
                         </div>
-                        {this.state.selected_theme_path.length > 0 && <div className="right-container">
+                        {this.state.selected_theme_path.length > 0 && this.state.themes[this.state.selected_theme_path] &&
+                        <div className="right-container">
                             <div className="theme-title">{this.state.themes[this.state.selected_theme_path].name} ({this.state.themes[this.state.selected_theme_path].theme_version})</div>
                             <div className="theme-status">
                                 Status:
