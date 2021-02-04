@@ -44,7 +44,6 @@ class Server
 
     client_connected(client)
     {
-        console.log("Connected " + client.id);
         client.player = new Player(client);
 
         // Client disconnected
@@ -109,7 +108,6 @@ class Server
 
     client_disconnected(client)
     {
-        console.log("Disconnected " + client.id);
         if (client.player && client.player.game)
         {
             client.player.game.remove_player(client.player);
