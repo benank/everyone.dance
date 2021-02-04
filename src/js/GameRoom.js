@@ -100,6 +100,23 @@ export default class GameRoom extends React.Component {
                 SM_FILE_PATH = "/StepMania 5.3/Save/everyone.dance.txt"
             }
         }
+        else if (dir && dir.toLowerCase().includes("club") && dir.toLowerCase().includes("fantastic"))
+        {
+            // Check if it is portable mode, aka non appdata
+            const sm_dir_path = dir
+            const portable_path = sm_dir_path + "/portable.ini"
+
+            if (electron.fs.existsSync(portable_path))
+            {
+                SM_FILE_PATH = sm_dir_path + "/Save/everyone.dance.txt"
+                NOT_APPDATA = true;
+            }
+            else
+            {
+                SM_FILE_PATH = "/Club Fantastic StepMania/Save/everyone.dance.txt"
+            }
+
+        }
         else if (dir)
         {
             // Check if it is portable mode, aka non appdata
@@ -108,7 +125,6 @@ export default class GameRoom extends React.Component {
 
             if (electron.fs.existsSync(portable_path))
             {
-                console.log("portable")
                 SM_FILE_PATH = sm_dir_path + "/Save/everyone.dance.txt"
                 NOT_APPDATA = true;
             }

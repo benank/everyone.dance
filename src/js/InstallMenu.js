@@ -182,8 +182,8 @@ export default class InstallMenu extends React.Component {
         const valid_install_paths = 
         {
             // 'ScreenEvaluation': ['decorations', 'common', 'overlay'], // Currently unused because Init/Begin causes the game to hang
-            'ScreenGameplay': ['decorations', 'overlay'],
-            'ScreenSelectMusic': ['decorations', 'overlay'],
+            'ScreenGameplay': ['overlay', 'decorations'],
+            'ScreenSelectMusic': ['overlay', 'decorations'],
         }
 
         for (const index in Object.keys(valid_install_paths))
