@@ -24,7 +24,8 @@ export default class GameRoom extends React.Component {
         this.state = 
         {
             game_code: props.game_room_data.game_code,
-            players: props.game_room_data.players
+            players: props.game_room_data.players,
+            full_file_path: "" // Full file path to everyone.dance.txt
         }
     }
 
@@ -113,7 +114,6 @@ export default class GameRoom extends React.Component {
             }
             else
             {
-                console.log("not portable")
                 SM_FILE_PATH = "/StepMania 5/Save/everyone.dance.txt"
             }
 
@@ -123,6 +123,11 @@ export default class GameRoom extends React.Component {
     check_for_sm_updates()
     {
         const file_path = NOT_APPDATA ? SM_FILE_PATH : electron.getAppDataPath() + SM_FILE_PATH;
+
+        if (this.state.full_file_path != file_path)
+        {
+            this.setState({full_file_path: file_path})
+        }
 
         // File does not exist
         if (!electron.fs.existsSync(file_path)) {return;}
@@ -219,7 +224,7 @@ export default class GameRoom extends React.Component {
                                 const player = this.state.players[key];
                                 if (player.spectate) {return;}
 
-                                return <PlayerCard {...this.props} key={key} player_data={player} p2={false} update={true}/>
+                                return <PlayerCard {...this.props} key={key} player_data={player} p2={false} update={true} path={this.state.full_file_path}/>
                             })}
                             {Object.keys(this.state.players).map((key) => 
                             {
@@ -227,7 +232,7 @@ export default class GameRoom extends React.Component {
                                 if (player.spectate) {return;}
 
                                 return player.data["PlayerNumber_P2"] != undefined &&
-                                        <PlayerCard {...this.props} key={key + "2"} player_data={player} p2={true}/>
+                                        <PlayerCard {...this.props} key={key + "2"} player_data={player} p2={true} path={this.state.full_file_path}/>
                             })}
                         </div>
                     </div>
