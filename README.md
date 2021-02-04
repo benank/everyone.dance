@@ -28,6 +28,9 @@ StepMania 5.3 is supported! However, when installing, please select the Appearan
 ## Scoring
 Please note that the current implementation of this uses dance points as the percentage score on the player cards. This might change in the future or there might be an option to switch to raw score.
 
+## Goto Button
+When you're in a game room with other people, you'll see a small arrow pointing to the top right in each player card. Click that and your StepMania will automatically navigate to the song that they are currently on.
+
 ## Updates
 everyone.dance has automatic updates! If there's an update available, a new button will appear on the main screen called Update. Click that to automatically download and install the latest version. However, you will need to also update the StepMania script as well if it was changed, so click Installation and you'll see a new icon next to your theme. Click your theme and hit Update to install the latest script to your theme.
 
