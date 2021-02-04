@@ -78,4 +78,9 @@ This starts the main server for game management. Players connect to this server 
 npm run server
 ```
 
+## Contact Me!
+Need help installing/using this? Want a new StepMania version/theme to be supported? Feel free to shoot me a message. Here are a few ways you can reach me:
 
+- Discord: `StepOnIt#2565`
+- [Discord Server](https://discord.gg/EA7EWCK)
+- [Twitter](https://twitter.com/StepOnItDDR)
