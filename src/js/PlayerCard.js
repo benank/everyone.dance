@@ -106,12 +106,12 @@ export default class PlayerCard extends React.Component {
     stop_editing()
     {
         this.setState({editing: false});
-        this.props.socket.emit("set name", localStorage.getItem("player_name"))
+        this.props.socket.emit("set name", localStorage.getItem("player_name").trim())
     }
 
     input_code_field_changed(event)
     {
-        const input = event.target.value.trim();
+        const input = event.target.value;
         localStorage.setItem("player_name", input);
         this.setState({name_input: input});
     }
