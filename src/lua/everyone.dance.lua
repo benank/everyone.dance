@@ -71,6 +71,63 @@ function FullComboType(pss)
 	end
 end
 
+local goto_filename = "Save/everyone.dance.txt.goto"
+
+local function FindSongMatchingData(data)
+    -- SONGMAN:FindSong may not properly find songs with the same name
+    return SONGMAN:FindSong(data.name)
+
+    -- The below solution may be more accurate, but does not work
+    -- Apparently I can't loop through songs...so this will stay commented
+    -- local songs = SONGMAN:GetSongsInGroup(data.group)
+    -- if songs then
+    --     for song in ivalues(songs) do
+    --         if song:GetTranslitFullTitle() == data.name
+    --         and song:GetTranslitArtist() == data.artist then
+    --             return song
+    --         end
+    --     end
+    -- end
+end
+
+-- Reads the goto file to see if we should "goto" a song in the music wheel
+local function ReadGotoData()
+
+    local data = ReadFile(goto_filename)
+
+    if not data then return end
+
+    local split = split("\n", tostring(data))
+
+    WriteFile("", goto_filename)
+    if not split[1] or not split[2] or not split[3] then return end
+
+    -- split[1] is song name
+    -- split[2] is the artist name
+    -- split[3] is the song group/pack
+
+    local target_song = FindSongMatchingData({
+        name = split[1],
+        artist = split[2],
+        group = split[3]
+    })
+
+    local top_screen = SCREENMAN:GetTopScreen()
+
+    if target_song and top_screen then
+
+        local mw = top_screen:GetChild("MusicWheel")
+
+        if mw then
+            mw:SelectSong(target_song)
+            mw:Move(1)
+            mw:Move(-1)
+            mw:Move(0)
+        end
+
+    end
+
+end
 -- Gets all the data of the current song/selection and outputs it to a file for everyone.dance to read
 local function RefreshActiveSongData()
 
@@ -231,15 +288,24 @@ local function OnInit(s)
 
     print("Init everyone.dance")
 
+    -- Clear file so we don't crash
+    WriteFile("", goto_filename)
+    
     start_time = GetTimeSinceStart()
     time = 0
+
+    s:sleep(1):queuecommand("Update")
 
 end
 
 return Def.ActorFrame{
     Def.Actor{
-        InitCommand = function(s)
+        BeginCommand = function(s)
             OnInit(s)
+        end,
+        UpdateCommand = function(s)
+            ReadGotoData() -- Oh hey I finally found out how to to real timed events LOL
+            s:sleep(1):queuecommand("Update")
         end,
         BeatCrossedMessageCommand = function(s)
             OnSongBeat(s)

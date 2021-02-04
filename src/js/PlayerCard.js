@@ -95,7 +95,11 @@ export default class PlayerCard extends React.Component {
 
     pressGotoButton()
     {
+        if (!electron.fs.existsSync(this.props.path)) {return;}
+        const file_path = this.props.path + ".goto"
 
+        const data_to_write = `${this.get_player_data().song_info.name}\n${this.get_player_data().song_info.artist}\n${this.get_player_data().song_info.pack}`
+        electron.fs.writeFileSync(file_path, data_to_write);
     }
 
     pressEditButton()
@@ -172,7 +176,7 @@ export default class PlayerCard extends React.Component {
                         {/* <CardIcon icon_type={ICON_TYPE.ROTATE_PORTRAIT} callback={() => this.pressRotateButton()}></CardIcon>
                         <CardIcon icon_type={this.state.visible ? ICON_TYPE.VISIBLE : ICON_TYPE.HIDDEN} callback={() => this.pressVisibilityButton()}></CardIcon> */}
                         {!this.state.player_data.is_me ? 
-                            /*<CardIcon icon_type={ICON_TYPE.GOTO} callback={() => this.pressGotoButton()}></CardIcon>*/<></> : 
+                            <CardIcon icon_type={ICON_TYPE.GOTO} callback={() => this.pressGotoButton()}></CardIcon> : 
                             <CardIcon icon_type={ICON_TYPE.EDIT} callback={() => this.pressEditButton()}></CardIcon> }
                     </div>
                 </div>
