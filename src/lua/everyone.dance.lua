@@ -74,8 +74,8 @@ end
 local goto_filename = "Save/everyone.dance.txt.goto"
 
 local function FindSongMatchingData(data)
-    -- SONGMAN:FindSong may not properly find songs with the same name
-    return SONGMAN:FindSong(data.name)
+    
+    return SONGMAN:FindSong(data.song_dir) or SONGMAN:FindSong(data.song_name)
 
     -- The below solution may be more accurate, but does not work
     -- Apparently I can't loop through songs...so this will stay commented
@@ -100,16 +100,11 @@ local function ReadGotoData()
     local split = split("\n", tostring(data))
 
     WriteFile("", goto_filename)
-    if not split[1] or not split[2] or not split[3] then return end
-
-    -- split[1] is song name
-    -- split[2] is the artist name
-    -- split[3] is the song group/pack
+    if not split[1] or not split[2] then return end
 
     local target_song = FindSongMatchingData({
-        name = split[1],
-        artist = split[2],
-        group = split[3]
+        song_dir = split[1],
+        song_name = split[2]
     })
 
     local top_screen = SCREENMAN:GetTopScreen()
@@ -186,7 +181,8 @@ local function RefreshActiveSongData()
             charter = step_data:GetAuthorCredit() or "???",
             difficulty = step_data:GetMeter(),
             difficulty_name = step_data:GetDifficulty():gsub("Difficulty_", ""),
-            steps = step_data:GetRadarValues(pn):GetValue(5)
+            steps = step_data:GetRadarValues(pn):GetValue(5),
+            song_dir = song:GetSongDir()
         }
         
         local time = song:MusicLengthSeconds()

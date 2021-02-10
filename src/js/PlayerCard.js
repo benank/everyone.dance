@@ -98,7 +98,10 @@ export default class PlayerCard extends React.Component {
         if (!electron.fs.existsSync(this.props.path)) {return;}
         const file_path = this.props.path + ".goto"
 
-        const data_to_write = `${this.get_player_data().song_info.name}\n${this.get_player_data().song_info.artist}\n${this.get_player_data().song_info.pack}`
+        let song_dir = this.get_player_data().song_info.song_dir;
+        song_dir = song_dir.substring(song_dir.substring(1, song_dir.length).indexOf("/") + 1, song_dir.length);
+
+        const data_to_write = `${song_dir}\n${this.get_player_data().song_info.name}`;
         electron.fs.writeFileSync(file_path, data_to_write);
     }
 
