@@ -99,10 +99,13 @@ export default class SMInstallation {
     // Windows: AppData/Stepmania X.Y
     if( this.platform === "win32" )
     {
-      if( this.install_variant === SM_INSTALL_VARIANT.SM_5_0 ||
-          this.install_variant === SM_INSTALL_VARIANT.SM_5_1 )
+      if( this.install_variant === SM_INSTALL_VARIANT.SM_5_0 )
       {
         return electron.getAppDataPath() + "/StepMania 5/Save/everyone.dance.txt";
+      }
+      else if( this.install_variant === SM_INSTALL_VARIANT.SM_5_1 )
+      {
+        return electron.getAppDataPath() + "/StepMania 5.1/Save/everyone.dance.txt";
       }
       else if( this.install_variant === SM_INSTALL_VARIANT.SM_5_3 )
       {
