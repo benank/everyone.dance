@@ -2,7 +2,7 @@ name: Automated Releases
 
 on:
   release:
-    types: [published, edited]
+    types: [published]
 
 jobs:
   publish:
