@@ -2,7 +2,7 @@ name: Automated Releases
 
 on:
   release:
-    types: [published]
+    types: [published, edited]
 
 jobs:
   publish:
@@ -46,8 +46,8 @@ jobs:
         filename: ${{ matrix.asset_name }}
         path: out/${{ matrix.artifact_dir }}
     - uses: svenstaro/upload-release-action@v2
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ${{ matrix.artifact_name }}
-          asset_name: ${{ matrix.asset_name }}
-          tag: ${{ github.ref }}
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: ${{ matrix.artifact_name }}
+        asset_name: ${{ matrix.asset_name }}
+        tag: ${{ github.ref }}
