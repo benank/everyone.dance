@@ -55,7 +55,13 @@ export default class MainMenu extends React.Component {
 
     click_download()
     {
-        window.open(`https://github.com/benank/everyone.dance/releases/download/${VERSION}/everyone.dance-win32-x64.zip`, "_blank");
+        let filename = "";
+
+        if (window.navigator.userAgent.indexOf("Windows") != -1) {filename = "everyone.dance-win32-x64.zip"}
+        else if (window.navigator.userAgent.indexOf("Mac") != -1) {filename = "everyone.dance-macos-x64.zip"}
+        else if (window.navigator.userAgent.indexOf("Linux") != -1) {filename = "everyone.dance-linux-x64.zip"}
+
+        window.open(`https://github.com/benank/everyone.dance/releases/download/${VERSION}/${filename}`, "_blank");
     }
 
     render () {
