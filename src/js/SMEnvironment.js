@@ -41,7 +41,7 @@ export default class SMInstallation {
    * @returns {SM_INSTALL_VARIANT} The installation variant
    */
   _install_variant(stepmania_dir) {
-    if( !stepmania_dir ) return SM_UNKNOWN;
+    if( !stepmania_dir ) return SM_INSTALL_VARIANT.SM_UNKNOWN;
 
     if( stepmania_dir.toLowerCase().includes("club") && stepmania_dir.toLowerCase().includes("fantastic") )
     {
