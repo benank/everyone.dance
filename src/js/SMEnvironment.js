@@ -118,7 +118,7 @@ export default class SMInstallation {
     }
     // Linux: ~/.stepmania-X.Y
     // Mac: Assumed to be same as Linux here
-    else if( this.platform === "linux" || process.platform === "darwin")
+    else if( this.platform === "linux" || this.platform === "darwin")
     {
       if( this.install_variant === SM_INSTALL_VARIANT.SM_5_0 )
       {
