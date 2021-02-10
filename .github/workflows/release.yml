@@ -11,6 +11,7 @@ jobs:
     strategy:
       matrix:
         node-version: [12.x]
+        os: [macos-latest, ubuntu-latest, ubuntu-latest]
         include:
           - os: ubuntu-latest
             artifact_dir: everyone.dance-linux-x64
