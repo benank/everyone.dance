@@ -41,7 +41,10 @@ jobs:
     - if: runner.os == 'Linux'
       run: npm run make-linux
     - if: runner.os == 'Linux'
-      uses: thedoctor0/zip-release@master
+      uses: papeloto/action-zip@v1
+      with:
+        files: out/${{ matrix.artifact_dir }}/
+        dest: ${{ matrix.artifact_name }}
       with:
         filename: ${{ matrix.artifact_name }}
         path: out/${{ matrix.artifact_dir }}
