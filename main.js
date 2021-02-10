@@ -27,7 +27,7 @@ function createWindow() {
 
     if (!isDev)
     {
-        win.removeMenu(); // Only enable in dev mode. Otherwise, it removes the devtools menu
+        // win.removeMenu(); // Only enable in dev mode. Otherwise, it removes the devtools menu
     }
 
     win.loadFile('src/index.html');
