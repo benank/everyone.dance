@@ -2,7 +2,7 @@ name: Automated Releases
 
 on:
   release:
-    types: [published, created, edited]
+    types: [created]
 
 jobs:
   release-linux:
@@ -11,7 +11,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [10.x, 12.x, 14.x, 15.x]
+        node-version: [12.x]
 
     steps:
     - uses: actions/checkout@v2
@@ -22,6 +22,15 @@ jobs:
     - run: npm install
     - run: npm run bundle
     - run: npm run make-linux
+    - uses: thedoctor0/zip-release@master
+      with:
+        filename: 'everyone.dance-linux-x64.zip'
+        path: 'out/everyone.dance-linux-x64'
+    - uses: shogo82148/actions-upload-release-asset@v1
+      with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: everyone.dance-linux-x64.zip
+
       
 #   release-macos:
 
