@@ -8,6 +8,7 @@ import { APP_STATE } from './constants/app_state'
 import back_arrow_icon from "../icons/back_arrow.svg"
 import popout_icon from "../icons/popout.svg"
 import info_icon from "../icons/info.svg"
+import SMInstallation from './SMEnvironment';
 
 // Raw SM import data from txt file
 let sm_data = ""
@@ -83,63 +84,15 @@ export default class GameRoom extends React.Component {
         }, SM_CHECK_INTERVAL_TIME);
 
         const dir = localStorage.getItem("stepmania_dir");
-        if (dir && dir.includes("5.3"))
-        {
-            // StepMania 5.3, so update path
-            const sm_dir_path = dir.replace("Appearance", "")
-            const portable_path = sm_dir_path + "/portable.ini"
 
-            // If they are in portable mode
-            if (electron.fs.existsSync(portable_path))
-            {
-                SM_FILE_PATH = sm_dir_path + "/Save/everyone.dance.txt"
-                NOT_APPDATA = true;
-            }
-            else
-            {
-                SM_FILE_PATH = "/StepMania 5.3/Save/everyone.dance.txt"
-            }
-        }
-        else if (dir && dir.toLowerCase().includes("club") && dir.toLowerCase().includes("fantastic"))
-        {
-            // Check if it is portable mode, aka non appdata
-            const sm_dir_path = dir
-            const portable_path = sm_dir_path + "/portable.ini"
-
-            if (electron.fs.existsSync(portable_path))
-            {
-                SM_FILE_PATH = sm_dir_path + "/Save/everyone.dance.txt"
-                NOT_APPDATA = true;
-            }
-            else
-            {
-                SM_FILE_PATH = "/Club Fantastic StepMania/Save/everyone.dance.txt"
-            }
-
-        }
-        else if (dir)
-        {
-            // Check if it is portable mode, aka non appdata
-            const sm_dir_path = dir
-            const portable_path = sm_dir_path + "/portable.ini"
-
-            if (electron.fs.existsSync(portable_path))
-            {
-                SM_FILE_PATH = sm_dir_path + "/Save/everyone.dance.txt"
-                NOT_APPDATA = true;
-            }
-            else
-            {
-                SM_FILE_PATH = "/StepMania 5/Save/everyone.dance.txt"
-            }
-
-        }
+        const sm_install = new SMInstallation(dir);
+        NOT_APPDATA = sm_install.is_portable;
+        SM_FILE_PATH = sm_install.score_file;
     }
 
     check_for_sm_updates()
     {
-        const file_path = NOT_APPDATA ? SM_FILE_PATH : electron.getAppDataPath() + SM_FILE_PATH;
-
+        const file_path = SM_FILE_PATH;
         if (this.state.full_file_path != file_path)
         {
             this.setState({full_file_path: file_path})

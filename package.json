@@ -19,6 +19,8 @@
         "start": "electron-forge start",
         "package": "electron-forge package",
         "make": "electron-forge make",
+        "make-mac": "electron-forge make --platform darwin",
+        "make-linux": "electron-forge make --platform linux --target zip",
         "webapp": "node webapp.js",
         "server": "node server/server.js",
         "watch": "webpack --config webpack.common.js --watch",
@@ -77,16 +79,9 @@
                 {
                     "name": "@electron-forge/maker-zip",
                     "platforms": [
-                        "darwin"
+                        "darwin",
+                        "linux"
                     ]
-                },
-                {
-                    "name": "@electron-forge/maker-deb",
-                    "config": {}
-                },
-                {
-                    "name": "@electron-forge/maker-rpm",
-                    "config": {}
                 }
             ]
         }
