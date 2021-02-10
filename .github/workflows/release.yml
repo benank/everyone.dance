@@ -16,15 +16,15 @@ jobs:
           - os: ubuntu-latest
             artifact_dir: everyone.dance-linux-x64
             artifact_name: everyone.dance-linux-x64.zip
-            asset_name: everyone.dance-linux-x64.zip
+            asset_name: Linux Release
           - os: windows-latest
             artifact_dir: everyone.dance-win32-x64
             artifact_name: everyone.dance-win32-x64.zip
-            asset_name: everyone.dance-win32-x64.zip
+            asset_name: Windows Release
           - os: macos-latest
             artifact_dir: everyone.dance-darwin-x64
             artifact_name: everyone.dance-macos-x64.zip
-            asset_name: everyone.dance-macos-x64.zip
+            asset_name: Mac Release
 
     steps:
     - uses: actions/checkout@v2
@@ -42,15 +42,14 @@ jobs:
          else
               npm run make-mac
          fi
-    - run: |
-         if [ "$RUNNER_OS" == "Linux" ]; then
-              apt install zip
-              zip -r ${{ matrix.artifact_name }} out/${{ matrix.artifact_dir }}
-         elif [ "$RUNNER_OS" == "Windows" ]; then
-              powershell Compress-Archive out/${{ matrix.artifact_dir }} ${{ matrix.artifact_name }}
-         else
-              zip -r ${{ matrix.artifact_name }} out/${{ matrix.artifact_dir }}
-         fi
+    - if: ${{ matrix.os }} == "macos-latest"
+      run: zip -r ${{ matrix.artifact_name }} out/${{ matrix.artifact_dir }}
+    - if: ${{ matrix.os }} == "ubuntu-latest"
+      uses: montudor/action-zip@v0.1.1
+      with:
+        args: zip -qq -r ${{ matrix.artifact_name }} out/${{ matrix.artifact_dir }}
+    - if: ${{ matrix.os }} == "windows-latest"
+      run: powershell Compress-Archive out/${{ matrix.artifact_dir }} ${{ matrix.artifact_name }}
     - uses: svenstaro/upload-release-action@v2
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
