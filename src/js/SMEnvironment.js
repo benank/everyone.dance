@@ -47,10 +47,6 @@ export default class SMInstallation {
     {
       return SM_INSTALL_VARIANT.SM_CLUB_FANTASTIC;
     }
-    else if( stepmania_dir.includes("5.0") )
-    {
-      return SM_INSTALL_VARIANT.SM_5_0;
-    }
     else if( stepmania_dir.includes("5.1") )
     {
       return SM_INSTALL_VARIANT.SM_5_1;
@@ -59,7 +55,8 @@ export default class SMInstallation {
     {
       return SM_INSTALL_VARIANT.SM_5_3;
     }
-    return SM_INSTALL_VARIANT.SM_UNKNOWN;
+    // Default to SM 5.0.x no matter the directory name
+    return SM_INSTALL_VARIANT.SM_5_0;
   }
 
   /**
