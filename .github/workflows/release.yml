@@ -36,14 +36,17 @@ jobs:
     - run: npm run bundle
     - if: runner.os == "macOS"
       run: npm run make-mac
+    - if: runner.os == "macOS"
       run: zip -r ${{ matrix.artifact_name }} out/${{ matrix.artifact_dir }}
     - if: runner.os == "Linux"
       run: npm run make-linux
+    - if: runner.os == "Linux"
       uses: montudor/action-zip@v0.1.1
       with:
         args: zip -qq -r ${{ matrix.artifact_name }} out/${{ matrix.artifact_dir }}
     - if: runner.os == "Windows"
       run: npm run make
+    - if: runner.os == "Windows"
       run: powershell Compress-Archive out/${{ matrix.artifact_dir }} ${{ matrix.artifact_name }}
     - uses: svenstaro/upload-release-action@v2
       with:
