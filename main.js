@@ -296,7 +296,7 @@ ipcMain.on("ready", () =>
 })
 
 function CheckForNewReleases() {
-    // if (isDev) {return;} // Do not check for new releases on dev version
+    if (isDev) {return;} // Do not check for new releases on dev version
 
     ghLatestRelease("benank/everyone.dance").then((release) => 
     {
