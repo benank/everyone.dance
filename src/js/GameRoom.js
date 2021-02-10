@@ -156,7 +156,7 @@ export default class GameRoom extends React.Component {
 
     componentWillUnmount()
     {
-        if (sm_check_interval != undefined)
+        if (typeof sm_check_interval != 'undefined')
         {
             clearInterval(sm_check_interval);
         }
