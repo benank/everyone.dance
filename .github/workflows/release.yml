@@ -34,21 +34,16 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - run: npm install
     - run: npm run bundle
-    - run: |
-         if [ "$RUNNER_OS" == "Linux" ]; then
-              npm run make-linux
-         elif [ "$RUNNER_OS" == "Windows" ]; then
-              npm run make
-         else
-              npm run make-mac
-         fi
-    - if: ${{ matrix.os }} == "macos-latest"
+    - if: runner.os == "macOS"
+      run: npm run make-mac
       run: zip -r ${{ matrix.artifact_name }} out/${{ matrix.artifact_dir }}
-    - if: ${{ matrix.os }} == "ubuntu-latest"
+    - if: runner.os == "Linux"
+      run: npm run make-linux
       uses: montudor/action-zip@v0.1.1
       with:
         args: zip -qq -r ${{ matrix.artifact_name }} out/${{ matrix.artifact_dir }}
-    - if: ${{ matrix.os }} == "windows-latest"
+    - if: runner.os == "Windows"
+      run: npm run make
       run: powershell Compress-Archive out/${{ matrix.artifact_dir }} ${{ matrix.artifact_name }}
     - uses: svenstaro/upload-release-action@v2
       with:
