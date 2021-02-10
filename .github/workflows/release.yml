@@ -45,9 +45,6 @@ jobs:
       with:
         files: out/${{ matrix.artifact_dir }}/
         dest: ${{ matrix.artifact_name }}
-      with:
-        filename: ${{ matrix.artifact_name }}
-        path: out/${{ matrix.artifact_dir }}
     - if: runner.os == 'Windows'
       run: npm run make
     - if: runner.os == 'Windows'
