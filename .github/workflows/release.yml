@@ -41,10 +41,15 @@ jobs:
          else
               npm run make-mac
          fi
-    - uses: thedoctor0/zip-release@master
-      with:
-        filename: ${{ matrix.asset_name }}
-        path: out/${{ matrix.artifact_dir }}
+    - run: |
+         if [ "$RUNNER_OS" == "Linux" ]; then
+              apt install zip
+              zip -r ${{ matrix.artifact_name }} out/${{ matrix.artifact_dir }}
+         elif [ "$RUNNER_OS" == "Windows" ]; then
+              powershell Compress-Archive out/${{ matrix.artifact_dir }} ${{ matrix.artifact_name }}
+         else
+              zip -r ${{ matrix.artifact_name }} out/${{ matrix.artifact_dir }}
+         fi
     - uses: svenstaro/upload-release-action@v2
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
