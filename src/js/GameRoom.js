@@ -79,15 +79,19 @@ export default class GameRoom extends React.Component {
             }
         })
 
-        sm_check_interval = setInterval(() => {
-            this.check_for_sm_updates();
-        }, SM_CHECK_INTERVAL_TIME);
+        if (typeof electron != 'undefined')
+        {
+            sm_check_interval = setInterval(() => {
+                this.check_for_sm_updates();
+            }, SM_CHECK_INTERVAL_TIME);
 
-        const dir = localStorage.getItem("stepmania_dir");
+            const dir = localStorage.getItem("stepmania_dir");
 
-        const sm_install = new SMInstallation(dir);
-        NOT_APPDATA = sm_install.is_portable;
-        SM_FILE_PATH = sm_install.score_file;
+            const sm_install = new SMInstallation(dir);
+            NOT_APPDATA = sm_install.is_portable;
+            SM_FILE_PATH = sm_install.score_file;
+        }
+
     }
 
     check_for_sm_updates()
