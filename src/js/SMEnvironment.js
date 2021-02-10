@@ -116,9 +116,9 @@ export default class SMInstallation {
         return electron.getAppDataPath() + "/Club Fantastic StepMania/Save/everyone.dance.txt";
       }
     }
+
     // Linux: ~/.stepmania-X.Y
-    // Mac: Assumed to be same as Linux here
-    else if( this.platform === "linux" || this.platform === "darwin")
+    else if( this.platform === "linux")
     {
       if( this.install_variant === SM_INSTALL_VARIANT.SM_5_0 )
       {
@@ -131,6 +131,29 @@ export default class SMInstallation {
       else if( this.install_variant === SM_INSTALL_VARIANT.SM_5_3 )
       {
         return electron.getHomePath() + "/.stepmania-5.3/Save/everyone.dance.txt";
+      }
+    }
+
+    
+    // mac: getHomePath() points to: ~/Library/Application Support/
+    // SM data here: ~/Library/Application Support/StepMania 5.1/
+    else if(this.platform === "darwin")
+    {
+      if( this.install_variant === SM_INSTALL_VARIANT.SM_5_0 )
+      {
+        return electron.getHomePath() + "/StepMania 5/Save/everyone.dance.txt";
+      }
+      else if( this.install_variant === SM_INSTALL_VARIANT.SM_5_1 )
+      {
+        return electron.getHomePath() + "/StepMania 5.1/Save/everyone.dance.txt";
+      }
+      else if( this.install_variant === SM_INSTALL_VARIANT.SM_5_3 )
+      {
+        return electron.getHomePath() + "/StepMania 5.3/Save/everyone.dance.txt";
+      }
+      else if( this.install_variant === SM_INSTALL_VARIANT.SM_CLUB_FANTASTIC )
+      {
+        return electron.getHomePath() + "/Club Fantastic StepMania/Save/everyone.dance.txt";
       }
     }
 
