@@ -69,7 +69,13 @@ div.player-card-container div.song-info
     position: relative;
 }
 
-div.player-card-container div.song-info img
+div.player-card-container div.song-info div.info.song-pack,
+div.player-card-container div.song-info div.info.song-difficulty
+{
+    width: calc(100% - 48px * 3);
+}
+
+div.player-card-container div.song-info svg
 {
     width: 24px;
     height: 24px;
