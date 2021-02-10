@@ -298,7 +298,7 @@ ipcMain.on("ready", () =>
 function CheckForNewReleases() {
     // if (isDev) {return;} // Do not check for new releases on dev version
 
-    ghLatestRelease(package_config.repository.author_reponame).then((release) => 
+    ghLatestRelease("benank/everyone.dance").then((release) => 
     {
         if (typeof release != 'undefined' && release.tag_name > package_config.version)
         {

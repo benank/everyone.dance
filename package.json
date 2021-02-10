@@ -5,8 +5,7 @@
     "main": "main.js",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/benank/everyone.dance.git",
-        "author_reponame": "benank/everyone.dance"
+        "url": "git+https://github.com/benank/everyone.dance.git"
     },
     "keywords": [],
     "author": "benank",
