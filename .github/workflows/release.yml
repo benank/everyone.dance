@@ -2,16 +2,28 @@ name: Automated Releases
 
 on:
   release:
-    types: [created]
+    types: [published]
 
 jobs:
-  release-linux:
-
-    runs-on: ubuntu-latest
-
+  publish:
+    name: Publish for ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         node-version: [12.x]
+        include:
+          - os: ubuntu-latest
+            artifact_dir: everyone.dance-linux-x64
+            artifact_name: everyone.dance-linux-x64.zip
+            asset_name: everyone.dance-linux-x64.zip
+          - os: windows-latest
+            artifact_dir: everyone.dance-win32-x64
+            artifact_name: everyone.dance-win32-x64.zip
+            asset_name: everyone.dance-win32-x64.zip
+          - os: macos-latest
+            artifact_dir: everyone.dance-darwin-x64
+            artifact_name: everyone.dance-macos-x64.zip
+            asset_name: everyone.dance-macos-x64.zip
 
     steps:
     - uses: actions/checkout@v2
@@ -21,49 +33,21 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - run: npm install
     - run: npm run bundle
-    - run: npm run make-linux
+    - run: |
+         if [ "$RUNNER_OS" == "Linux" ]; then
+              npm run make-linux
+         elif [ "$RUNNER_OS" == "Windows" ]; then
+              npm run make
+         else
+              npm run make-mac
+         fi
     - uses: thedoctor0/zip-release@master
       with:
-        filename: 'everyone.dance-linux-x64.zip'
-        path: 'out/everyone.dance-linux-x64'
-    - uses: shogo82148/actions-upload-release-asset@v1
-      with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: everyone.dance-linux-x64.zip
-
-      
-#   release-macos:
-
-#     runs-on: macos-latest
-
-#     strategy:
-#       matrix:
-#         node-version: [10.x, 12.x, 14.x, 15.x]
-
-#     steps:
-#     - uses: actions/checkout@v2
-#     - name: Use Node.js ${{ matrix.node-version }}
-#       uses: actions/setup-node@v1
-#       with:
-#         node-version: ${{ matrix.node-version }}
-#     - run: npm run bundle
-#     - run: npm run make
-#     - run: npm test
-      
-#   release-windows:
-
-#     runs-on: windows-latest
-
-#     strategy:
-#       matrix:
-#         node-version: [10.x, 12.x, 14.x, 15.x]
-
-#     steps:
-#     - uses: actions/checkout@v2
-#     - name: Use Node.js ${{ matrix.node-version }}
-#       uses: actions/setup-node@v1
-#       with:
-#         node-version: ${{ matrix.node-version }}
-#     - run: npm run bundle
-#     - run: npm run make
-#     - run: npm test
+        filename: ${{ matrix.asset_name }}
+        path: out/${{ matrix.artifact_dir }}
+    - uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ${{ matrix.artifact_name }}
+          asset_name: ${{ matrix.asset_name }}
+          tag: ${{ github.ref }}
