@@ -64,95 +64,6 @@ ipcMain.on('stop update', (_, message) => {
     stop_update = true;
 })
 
-/*
-{
-  url: 'https://api.github.com/repos/benank/everyone.dance/releases/37844361',
-  assets_url: 'https://api.github.com/repos/benank/everyone.dance/releases/37844361/assets',
-  upload_url: 'https://uploads.github.com/repos/benank/everyone.dance/releases/37844361/assets{?name,label}',
-  html_url: 'https://github.com/benank/everyone.dance/releases/tag/1.1.2-alpha',
-  id: 37844361,
-  author: {
-    login: 'benank',
-    id: 8016617,
-    node_id: 'MDQ6VXNlcjgwMTY2MTc=',
-    avatar_url: 'https://avatars.githubusercontent.com/u/8016617?v=4',
-    gravatar_id: '',
-    url: 'https://api.github.com/users/benank',
-    html_url: 'https://github.com/benank',
-    followers_url: 'https://api.github.com/users/benank/followers',
-    following_url: 'https://api.github.com/users/benank/following{/other_user}',
-    gists_url: 'https://api.github.com/users/benank/gists{/gist_id}',
-    starred_url: 'https://api.github.com/users/benank/starred{/owner}{/repo}',
-    subscriptions_url: 'https://api.github.com/users/benank/subscriptions',
-    organizations_url: 'https://api.github.com/users/benank/orgs',
-    repos_url: 'https://api.github.com/users/benank/repos',
-    events_url: 'https://api.github.com/users/benank/events{/privacy}',
-    received_events_url: 'https://api.github.com/users/benank/received_events',
-    type: 'User',
-    site_admin: false
-  },
-  node_id: 'MDc6UmVsZWFzZTM3ODQ0MzYx',
-  tag_name: '1.1.2-alpha',
-  target_commitish: 'main',
-  name: 'Test',
-  draft: false,
-  prerelease: false,
-  created_at: '2021-02-10T07:14:35Z',
-  published_at: '2021-02-10T07:14:48Z',
-  assets: [
-    {
-      url: 'https://api.github.com/repos/benank/everyone.dance/releases/assets/31883575',
-      id: 31883575,
-      node_id: 'MDEyOlJlbGVhc2VBc3NldDMxODgzNTc1',
-      name: 'everyone.dance-linux-x64.zip',
-      label: '',
-      uploader: [Object],
-      content_type: 'binary/octet-stream',
-      state: 'uploaded',
-      size: 80442136,
-      download_count: 2,
-      created_at: '2021-02-10T07:16:10Z',
-      updated_at: '2021-02-10T07:16:12Z',
-      browser_download_url: 'https://github.com/benank/everyone.dance/releases/download/1.1.2-alpha/everyone.dance-linux-x64.zip'
-    },
-    {
-      url: 'https://api.github.com/repos/benank/everyone.dance/releases/assets/31883610',
-      id: 31883610,
-      node_id: 'MDEyOlJlbGVhc2VBc3NldDMxODgzNjEw',
-      name: 'everyone.dance-macos-x64.zip',
-      label: '',
-      uploader: [Object],
-      content_type: 'binary/octet-stream',
-      state: 'uploaded',
-      size: 236853959,
-      download_count: 0,
-      created_at: '2021-02-10T07:17:59Z',
-      updated_at: '2021-02-10T07:18:03Z',
-      browser_download_url: 'https://github.com/benank/everyone.dance/releases/download/1.1.2-alpha/everyone.dance-macos-x64.zip'
-    },
-    {
-      url: 'https://api.github.com/repos/benank/everyone.dance/releases/assets/31883621',
-      id: 31883621,
-      node_id: 'MDEyOlJlbGVhc2VBc3NldDMxODgzNjIx',
-      name: 'everyone.dance-win32-x64.zip',
-      label: '',
-      uploader: [Object],
-      content_type: 'binary/octet-stream',
-      state: 'uploaded',
-      size: 83141782,
-      download_count: 1,
-      created_at: '2021-02-10T07:18:39Z',
-      updated_at: '2021-02-10T07:18:43Z',
-      browser_download_url: 'https://github.com/benank/everyone.dance/releases/download/1.1.2-alpha/everyone.dance-win32-x64.zip'
-    }
-  ],
-  tarball_url: 'https://api.github.com/repos/benank/everyone.dance/tarball/1.1.2-alpha',
-  zipball_url: 'https://api.github.com/repos/benank/everyone.dance/zipball/1.1.2-alpha',
-  body: ''
-}
-
-*/
-
 // Gets the OS-specific 
 function getLatestAsset()
 {
@@ -175,6 +86,9 @@ ipcMain.on('start update', (_, ...args) => {
     console.log("Starting update...")
 
     const asset = getLatestAsset()
+
+    if (!asset) {return;}
+
     const url = asset.browser_download_url;
     const https = require('follow-redirects').https
     const fs = require('fs')
@@ -260,7 +174,7 @@ ipcMain.on('start update', (_, ...args) => {
 
             const fse = require('fs-extra');
 
-            const srcDir = unzip_path;
+            const srcDir = path.join(unzip_path, "everyone.dance-win32-x64");
             const destDir = isDev ? path.join(__dirname, "out", "everyone.dance-win32-x64") : __dirname + "/../../";
             // Have to go up 2 directories for the copy directory (resources/app since this is main)
 
@@ -297,6 +211,7 @@ ipcMain.on("ready", () =>
 
 function CheckForNewReleases() {
     if (isDev) {return;} // Do not check for new releases on dev version
+    if (require('os').platform() != 'win32') {return;} // Windows only
 
     ghLatestRelease("benank/everyone.dance").then((release) => 
     {
