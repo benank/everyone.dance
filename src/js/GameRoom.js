@@ -90,8 +90,6 @@ export default class GameRoom extends React.Component {
             const sm_install = new SMInstallation(dir);
             NOT_APPDATA = sm_install.is_portable;
             SM_FILE_PATH = sm_install.score_file;
-            console.log(`NOT_APPDATA: ${NOT_APPDATA}`)
-            console.log(`SM_FILE_PATH: ${SM_FILE_PATH}`)
         }
 
     }

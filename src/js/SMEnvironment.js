@@ -35,7 +35,7 @@ const SM_DATA_PATHS = {
     },
     // Mac: ~/Library/Application Support/StepMania X.Y
     ["darwin"]: {
-        base_dir: electron.getHomePath(),
+        base_dir: electron.getAppDataPath().replace("Application Support", "Preferences"),
         [SM_INSTALL_VARIANT.SM_5_0]: "StepMania 5",
         [SM_INSTALL_VARIANT.SM_5_1]: "StepMania 5.1",
         [SM_INSTALL_VARIANT.SM_5_3]: "StepMania 5.3"
@@ -125,7 +125,8 @@ export default class SMInstallation {
         {
             const base_dir = SM_DATA_PATHS[this.platform].base_dir;
             const variant_name = SM_DATA_PATHS[this.platform][this.install_variant];
-            return `${base_dir}/${variant_name}/${SM_DATA_NAME}`
+            const sm_data_name = this.platform == "darwin" ? SM_DATA_NAME.replace("Save/", "") : SM_DATA_NAME;
+            return `${base_dir}/${variant_name}/${sm_data_name}`
         }
 
         return null;
