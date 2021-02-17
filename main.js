@@ -21,7 +21,7 @@ function createWindow() {
             contextIsolation: true,
             preload: path.join(__dirname, 'src', 'js', 'preload.js'),
         },
-        icon: path.join(__dirname, 'src', 'favicon.ico'),
+        icon: path.join(__dirname, 'src', require('os').platform() == 'darwin' ? 'favicon.icns' : 'favicon.ico'),
         // frame: false // Looks nice, but the drag css properties have issues. Might look into later
     })
 
