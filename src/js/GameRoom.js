@@ -90,6 +90,8 @@ export default class GameRoom extends React.Component {
             const sm_install = new SMInstallation(dir);
             NOT_APPDATA = sm_install.is_portable;
             SM_FILE_PATH = sm_install.score_file;
+            console.log(`NOT_APPDATA: ${NOT_APPDATA}`)
+            console.log(`SM_FILE_PATH: ${SM_FILE_PATH}`)
         }
 
     }
@@ -102,8 +104,12 @@ export default class GameRoom extends React.Component {
             this.setState({full_file_path: file_path})
         }
 
+        console.log(`file path: ${file_path}`)
+
         // File does not exist
         if (!electron.fs.existsSync(file_path)) {return;}
+
+        console.log("exists, reading")
 
         const file = electron.fs.readFileSync(file_path, 'utf8').toString();
 
