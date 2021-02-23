@@ -20,7 +20,7 @@ const SM_DATA_NAME = "Save/everyone.dance.txt"
 const SM_DATA_PATHS = {
     // Windows: AppData/Stepmania X.Y
     ["win32"]: {
-        base_dir: electron.getAppDataPath(),
+        base_dir: typeof electron != 'undefined' && electron.getAppDataPath(),
         [SM_INSTALL_VARIANT.SM_5_0]: "StepMania 5",
         [SM_INSTALL_VARIANT.SM_5_1]: "StepMania 5.1",
         [SM_INSTALL_VARIANT.SM_5_3]: "StepMania 5.3",
@@ -28,14 +28,14 @@ const SM_DATA_PATHS = {
     },
     // Linux: ~/.stepmania-X.Y
     ["linux"]: {
-        base_dir: electron.getHomePath(),
+        base_dir: typeof electron != 'undefined' && electron.getHomePath(),
         [SM_INSTALL_VARIANT.SM_5_0]: ".stepmania-5.0",
         [SM_INSTALL_VARIANT.SM_5_1]: ".stepmania-5.1",
         [SM_INSTALL_VARIANT.SM_5_3]: ".stepmania-5.3"
     },
     // Mac: ~/Library/Application Support/StepMania X.Y
     ["darwin"]: {
-        base_dir: electron.getAppDataPath().replace("Application Support", "Preferences"),
+        base_dir: typeof electron != 'undefined' && electron.getAppDataPath().replace("Application Support", "Preferences"),
         [SM_INSTALL_VARIANT.SM_5_0]: "StepMania 5",
         [SM_INSTALL_VARIANT.SM_5_1]: "StepMania 5.1",
         [SM_INSTALL_VARIANT.SM_5_3]: "StepMania 5.3"
