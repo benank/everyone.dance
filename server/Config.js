@@ -7,11 +7,14 @@ class Config
         // Default: "everyone.dance"
         this.hostname = "everyone.dance";
 
+        // Port that the main server runs on
+        // 2053 is an example of a port that is allowed for websockets on cloudflare
         this.port = 2053;
     
         // Launched server in test mode
         if (process.argv[2] == "--test")
         {
+            // Also a cloudflare websocked allowed port
             this.port = 2083;
         }
     }
