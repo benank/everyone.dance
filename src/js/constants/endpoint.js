@@ -1,2 +1,2 @@
-const port = electron.isDev ? "2083" : "2053";
+const port = (typeof electron != 'undefined' && electron.isDev) ? "2083" : "2053";
 export const ENDPOINT = `https://everyone.dance:${port}`;
