@@ -15,16 +15,16 @@ jobs:
         include:
           - os: ubuntu-latest
             artifact_dir: everyone.dance-linux-x64
-            artifact_name: everyone.dance-linux-x64.zip
-            asset_name: everyone.dance-linux-x64.zip
+            artifact_name: everyone.dance-linux-x64
+            asset_name: everyone.dance-linux-x64
           - os: windows-latest
             artifact_dir: everyone.dance-win32-x64
-            artifact_name: everyone.dance-win32-x64.zip
-            asset_name: everyone.dance-win32-x64.zip
+            artifact_name: everyone.dance-win32-x64
+            asset_name: everyone.dance-win32-x64
           - os: macos-latest
             artifact_dir: everyone.dance-darwin-x64
-            artifact_name: everyone.dance-macos-x64.zip
-            asset_name: everyone.dance-macos-x64.zip
+            artifact_name: everyone.dance-macos-x64
+            asset_name: everyone.dance-macos-x64
 
     steps:
     - uses: actions/checkout@v2
@@ -49,9 +49,12 @@ jobs:
       run: npm run make
     - if: runner.os == 'Windows'
       run: powershell Compress-Archive out/${{ matrix.artifact_dir }} ${{ matrix.artifact_name }}
+    - name: get-npm-version
+      id: package-version
+      uses: martinbeentjes/npm-get-version-action@master
     - uses: svenstaro/upload-release-action@v2
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: ${{ matrix.artifact_name }}
-        asset_name: ${{ matrix.asset_name }}
+        file: ${{ matrix.artifact_name }}-${{ steps.package-version.outputs.current-version}}.zip
+        asset_name: ${{ matrix.asset_name }}-${{ steps.package-version.outputs.current-version}}.zip
         tag: ${{ github.ref }}
