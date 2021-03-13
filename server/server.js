@@ -3,6 +3,7 @@ const dotenv = require("dotenv");
 const fs = require('fs');
 const GameRoom = require('./GameRoom');
 const Player = require("./Player");
+const {Config} = require("./Config")
 
 dotenv.config();
 
@@ -24,7 +25,7 @@ class Server
 
         this.io = require('socket.io')(secureServer, {
             cors: {
-                origin: ["https://everyone.dance", "https://everyone.dance:443", "https://everyone.dance:2053"],
+                origin: [Config.getHost(), `${Config.getHost()}:443`, `${Config.getHost()}:2053`],
                 methods: ["GET", "POST"]
             }
         });
@@ -36,7 +37,7 @@ class Server
         })
 
         secureServer.listen(PORT, () => {
-            console.log(`Started server successfully at port ${PORT}! Listening for connections now.`);
+            console.log(`Started server successfully ${Config.getHost()}:${PORT}! Listening for connections now.`);
         })
 
         this.game_rooms = {} // List of all active game rooms. Key is game room code

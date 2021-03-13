@@ -22,6 +22,7 @@
         "make-linux": "electron-forge make --platform linux --target zip",
         "webapp": "node webapp.js",
         "server": "node server/server.js",
+        "server-test": "node server/server.js --test",
         "watch": "webpack --config webpack.common.js --watch",
         "dev": "npm-run-all -p -r start watch",
         "bundle": "webpack bundle --config webpack.common.js --mode production",
