@@ -2,7 +2,8 @@ const dotenv = require("dotenv");
 const fs = require('fs');
 const GameRoom = require('./GameRoom');
 const Player = require("./Player");
-const {Config} = require("./Config")
+const {Config} = require("./Config");
+const Log = require("./Log");
 
 dotenv.config();
 
@@ -12,7 +13,7 @@ class Server
 {
     constructor()
     {
-        console.log("Starting server...");
+        Log("Starting server...");
 
         const app = require('express')();
         const https = require('https');
@@ -36,7 +37,7 @@ class Server
         })
 
         secureServer.listen(Config.port, () => {
-            console.log(`Started server successfully ${Config.getHost()}:${Config.port}! Listening for connections now.`);
+            Log(`Started server successfully ${Config.getHost()}:${Config.port}! Listening for connections now.`);
         })
 
         this.game_rooms = {} // List of all active game rooms. Key is game room code
@@ -149,7 +150,7 @@ class Server
     {
         if (this.game_rooms[game_room.game_code])
         {
-            console.log(`Removed game room ${game_room.game_code} because it was empty`);
+            Log(`Removed game room ${game_room.game_code} because it was empty`);
             delete this.game_rooms[game_room.game_code];
         }
     }

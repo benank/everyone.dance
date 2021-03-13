@@ -1,8 +1,10 @@
+const Log = require("./Log")
+
 module.exports = class GameRoom
 {
     constructor(game_code, server)
     {
-        console.log(`Create game room ${game_code}`);
+        Log(`Create game room ${game_code}`);
         this.server = server;
         this.game_code = game_code;
         this.players = {}
@@ -20,7 +22,7 @@ module.exports = class GameRoom
      */
     add_player(player)
     {
-        console.log(`Add player ${player.getName()} to game room ${this.game_code}`);
+        Log(`Add player ${player.getName()} to game room ${this.game_code}`);
         this.players[player.client.id] = player;
         player.game = this;
         player.client.join(this.game_code);
@@ -34,7 +36,7 @@ module.exports = class GameRoom
      */
     remove_player(player)
     {
-        console.log(`Remove player ${player.getName()} from game room ${this.game_code}`);
+        Log(`Remove player ${player.getName()} from game room ${this.game_code}`);
         delete this.players[player.client.id];
         delete player.game;
         this.server.io.to(this.game_code).emit('remove player', player.client.id);
