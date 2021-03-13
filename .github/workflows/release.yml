@@ -40,7 +40,7 @@ jobs:
     - if: runner.os == 'macOS'
       run: npm run make-mac
     - if: runner.os == 'macOS'
-      run: zip -r ${{ matrix.artifact_name }} out/${{ matrix.artifact_dir }}
+      run: zip -r -y ${{ matrix.artifact_name }} out/${{ matrix.artifact_dir }}
     - if: runner.os == 'Linux'
       run: npm run make-linux
     - if: runner.os == 'Linux'
