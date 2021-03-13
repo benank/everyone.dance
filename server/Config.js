@@ -12,7 +12,7 @@ class Config
         // Launched server in test mode
         if (process.argv[2] == "--test")
         {
-            this.port = 2054;
+            this.port = 2083;
         }
     }
 
