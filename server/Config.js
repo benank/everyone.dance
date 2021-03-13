@@ -6,21 +6,19 @@ class Config
         // Base path of host name without https
         // Default: "everyone.dance"
         this.hostname = "everyone.dance";
-    
-        // Path from hostname to the server. Useful for multiple server instances or testing
-        // Default: "/"
-        this.hostpath = "/";
 
+        this.port = 2053;
+    
         // Launched server in test mode
         if (process.argv[2] == "--test")
         {
-            this.hostpath += "test";
+            this.port = 2054;
         }
     }
 
     getHost()
     {
-        return new URL(this.hostpath, "https://" + this.hostname).href;
+        return "https://" + this.hostname;
     }
 }
 
