@@ -16,7 +16,6 @@ jobs:
           - name: get-npm-version
             id: package-version
             uses: martinbeentjes/npm-get-version-action@master
-          - uses: svenstaro/upload-release-action@v2
           - os: ubuntu-latest
             artifact_dir: everyone.dance-linux-x64
             artifact_name: everyone.dance-linux-x64-${{ steps.package-version.outputs.current-version}}.zip
