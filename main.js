@@ -60,7 +60,6 @@ let latest_release = {}
 
 let stop_update = false;
 ipcMain.on('stop update', (_, message) => {
-    console.log("STOP")
     stop_update = true;
 })
 
