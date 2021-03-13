@@ -15,6 +15,7 @@ import InstallMenu from './InstallMenu'
 import UpdateMenu from './UpdateMenu'
 
 import { ENDPOINT } from "./constants/endpoint"
+import {VERSION} from "./constants/version"
 
 export default class App extends React.Component {
 
@@ -77,6 +78,7 @@ export default class App extends React.Component {
         return (
             <>
                 <div className="background"></div>
+                {(electron.isDev || this.state.app_state == APP_STATE.INSTALL_VIEW) && <div className='dev-version'>{VERSION}</div>}
                 {/* {typeof electron != 'undefined' && <img src={close_icon} className="close-button" onClick={() => electron.closeWindow()}></img>} */}
                 {!this.state.connected && <img src={loading_icon} className='connecting-icon'></img>}
                 {this.state.app_state == APP_STATE.MAIN_MENU && <MainMenu update_ready={this.state.update_ready} socket={this.socket} setAppState={(state) => this.setAppState(state)}></MainMenu>}

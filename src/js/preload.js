@@ -23,5 +23,6 @@ electron.contextBridge.exposeInMainWorld('electron', {
     getHomePath()
     {
         return (electron.app || electron.remote.app).getPath('home')
-    }
+    },
+    isDev: !(electron.app || electron.remote.app).isPackaged
 })

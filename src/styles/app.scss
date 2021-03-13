@@ -48,3 +48,14 @@ img.connecting-icon
     0% {transform: rotate(0deg);}
     100% {transform: rotate(360deg);}
 }
+
+div.dev-version
+{
+    color: white;
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 5;
+    margin: 5px;
+    font-size: 18px;
+}
