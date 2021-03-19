@@ -36,11 +36,14 @@ module.exports = class GameRoom
      */
     remove_player(player)
     {
-        Log(`Remove player ${player.getName()} from game room ${this.game_code}`);
-        delete this.players[player.client.id];
-        delete player.game;
-        this.server.io.to(this.game_code).emit('remove player', player.client.id);
-        player.client.leave(this.game_code);
+        if (typeof player != 'undefined')
+        {
+            Log(`Remove player ${player.getName()} from game room ${this.game_code}`);
+            delete this.players[player.client.id];
+            delete player.game;
+            this.server.io.to(this.game_code).emit('remove player', player.client.id);
+            player.client.leave(this.game_code);
+        }
 
         // Get all non spectating players
         if (!this.removed && Object.keys(this.players).filter((key) => !this.players[key].spectate).length == 0)
