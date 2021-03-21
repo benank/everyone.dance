@@ -201,7 +201,8 @@ export default class GameRoom extends React.Component {
                                 const player = this.state.players[key];
                                 if (player.spectate) {return;}
 
-                                return <PlayerCard {...this.props} key={key} player_data={player} p2={false} update={true} path={this.state.full_file_path}/>
+                                return player.data["PlayerNumber_P1"] != undefined &&
+                                    <PlayerCard {...this.props} key={key} player_data={player} p2={false} update={true} path={this.state.full_file_path}/>
                             })}
                             {Object.keys(this.state.players).map((key) => 
                             {
