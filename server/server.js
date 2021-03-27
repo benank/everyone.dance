@@ -72,7 +72,8 @@ class Server
 
         client.on('enter game code', (args) => 
         {
-            client.player.spectate = args.spectate;
+            client.player.spectate = false;
+            client.player.web_view = args.isWebVersion;
             this.client_enter_game_code(client, args.game_code);
         })
         
@@ -117,7 +118,15 @@ class Server
 
     client_create_game_room(client)
     {
-        if (client.player.game) {return;}
+        if (client.player.game)
+        {
+            client.emit("notification", {
+                bg_color: 'red', 
+                text_color: 'white',
+                text: 'Failed to create game room: You are already in a game room.'
+            });
+            return;
+        }
 
         const game_code = this.get_new_game_room_code();
 
@@ -129,15 +138,80 @@ class Server
 
     client_enter_game_code(client, game_code)
     {
-        if (client.player.game) {return;}
+        if (client.player.game)
+        {
+            client.emit("notification", {
+                bg_color: 'red', 
+                text_color: 'white',
+                text: 'Failed to join game room: You are already in a game.'
+            });
+            return;
+        }
 
         // Invalid game code
-        if (typeof game_code == 'undefined') {return;}
+        if (typeof game_code == 'undefined')
+        {
+            client.emit("notification", {
+                bg_color: 'red', 
+                text_color: 'white',
+                text: 'Failed to join game room: Invalid game code.'
+            });
+        }
 
         const game_room = this.game_rooms[game_code];
 
         // Game room does not exist
-        if (typeof game_room == 'undefined') {return;}
+        if (typeof game_room == 'undefined')
+        {
+            client.emit("notification", {
+                bg_color: 'red', 
+                text_color: 'white',
+                text: 'Failed to join game room: Room does not exist.'
+            });
+            return;
+        }
+
+        // No players or spectators allowed in game
+        if (!game_room.options.allow_players &&
+            !game_room.options.allow_spectators)
+        {
+            client.emit("notification", {
+                bg_color: 'red', 
+                text_color: 'white',
+                text: 'Failed to join game room: Room is closed.'
+            });
+            return;
+        }
+        else if (!game_room.options.allow_players ||
+            client.player.web_view)
+        {
+            // Force player to spectate if players are not allowed
+            // or if they are web view
+            client.player.spectate = true;
+        }
+
+        if (!game_room.options.allow_spectators &&
+            client.player.spectate)
+        {
+            client.emit("notification", {
+                bg_color: 'red', 
+                text_color: 'white',
+                text: 'Failed to join game room: Spectators not allowed.'
+            });
+            return;
+        }
+
+        // Room is full (based on player limit)
+        if (game_room.options.player_limit > 0 &&
+            game_room.get_num_players() >= game_room.options.player_limit)
+        {
+            client.emit("notification", {
+                bg_color: 'red', 
+                text_color: 'white',
+                text: 'Failed to join game room: Room is full.'
+            });
+            return;
+        }
 
         game_room.add_player(client.player);
     }

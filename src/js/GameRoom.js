@@ -8,7 +8,9 @@ import { APP_STATE } from './constants/app_state'
 import back_arrow_icon from "../icons/back_arrow.svg"
 import popout_icon from "../icons/popout.svg"
 import info_icon from "../icons/info.svg"
+import settings_icon from "../icons/settings.svg"
 import SMInstallation from './SMEnvironment';
+import GameRoomSettings from "./GameRoomSettings"
 
 import {isWebVersion} from "./constants/isWebVersion"
 
@@ -28,7 +30,8 @@ export default class GameRoom extends React.Component {
         {
             game_code: props.game_room_data.game_code,
             players: props.game_room_data.players,
-            full_file_path: "" // Full file path to everyone.dance.txt
+            full_file_path: "", // Full file path to everyone.dance.txt
+            settings_open: false
         }
     }
 
@@ -104,12 +107,8 @@ export default class GameRoom extends React.Component {
             this.setState({full_file_path: file_path})
         }
 
-        console.log(`file path: ${file_path}`)
-
         // File does not exist
         if (!electron.fs.existsSync(file_path)) {return;}
-
-        console.log("exists, reading")
 
         const file = electron.fs.readFileSync(file_path, 'utf8').toString();
 
@@ -178,6 +177,13 @@ export default class GameRoom extends React.Component {
         this.props.setAppState(APP_STATE.MAIN_MENU)
     }
 
+    toggle_settings()
+    {
+        this.setState({
+            settings_open: !this.state.settings_open
+        })
+    }
+
     render () {
         return (
             <div className="gameroom-main-container">
@@ -186,10 +192,11 @@ export default class GameRoom extends React.Component {
                         <div className="navbar-left-container">
                             <img src={back_arrow_icon} className="navitem leave" onClick={() => this.leave_game_room()}></img>
                         </div>
-                        {/* <div className="navbar-right-container">
-                            <img src={info_icon} className="navitem info"></img>
-                            <img src={popout_icon} className="navitem popout"></img>
-                        </div> */}
+                        <div className="navbar-right-container">
+                            <img src={settings_icon} onClick={() => this.toggle_settings()} className="navitem settings"></img>
+                            {/* <img src={info_icon} className="navitem info"></img>
+                            <img src={popout_icon} className="navitem popout"></img> */}
+                        </div>
                     </div>
                     <div className="title-container" onClick={() => !isWebVersion ?
                         electron.clipboard.writeText(this.state.game_code) : 
@@ -217,6 +224,11 @@ export default class GameRoom extends React.Component {
                         </div>
                     </div>
                 </div>
+                {this.state.settings_open && 
+                    <GameRoomSettings 
+                    toggleSettings={this.toggle_settings.bind(this)}
+                    {...this.props}></GameRoomSettings>
+                }
             </div>
         )
     }

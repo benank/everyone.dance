@@ -1,4 +1,5 @@
 const Log = require("./Log")
+const {SYNC_MODE} = require("../src/js/constants/SyncMode")
 
 module.exports = class GameRoom
 {
@@ -7,7 +8,59 @@ module.exports = class GameRoom
         Log(`Create game room ${game_code}`);
         this.server = server;
         this.game_code = game_code;
-        this.players = {}
+        this.players = {};
+        this.options = {};
+        this.host_id = -1;
+    }
+
+    /**
+     * Returns a list of all active players in the game room.
+     */
+    get_num_players()
+    {
+        return Object.keys(this.get_players()).length;
+    }
+
+    /**
+     * Returns a list of all active players in the game room.
+     */
+    get_players()
+    {
+        const keys = Object.keys(this.players).filter((key) => !this.players[key].spectate);
+        const players = {};
+        keys.forEach((key) => {
+            players[key] = this.players[key];
+        });
+        return players;
+    }
+
+    /**
+     * Returns a list of all spectators in the game room.
+     */
+    get_spectators()
+    {
+        const keys = Object.keys(this.players).filter((key) => this.players[key].spectate);
+        const players = {};
+        keys.forEach((key) => {
+            players[key] = this.players[key];
+        });
+        return players;
+    }
+
+    get_default_options()
+    {
+        return {
+            ["show_game_code"]: true,
+            ["allow_spectators"]: true,
+            ["allow_players"]: true,
+            ["player_limit"]: -1,
+            ["sync_mode"]: SYNC_MODE.Realtime
+        }
+    }
+
+    is_host(player)
+    {
+        return player.client.id == this.host_id;
     }
 
     sync_player_data(player)
@@ -23,7 +76,14 @@ module.exports = class GameRoom
     add_player(player)
     {
         Log(`Add player ${player.getName()} to game room ${this.game_code}`);
+
         this.players[player.client.id] = player;
+
+        if (this.host_id == -1)
+        {
+            this.host_id = player.client.id;
+        }
+
         player.game = this;
         player.client.join(this.game_code);
         this.server.io.to(this.game_code).emit('add player', player.getSyncData());
@@ -40,8 +100,22 @@ module.exports = class GameRoom
         {
             Log(`Remove player ${player.getName()} from game room ${this.game_code}`);
             delete this.players[player.client.id];
+
+            // Host left, so reassign to random player/spectator
+            if (this.host_id == player.client.id)
+            {
+                this.host_id = -1;
+
+                if (Object.keys(this.players).length > 0)
+                {
+                    this.host_id = this.players[Object.keys(this.players)[0]];
+                }
+            }
+
+
             delete player.game;
             this.server.io.to(this.game_code).emit('remove player', player.client.id);
+            this.sync_options();
             player.client.leave(this.game_code);
         }
 
@@ -56,6 +130,11 @@ module.exports = class GameRoom
             this.server.remove_game_room(this);
             this.removed = true;
         }
+    }
+
+    sync_options()
+    {
+        this.server.io.to(this.game_code).emit('update options', this.options);
     }
 
     /**

@@ -30,8 +30,10 @@ export default class MainMenu extends React.Component {
         if (this.state.game_code_input_value.length != 4) {return;}
         if (!this.props.socket.connected) {return;}
 
-        const is_electron = !isWebVersion;
-        this.props.socket.emit("enter game code", {game_code: this.state.game_code_input_value, spectate: !is_electron});
+        this.props.socket.emit("enter game code", {
+            game_code: this.state.game_code_input_value, 
+            isWebVersion: isWebVersion
+        });
         this.state.game_code_input_value = "";
     }
 
@@ -68,7 +70,7 @@ export default class MainMenu extends React.Component {
     render () {
         return (
             <>
-                <div className="title-container">
+                <div className="main-menu-title-container">
                     <div className="title">everyone.dance</div>
                     <div className="buttons-container">
                         {!this.state.game_code_open && <div className="button join" onClick={() => this.click_join_game()}>

@@ -1,0 +1,105 @@
+div.game-room-settings
+{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
+    border-radius: 20px;
+    width: 75%;
+    height: 75%;
+    padding: 16px;
+    animation: 0.5s ease-in-out container-appear;
+    padding: 16px;
+    user-select: none;
+}
+
+// Nice appear animation :)
+@keyframes container-appear
+{
+    0% {opacity: 0; transform: translate(-50%, -50%) scale(0.8);}
+    50% {transform: translate(-50%, -50%) scale(1.02);}
+    100% {opacity: 1; transform: translate(-50%, -50%) scale(1);}
+}
+
+div.game-room-settings div.content
+{
+    position: relative;
+    width: 100%;
+    height: calc(100% - 60px);
+}
+
+div.game-room-settings div.content div.close-button
+{
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+div.game-room-settings div.content div.title-container
+{
+    font-size: 28px;
+    user-select: none;
+    text-align: center;
+}
+
+div.game-room-settings div.settings-content
+{
+    margin-top: 30px;
+    display: grid;
+    grid-template-rows: auto;
+    grid-template-columns: 50% 50%;
+    // border: 2px dashed red;
+    height: fit-content;
+}
+
+// div.game-room-settings div.container
+// {
+//     border: 2px dashed green;
+// }
+
+div.game-room-settings div.container div.option
+{
+    display: grid;
+    grid-template-rows: auto;
+    grid-template-columns: 60% auto;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+div.game-room-settings div.container div.option div.text
+{
+    font-size: 22px;
+}
+
+div.game-room-settings div.container div.option input.player-limit
+{
+    font-size: 18px;
+    display: inline-block;
+    width: 40px;
+    padding: 0px;
+    cursor: auto;
+    outline: none;
+    border: none;
+    border-bottom: 1px solid gray;
+    margin-left: 8px;
+}
+
+div.game-room-settings div.container div.option div.input-container
+{
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex-flow: row wrap;
+}
+
+div.game-room-settings div.container div.option select.dropdown
+{
+    font-size: 20px;
+    outline: none;
+    border: none;
+    border-bottom: 1px solid gray;
+    cursor: pointer;
+    transition: 0.2s ease-in-out all;
+}
