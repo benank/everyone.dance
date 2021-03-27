@@ -16,6 +16,7 @@ import UpdateMenu from './UpdateMenu'
 
 import { ENDPOINT } from "./constants/endpoint"
 import {VERSION} from "./constants/version"
+import {isWebVersion} from "./constants/isWebVersion";
 
 export default class App extends React.Component {
 
@@ -57,7 +58,7 @@ export default class App extends React.Component {
             this.setState({app_state: APP_STATE.GAME_ROOM, game_room_data: data})
         })
 
-        if (typeof electron != 'undefined')
+        if (!isWebVersion)
         {
             electron.on("update ready", (args) => 
             {
@@ -78,8 +79,8 @@ export default class App extends React.Component {
         return (
             <>
                 <div className="background"></div>
-                {((typeof electron != 'undefined' && electron.isDev) || this.state.app_state == APP_STATE.INSTALL_VIEW) && <div className='dev-version'>{VERSION}</div>}
-                {/* {typeof electron != 'undefined' && <img src={close_icon} className="close-button" onClick={() => electron.closeWindow()}></img>} */}
+                {((!isWebVersion && electron.isDev) || this.state.app_state == APP_STATE.INSTALL_VIEW) && <div className='dev-version'>{VERSION}</div>}
+                {/* {!isWebVersion && <img src={close_icon} className="close-button" onClick={() => electron.closeWindow()}></img>} */}
                 {!this.state.connected && <img src={loading_icon} className='connecting-icon'></img>}
                 {this.state.app_state == APP_STATE.MAIN_MENU && <MainMenu update_ready={this.state.update_ready} socket={this.socket} setAppState={(state) => this.setAppState(state)}></MainMenu>}
                 {this.state.app_state == APP_STATE.GAME_ROOM && <GameRoom game_room_data={this.state.game_room_data} socket={this.socket} setAppState={(state) => this.setAppState(state)}></GameRoom>}

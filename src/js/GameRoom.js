@@ -10,6 +10,8 @@ import popout_icon from "../icons/popout.svg"
 import info_icon from "../icons/info.svg"
 import SMInstallation from './SMEnvironment';
 
+import {isWebVersion} from "./constants/isWebVersion"
+
 // Raw SM import data from txt file
 let sm_data = ""
 let sm_check_interval;
@@ -79,7 +81,7 @@ export default class GameRoom extends React.Component {
             }
         })
 
-        if (typeof electron != 'undefined')
+        if (!isWebVersion)
         {
             sm_check_interval = setInterval(() => {
                 this.check_for_sm_updates();
@@ -189,7 +191,7 @@ export default class GameRoom extends React.Component {
                             <img src={popout_icon} className="navitem popout"></img>
                         </div> */}
                     </div>
-                    <div className="title-container" onClick={() => typeof electron != 'undefined' ?
+                    <div className="title-container" onClick={() => !isWebVersion ?
                         electron.clipboard.writeText(this.state.game_code) : 
                         navigator.clipboard.writeText(this.state.game_code)}>
                         Game Code: <span className="code-bold">{this.state.game_code}</span>
