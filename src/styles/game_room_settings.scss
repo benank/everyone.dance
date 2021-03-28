@@ -103,3 +103,17 @@ div.game-room-settings div.container div.option select.dropdown
     cursor: pointer;
     transition: 0.2s ease-in-out all;
 }
+
+div.game-room-settings div.container div.players-title
+{
+    text-align: center;
+    font-size: 22px;
+}
+
+div.game-room-settings div.container div.players-subtitle
+{
+    text-align: center;
+    font-size: 14px;
+    color: gray;
+    margin-top: 4px;
+}

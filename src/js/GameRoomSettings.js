@@ -22,6 +22,16 @@ export default class GameRoomSettings extends React.Component {
         this.props.setSyncMode(parseInt(event.target.value));
     }
 
+    get_num_players()
+    {
+        return Object.values(this.props.players).filter((player) => !player.spectate).length;
+    }
+
+    get_num_spectators()
+    {
+        return Object.values(this.props.players).filter((player) => player.spectate).length;
+    }
+
     render () {
         return (
             <div className='game-room-settings'>
@@ -90,7 +100,8 @@ export default class GameRoomSettings extends React.Component {
                             </div>
                         </div>
                         <div className='container'>
-                            [player and spectator list here]
+                            <div className='players-title'>{this.get_num_players()} Players</div>
+                            <div className='players-subtitle'>{this.get_num_spectators()} Spectators</div>
                         </div>
                     </div>
                 </div>

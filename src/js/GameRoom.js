@@ -36,14 +36,7 @@ export default class GameRoom extends React.Component {
             my_id: Object.values(props.game_room_data.players).filter((player) => player.is_me)[0].id,
             full_file_path: "", // Full file path to everyone.dance.txt
             settings_open: false,
-            options:
-            {
-                ["show_game_code"]: true,
-                ["allow_spectators"]: true,
-                ["allow_players"]: true,
-                ["player_limit"]: -1,
-                ["sync_mode"]: SYNC_MODE.Realtime
-            }
+            options: props.game_room_data.options
         }
     }
 
@@ -298,11 +291,11 @@ export default class GameRoom extends React.Component {
                             <img src={popout_icon} className="navitem popout"></img> */}
                         </div>
                     </div>
-                    <div className="title-container" onClick={() => !isWebVersion ?
+                    {this.state.options["show_game_code"] && <div className="title-container" onClick={() => !isWebVersion ?
                         electron.clipboard.writeText(this.state.game_code) : 
                         navigator.clipboard.writeText(this.state.game_code)}>
                         Game Code: <span className="code-bold">{this.state.game_code}</span>
-                    </div>
+                    </div>}
                     <div className="cards-container-outer">
                         <div className="cards-container">
                             {Object.keys(this.state.players).map((key) => 
@@ -328,6 +321,9 @@ export default class GameRoom extends React.Component {
                     <GameRoomSettings 
                     options={this.state.options}
                     isHost={this.am_i_host()}
+                    host_id={this.state.host_id}
+                    my_id={this.state.my_id}
+                    players={this.state.players}
                     toggleSettings={this.toggle_settings.bind(this)}
                     click_toggle={this.click_settings_toggle.bind(this)}
                     setPlayerLimit={this.update_settings_max_players.bind(this)}
