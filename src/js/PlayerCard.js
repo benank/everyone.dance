@@ -3,6 +3,7 @@ import "../styles/player_card.scss"
 import CountUp from 'react-countup';
 
 import "../styles/navitem.scss"
+import {isWebVersion} from "./constants/isWebVersion";
 
 import { CardIcon, ICON_TYPE } from "./CardIcon"
 

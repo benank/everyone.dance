@@ -262,6 +262,21 @@ export default class GameRoom extends React.Component {
         this.props.socket.emit("update options", options_copy);
     }
 
+    update_settings_sync_mode(mode)
+    {
+        // Not host, so return
+        if (!this.am_i_host()) {return;}
+
+        const options_copy = JSON.parse(JSON.stringify(this.state.options));
+        options_copy["sync_mode"] = mode;
+
+        this.setState({
+            options: options_copy
+        })
+
+        this.props.socket.emit("update options", options_copy);
+    }
+
     render () {
         return (
             <div className="gameroom-main-container">
@@ -305,9 +320,11 @@ export default class GameRoom extends React.Component {
                 {this.state.settings_open && 
                     <GameRoomSettings 
                     options={this.state.options}
+                    isHost={this.am_i_host()}
                     toggleSettings={this.toggle_settings.bind(this)}
                     click_toggle={this.click_settings_toggle.bind(this)}
                     setPlayerLimit={this.update_settings_max_players.bind(this)}
+                    setSyncMode={this.update_settings_sync_mode.bind(this)}
                     {...this.props}></GameRoomSettings>
                 }
             </div>

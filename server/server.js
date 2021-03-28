@@ -119,10 +119,18 @@ class Server
     {
         // Only the host can update the options
         if (client.player.game && 
-            client.player.id == client.player.game.host_id &&
+            client.id == client.player.game.host_id &&
             this.verify_valid_options(options))
         {
             client.player.game.update_options(options);
+        }
+        else
+        {
+            client.emit("notification", {
+                bg_color: 'red', 
+                text_color: 'white',
+                text: 'Failed to edit game room settings: You are not the host.'
+            });
         }
     }
 

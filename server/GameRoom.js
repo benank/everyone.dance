@@ -9,7 +9,7 @@ module.exports = class GameRoom
         this.server = server;
         this.game_code = game_code;
         this.players = {};
-        this.options = {};
+        this.options = this.get_default_options();
         this.host_id = -1;
     }
 
