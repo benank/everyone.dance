@@ -1,5 +1,5 @@
 # everyone.dance
-A synchronized near-realtime score sharing system for Stepmania. It's meant to be an easily accessible and usable platform for playing with others in Stepmania without hassle.
+A realtime score sharing system for Stepmania. It's meant to be an easily accessible and usable platform for playing with others in Stepmania without hassle.
 
 This is available at [everyone.dance](https://everyone.dance/). Please keep reading for usage instructions. You can download from that website or from the releases page here.
 
@@ -11,6 +11,26 @@ Head on over to [releases](https://github.com/benank/everyone.dance/releases) an
 Once it opens, click Installation. This will take you to the installation screen where you can install the StepMania script for your theme. Select your StepMania directory (where the game is) and then choose the theme you want to install it to and hit Install.
 
 After it's installed, you can go back and create a room. When you're in a room, you can see the synced scores and song info of everyone in it. Click your room code to copy it and give it to other people so they can join your game! You can also invite people to spectate through the web view at [everyone.dance](https://everyone.dance). They won't show up in the game and will just be a spectator.
+
+### Game Room Settings
+When in a game room, you can click the settings icon the top right corner to access the game room settings. In this menu, there are a few settings for customizing your room. Only the host of a room can change these settings. 
+
+#### **Show Game Code**
+- Toggles whether or not the game code is shown in the top center of the window.
+
+#### **Allow Spectators**
+- Toggles whether or not spectators are allowed. If disabled, spectators will not be able to join from the website and players will not be able to go into spectate mode.
+
+#### **Allow Players**
+- Toggles whether or not players are allowed. If disabled, users who join will automatically become spectators. The host can manually switch a user's mode into a player to overwrite this setting.
+
+#### **Player Limit**
+- Toggles whether or not there is a maximum player limit in the room. If enabled, the host can set the player limit between 0-99. Keep in mind that this does not restrict spectating; if the game room is full, users will join as spectators if spectators are allowed.
+
+#### **Sync Mode**
+- Sets the score sync mode in the room.
+  - **Realtime** (default): player scores are synced instantly. This means that the players might be at different locations in the song if they are playing the same song, so comparing live scores may not be completely accurate until the songs are finished. This option is great for casual matches, especially if the players in the game room aren't playing the same songs.
+  - **Song Time**: player scores are synced perfectly in time. However, this means that *all* players in the game room must start playing a song in order for the scores to begin displaying. This option is great for tournament settings where you want to display perfectly synced scores side-by-side in live matches for the same songs.
 
 ## Supported Themes
 These themes have been tested to work with this system and the installation procedure. Any other themes may or may not work. Please feel free to create an issue for any themes that do not work and I can modify it to include them.
