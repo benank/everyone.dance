@@ -264,6 +264,26 @@ class Server
             client.player.spectate = true;
         }
 
+        // Room is full (based on player limit)
+        if (game_room.options.player_limit > 0 &&
+            game_room.get_num_players() >= game_room.options.player_limit)
+        {
+            if (!game_room.options.allow_spectators)
+            {
+                client.emit("notification", {
+                    bg_color: '#E54C4C', 
+                    text_color: 'white',
+                    text: 'Failed to join game room: Room is full.'
+                });
+                return;
+            }
+            else
+            {
+                // Convert player to spectator if there is no room for players
+                client.player.spectate = true;
+            }
+        }
+
         if (!game_room.options.allow_spectators &&
             client.player.spectate)
         {
@@ -271,18 +291,6 @@ class Server
                 bg_color: '#E54C4C', 
                 text_color: 'white',
                 text: 'Failed to join game room: Spectators not allowed.'
-            });
-            return;
-        }
-
-        // Room is full (based on player limit)
-        if (game_room.options.player_limit > 0 &&
-            game_room.get_num_players() >= game_room.options.player_limit)
-        {
-            client.emit("notification", {
-                bg_color: '#E54C4C', 
-                text_color: 'white',
-                text: 'Failed to join game room: Room is full.'
             });
             return;
         }
