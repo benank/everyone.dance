@@ -114,14 +114,13 @@ module.exports = class GameRoom
 
                 if (Object.keys(this.players).length > 0)
                 {
-                    this.host_id = this.players[Object.keys(this.players)[0]];
+                    this.host_id = this.players[Object.keys(this.players)[0]].client.id;
+                    this.server.io.to(this.game_code).emit('new host', this.host_id);
                 }
             }
 
-
             delete player.game;
             this.server.io.to(this.game_code).emit('remove player', player.client.id);
-            this.sync_options();
             player.client.leave(this.game_code);
         }
 

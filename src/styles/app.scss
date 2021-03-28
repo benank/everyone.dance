@@ -60,3 +60,35 @@ div.dev-version
     font-size: 18px;
     user-select: none;
 }
+
+div.notification
+{
+    position: fixed;
+    top: 15%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: 0.5s ease-in-out notification-appear, 5s ease-in-out notification-fadeout;
+    border-radius: 20px;
+    z-index: 100;
+    padding: 40px;
+    max-width: 90%;
+    width: fit-content;
+    font-size: 20px;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
+    user-select: none;
+}
+
+@keyframes notification-appear
+{
+    0% {opacity: 0; transform: translate(-50%, -50%) scale(0.8);}
+    50% {transform: translate(-50%, -50%) scale(1.02);}
+    100% {opacity: 1; transform: translate(-50%, -50%) scale(1);}
+}
+
+@keyframes notification-fadeout
+{
+    90% {opacity: 1;}
+    100% {opacity: 0;}
+}

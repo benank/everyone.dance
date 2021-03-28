@@ -30,7 +30,8 @@ export default class App extends React.Component {
             game_room_data: {},
             update_ready: false,
             current_version: "",
-            latest_version: ""
+            latest_version: "",
+            notification: null
         }
     }
 
@@ -58,6 +59,18 @@ export default class App extends React.Component {
             this.setState({app_state: APP_STATE.GAME_ROOM, game_room_data: data})
         })
 
+        this.socket.on("notification", (data) => 
+        {
+            if (typeof this.state.notification_timeout != 'undefined')
+            {
+                clearTimeout(this.state.notification_timeout);
+            }
+
+            this.setState({notification: data, notification_timeout: setTimeout(() => {
+                this.setState({notification: null})
+            }, 4990)});
+        })
+        
         if (!isWebVersion)
         {
             electron.on("update ready", (args) => 
@@ -90,6 +103,13 @@ export default class App extends React.Component {
                     current_version={this.state.current_version}
                     latest_version={this.state.latest_version}
                     setAppState={(state) => this.setAppState(state)}></UpdateMenu>}
+                {this.state.notification != null && 
+                    <div 
+                    style={{
+                        backgroundColor: this.state.notification.bg_color,
+                        color: this.state.notification.text_color
+                    }}
+                    className='notification'>{this.state.notification.text}</div>}
             </>
         )
     }

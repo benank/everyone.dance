@@ -117,6 +117,13 @@ export default class GameRoom extends React.Component {
             })
         })
 
+        this.props.socket.on("new host", (id) => 
+        {
+            this.setState({
+                host_id: id
+            })
+        })
+
         if (!isWebVersion)
         {
             sm_check_interval = setInterval(() => {

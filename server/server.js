@@ -127,7 +127,7 @@ class Server
         else
         {
             client.emit("notification", {
-                bg_color: 'red', 
+                bg_color: '#E54C4C', 
                 text_color: 'white',
                 text: 'Failed to edit game room settings: You are not the host.'
             });
@@ -195,7 +195,7 @@ class Server
         if (client.player.game)
         {
             client.emit("notification", {
-                bg_color: 'red', 
+                bg_color: '#E54C4C', 
                 text_color: 'white',
                 text: 'Failed to create game room: You are already in a game room.'
             });
@@ -215,7 +215,7 @@ class Server
         if (client.player.game)
         {
             client.emit("notification", {
-                bg_color: 'red', 
+                bg_color: '#E54C4C', 
                 text_color: 'white',
                 text: 'Failed to join game room: You are already in a game.'
             });
@@ -226,7 +226,7 @@ class Server
         if (typeof game_code == 'undefined')
         {
             client.emit("notification", {
-                bg_color: 'red', 
+                bg_color: '#E54C4C', 
                 text_color: 'white',
                 text: 'Failed to join game room: Invalid game code.'
             });
@@ -238,7 +238,7 @@ class Server
         if (typeof game_room == 'undefined')
         {
             client.emit("notification", {
-                bg_color: 'red', 
+                bg_color: '#E54C4C', 
                 text_color: 'white',
                 text: 'Failed to join game room: Room does not exist.'
             });
@@ -250,7 +250,7 @@ class Server
             !game_room.options.allow_spectators)
         {
             client.emit("notification", {
-                bg_color: 'red', 
+                bg_color: '#E54C4C', 
                 text_color: 'white',
                 text: 'Failed to join game room: Room is closed.'
             });
@@ -268,7 +268,7 @@ class Server
             client.player.spectate)
         {
             client.emit("notification", {
-                bg_color: 'red', 
+                bg_color: '#E54C4C', 
                 text_color: 'white',
                 text: 'Failed to join game room: Spectators not allowed.'
             });
@@ -280,7 +280,7 @@ class Server
             game_room.get_num_players() >= game_room.options.player_limit)
         {
             client.emit("notification", {
-                bg_color: 'red', 
+                bg_color: '#E54C4C', 
                 text_color: 'white',
                 text: 'Failed to join game room: Room is full.'
             });
