@@ -27,7 +27,7 @@ div.game-room-settings div.content
 {
     position: relative;
     width: 100%;
-    height: calc(100% - 60px);
+    height: 100%;
 }
 
 div.game-room-settings div.content div.close-button
@@ -51,12 +51,13 @@ div.game-room-settings div.settings-content
     grid-template-rows: auto;
     grid-template-columns: 50% 50%;
     column-gap: 30px;
-    height: fit-content;
+    height: 90%;
 }
 
 div.game-room-settings div.container
 {
     width: 90%;
+    height: 85%;
 }
 
 div.game-room-settings div.container div.option
@@ -116,4 +117,44 @@ div.game-room-settings div.container div.players-subtitle
     font-size: 14px;
     color: gray;
     margin-top: 4px;
+}
+
+div.game-room-settings div.container div.players-container
+{
+    margin-top: 10px;
+    min-height: 50%;
+    height: fit-content;
+    padding: 12px;
+    background-color: #EBEBEB;
+    border-radius: 8px;
+    overflow-y: auto;
+    max-height: 85%;
+}
+
+div.game-room-settings div.container div.players-container div.players-content div.user-entry
+{
+    background-color: #ffffffd7;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 6px;
+}
+
+div.game-room-settings div.container div.players-container div.players-content div.user-entry div.user-name
+{
+    display: inline-block;
+    font-size: 20px;
+    width: 100%;
+}
+
+img.navitem.normal-mouse
+{
+    cursor: default;
+}
+
+div.game-room-settings div.container div.players-container div.players-content div.user-entry div.float-left
+{
+    display: flex;
+    justify-content: flex-end;
 }

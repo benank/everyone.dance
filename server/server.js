@@ -83,6 +83,21 @@ class Server
             this.client_update_game_room_options(client, options)
         })
         
+        client.on('kick player', (id) => 
+        {
+            this.client_kick_player(client, id)
+        })
+        
+        client.on('change player status', (id) => 
+        {
+            this.client_toggle_player_spectator(client, id)
+        })
+        
+        client.on('make host', (id) => 
+        {
+            this.client_make_player_host(client, id)
+        })
+        
         client.on('leave game room', () => 
         {
             if (client.player.game)
@@ -112,6 +127,101 @@ class Server
         {
             client.player.game.sync_player_data(client.player);
         }
+    }
+
+    // Called when a client tries to kick a player from a game room
+    client_kick_player(client, id)
+    {
+        if (typeof client.player.game == 'undefined') {return;} // Not in a game
+        if (client.id != client.player.game.host_id) {return;} // Only host can kick
+        if (client.id == id) {return;} // Cannot kick yourself
+        if (typeof client.player.game.players[id] == 'undefined') {return;} // Player does not exist
+
+        const player_name = client.player.game.players[id].name;
+        client.player.game.remove_player(client.player.game.players[id]);
+        client.emit("notification", {
+            bg_color: '#00BC13', 
+            text_color: 'white',
+            text: `Kicked ${player_name} from the game.`
+        });
+    }
+
+    // Called when a client tries to toggle the spectate mode of a user
+    client_toggle_player_spectator(client, id)
+    {
+        const game = client.player.game;
+        if (typeof game == 'undefined') {return;} // Not in a game
+        if (client.id != game.host_id && client.id != id) {return;} // Only host can change others
+        if (typeof game.players[id] == 'undefined') {return;} // Player does not exist
+
+        const target_player = game.players[id];
+        if (target_player.web_view) {return;}
+
+        // If this is the host, they can do whatever they want
+        if (client.id == client.player.game.host_id)
+        {
+            target_player.spectate = !target_player.spectate;
+            game.sync_player_data(target_player);
+            return;
+        }
+
+        // If they are not the host...
+
+        // Client is a player but spectators are not allowed
+        if (!game.options["allow_spectators"] &&
+            !target_player.spectate)
+        {
+            client.emit("notification", {
+                bg_color: '#E54C4C', 
+                text_color: 'white',
+                text: 'Cannot spectate: spectators not allowed.'
+            });
+            return;
+        }
+        // Client is a spectator but players are not allowed
+        else if (!game.options["allow_players"] &&
+            target_player.spectate)
+        {
+            client.emit("notification", {
+                bg_color: '#E54C4C', 
+                text_color: 'white',
+                text: 'Cannot play: players not allowed.'
+            });
+            return;
+        }
+        // Client is spectator but player limit is reached
+        else if (game.get_num_players() >= game.options["player_limit"] &&
+            game.options["player_limit"] > 0 &&
+            target_player.spectate)
+        {
+            client.emit("notification", {
+                bg_color: '#E54C4C', 
+                text_color: 'white',
+                text: 'Cannot play: player limit reached.'
+            });
+            return;
+        }
+
+        // Good to go, so switch their status
+        target_player.spectate = !target_player.spectate;
+        game.sync_player_data(target_player);
+    }
+
+    // Called when a client tries to make another player host
+    client_make_player_host(client, id)
+    {
+        if (typeof client.player.game == 'undefined') {return;} // Not in a game
+        if (client.id != client.player.game.host_id) {return;} // Only host can make player host
+        if (client.id == id) {return;} // Cannot make yourself a host; you already are!
+        if (typeof client.player.game.players[id] == 'undefined') {return;}
+
+        client.player.game.host_id = id;
+        this.io.to(client.player.game.game_code).emit('new host', id);
+        client.emit("notification", {
+            bg_color: '#00BC13', 
+            text_color: 'white',
+            text: `Made ${client.player.game.players[id].name} host of the game.`
+        });
     }
 
     // Called when a client attempts to update options in a game room

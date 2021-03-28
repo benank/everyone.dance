@@ -180,8 +180,14 @@ div.installview-main-container div.button
 {
     width: 100%;
     margin: 0;
+    font-size: 18px;
+    padding: 12px;
     margin-top: 20px;
     color: white;
+    cursor: pointer;
+    user-select: none;
+    text-align: center;
+    border-radius: 12px;
 }
 
 div.installview-main-container div.button.install
