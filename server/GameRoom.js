@@ -1,4 +1,3 @@
-const { openSync } = require("original-fs");
 const Log = require("./Log")
 const SYNC_MODE = require("./SyncMode")
 
