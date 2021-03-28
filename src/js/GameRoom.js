@@ -109,6 +109,14 @@ export default class GameRoom extends React.Component {
             }
         })
 
+        this.props.socket.on("update options", (options) => 
+        {
+            console.log(options)
+            this.setState({
+                options: options
+            })
+        })
+
         if (!isWebVersion)
         {
             sm_check_interval = setInterval(() => {
@@ -229,13 +237,15 @@ export default class GameRoom extends React.Component {
         this.setState({
             options: options_copy
         })
+
+        this.props.socket.emit("update options", options_copy);
     }
 
     update_settings_max_players(amount)
     {
         // Not host, so return
         if (!this.am_i_host()) {return;}
-        
+
         if (amount <= 0)
         {
             this.click_settings_toggle("player_limit");
@@ -248,6 +258,8 @@ export default class GameRoom extends React.Component {
         this.setState({
             options: options_copy
         })
+
+        this.props.socket.emit("update options", options_copy);
     }
 
     render () {

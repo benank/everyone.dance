@@ -4,6 +4,7 @@ const GameRoom = require('./GameRoom');
 const Player = require("./Player");
 const {Config} = require("./Config");
 const Log = require("./Log");
+const SYNC_MODE = require("./SyncMode")
 
 dotenv.config();
 
@@ -76,6 +77,11 @@ class Server
             client.player.web_view = args.isWebVersion;
             this.client_enter_game_code(client, args.game_code);
         })
+
+        client.on('update options', (options) => 
+        {
+            this.client_update_game_room_options(client, options)
+        })
         
         client.on('leave game room', () => 
         {
@@ -106,6 +112,66 @@ class Server
         {
             client.player.game.sync_player_data(client.player);
         }
+    }
+
+    // Called when a client attempts to update options in a game room
+    client_update_game_room_options(client, options)
+    {
+        // Only the host can update the options
+        if (client.player.game && 
+            client.player.id == client.player.game.host_id &&
+            this.verify_valid_options(options))
+        {
+            client.player.game.update_options(options);
+        }
+    }
+
+    /**
+     * Checks if game room options are valid
+     * @param {*} options 
+     */
+    verify_valid_options(options)
+    {
+        if (typeof options["show_game_code"] == 'undefined' ||
+            typeof options["allow_spectators"] == 'undefined' ||
+            typeof options["allow_players"] == 'undefined' ||
+            typeof options["player_limit"] == 'undefined' ||
+            typeof options["sync_mode"] == 'undefined')
+        {
+            return false;   
+        }
+
+        if (options["show_game_code"] != true &&
+            options["show_game_code"] != false)
+        {
+            return false;   
+        }
+
+        if (options["allow_spectators"] != true &&
+            options["allow_spectators"] != false)
+        {
+            return false;   
+        }
+
+        if (options["allow_players"] != true &&
+            options["allow_players"] != false)
+        {
+            return false;   
+        }
+
+        if (options["player_limit"] < -1 ||
+            options["player_limit"] > 99)
+        {
+            return false;
+        }
+
+        if (options["sync_mode"] != SYNC_MODE.Realtime &&
+            options["sync_mode"] != SYNC_MODE.SongTime)
+        {
+            return false;   
+        }
+
+        return true;
     }
 
     client_disconnected(client)

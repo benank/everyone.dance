@@ -1,4 +1,4 @@
-module.exports = SYNC_MODE = 
+module.exports = 
 {
     Realtime: 1,
     SongTime: 2

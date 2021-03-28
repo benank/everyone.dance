@@ -1,3 +1,4 @@
+const { openSync } = require("original-fs");
 const Log = require("./Log")
 const SYNC_MODE = require("./SyncMode")
 
@@ -56,6 +57,12 @@ module.exports = class GameRoom
             ["player_limit"]: -1,
             ["sync_mode"]: SYNC_MODE.Realtime
         }
+    }
+
+    update_options(options)
+    {
+        this.options = options;
+        this.sync_options();
     }
 
     is_host(player)
