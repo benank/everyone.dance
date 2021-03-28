@@ -1,5 +1,5 @@
 const Log = require("./Log")
-const {SYNC_MODE} = require("../src/js/constants/SyncMode")
+const SYNC_MODE = require("./SyncMode")
 
 module.exports = class GameRoom
 {
