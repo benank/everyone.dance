@@ -21,7 +21,7 @@ export default class ToggleComponent extends React.Component {
 
     render () {
         return (
-            <div style={!this.props.isHost ? {cursor: 'not-allowed'} : {}} className='toggle-component' onClick={() => this.props.clickToggle()}>
+            <div style={this.props.host_id != this.props.my_id ? {cursor: 'not-allowed'} : {}} className='toggle-component' onClick={() => this.props.clickToggle()}>
                 <div style={{
                     backgroundColor: this.getDotColor(),
                     left: this.getDotXPosition()

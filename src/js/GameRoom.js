@@ -85,7 +85,8 @@ export default class GameRoom extends React.Component {
             if (this.state.players[args.id])
             {
                 const players_copy = JSON.parse(JSON.stringify(this.state.players));
-                players_copy[args.id].data = args.data;
+                players_copy[args.id] = args;
+                players_copy[args.id].is_me = args.id == this.state.my_id;
 
                 this.setState({players: players_copy});
             }
@@ -104,7 +105,6 @@ export default class GameRoom extends React.Component {
 
         this.props.socket.on("update options", (options) => 
         {
-            console.log(options)
             this.setState({
                 options: options
             })
@@ -320,7 +320,6 @@ export default class GameRoom extends React.Component {
                 {this.state.settings_open && 
                     <GameRoomSettings 
                     options={this.state.options}
-                    isHost={this.am_i_host()}
                     host_id={this.state.host_id}
                     my_id={this.state.my_id}
                     players={this.state.players}

@@ -44,7 +44,7 @@ export default class GameRoomSettings extends React.Component {
         const users_list_elements = [];
 
         // First add host
-        users_list_elements.push(this.player_to_element(this.props.players[this.props.host_id], true));
+        users_list_elements.push(this.player_to_element(this.props.players[this.props.host_id]));
 
         // Next add this player (if not host)
         if (this.props.my_id != this.props.host_id)
@@ -72,27 +72,26 @@ export default class GameRoomSettings extends React.Component {
         return users_list_elements;
     }
 
-    player_to_element(player, is_host)
+    player_to_element(player)
     {
-        return (
+        return typeof player != 'undefined' && (
         <div key={`user_entry_${player.id}`} className='user-entry'>
-            {is_host && <img src={host_filled_icon} className="navitem normal-mouse"></img>}
+            {player.id == this.props.host_id && <img src={host_filled_icon} className="navitem normal-mouse"></img>}
             <div className='user-name'>{player.name}</div>
             <div className='float-left'>
-                {!is_host && <img src={host_unfilled_icon} onClick={() => this.make_player_host(player)} className="navitem"></img>}
+                {player.id != this.props.host_id && this.am_i_host() && <img src={host_unfilled_icon} onClick={() => this.make_player_host(player)} className="navitem"></img>}
                 {!player.web_view && (!player.spectate ? 
                     <img src={player_icon} onClick={() => this.toggle_player_spectator(player)} className="navitem"></img> :
                     <img src={not_player_icon} onClick={() => this.toggle_player_spectator(player)} className="navitem"></img>)}
                 {player.web_view && <img src={webview_icon} className="navitem normal-mouse float-left"></img>}
-                {!player.is_me && <img src={kick_icon} onClick={() => this.kick_player(player)} className="navitem"></img>}
+                {!player.is_me && this.am_i_host() && <img src={kick_icon} onClick={() => this.kick_player(player)} className="navitem"></img>}
             </div>
         </div>)
     }
 
     make_player_host(player)
     {
-        if (!this.props.isHost) {return;}
-        if (player.id == this.props.host_id) {return;}
+        if (!this.am_i_host()) {return;}
 
         this.props.socket.emit("make host", player.id);
     }
@@ -102,17 +101,23 @@ export default class GameRoomSettings extends React.Component {
         if (player.web_view) {return;} // Web view users can't play
 
         // Trying to change the status of someone else when not host
-        if (player.id != this.props.my_id && !this.props.isHost) {return;}
+        if (player.id != this.props.my_id && !this.am_i_host()) {return;}
         
+        console.log("change status")
         this.props.socket.emit("change player status", player.id);
     }
 
     kick_player(player)
     {
-        if (!this.props.isHost()) {return;}
+        if (!this.am_i_host()) {return;}
         if (this.props.my_id == player.id) {return;}
 
         this.props.socket.emit("kick player", player.id);
+    }
+
+    am_i_host()
+    {
+        return this.props.host_id == this.props.my_id;
     }
 
     render () {
@@ -162,8 +167,8 @@ export default class GameRoomSettings extends React.Component {
                                     pattern="[^0-9]+" 
                                     maxLength="2" 
                                     placeholder="2" 
-                                    disabled={!this.props.isHost}
-                                    style={!this.props.isHost ? {cursor: 'not-allowed'} : {}}
+                                    disabled={!this.am_i_host()}
+                                    style={!this.am_i_host() ? {cursor: 'not-allowed'} : {}}
                                     value={this.props.options["player_limit"]}
                                     onChange={(event) => this.input_max_players_field_changed(event)}></input>}
                                 </div>
@@ -171,8 +176,8 @@ export default class GameRoomSettings extends React.Component {
                             <div className='option'>
                                 <div className='text'>Sync Mode</div>
                                 <select 
-                                disabled={!this.props.isHost} 
-                                style={!this.props.isHost ? {userSelect: 'none', cursor: 'not-allowed'} : {}} 
+                                disabled={!this.am_i_host()} 
+                                style={!this.am_i_host() ? {userSelect: 'none', cursor: 'not-allowed'} : {}} 
                                 onChange={(e) => this.on_select_sync_mode(e)}
                                 className='dropdown' 
                                 name="sync_mode" 
