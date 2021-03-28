@@ -13,6 +13,7 @@ import SMInstallation from './SMEnvironment';
 import GameRoomSettings from "./GameRoomSettings"
 
 import {isWebVersion} from "./constants/isWebVersion"
+import {SYNC_MODE} from "./constants/SyncMode"
 
 // Raw SM import data from txt file
 let sm_data = ""
@@ -30,9 +31,33 @@ export default class GameRoom extends React.Component {
         {
             game_code: props.game_room_data.game_code,
             players: props.game_room_data.players,
+            host_id: props.game_room_data.host_id,
+            // Our player is guaranteed to exist
+            my_id: Object.values(props.game_room_data.players).filter((player) => player.is_me)[0].id,
             full_file_path: "", // Full file path to everyone.dance.txt
-            settings_open: false
+            settings_open: false,
+            options:
+            {
+                ["show_game_code"]: true,
+                ["allow_spectators"]: true,
+                ["allow_players"]: true,
+                ["player_limit"]: -1,
+                ["sync_mode"]: SYNC_MODE.Realtime
+            }
         }
+    }
+
+    /**
+     * Returns whether or not this client is the host or not.
+     */
+    am_i_host()
+    {
+        return this.state.my_id == this.state.host_id;
+    }
+
+    get_host()
+    {
+        return this.state.players[this.state.host_id];
     }
 
     componentDidMount()
@@ -96,7 +121,6 @@ export default class GameRoom extends React.Component {
             NOT_APPDATA = sm_install.is_portable;
             SM_FILE_PATH = sm_install.score_file;
         }
-
     }
 
     check_for_sm_updates()
@@ -184,6 +208,48 @@ export default class GameRoom extends React.Component {
         })
     }
 
+    click_settings_toggle(option)
+    {
+        // Not host, so return
+        if (!this.am_i_host()) {return;}
+
+        if (typeof this.state.options[option] == 'undefined') {return;}
+
+        const options_copy = JSON.parse(JSON.stringify(this.state.options));
+        
+        if (option != "player_limit")
+        {
+            options_copy[option] = !options_copy[option];
+        }
+        else if (option == "player_limit")
+        {
+            options_copy[option] = options_copy[option] == -1 ? 2 : -1;
+        }
+
+        this.setState({
+            options: options_copy
+        })
+    }
+
+    update_settings_max_players(amount)
+    {
+        // Not host, so return
+        if (!this.am_i_host()) {return;}
+        
+        if (amount <= 0)
+        {
+            this.click_settings_toggle("player_limit");
+            return;
+        }
+
+        const options_copy = JSON.parse(JSON.stringify(this.state.options));
+        options_copy["player_limit"] = Math.max(1, Math.min(amount, 99));
+
+        this.setState({
+            options: options_copy
+        })
+    }
+
     render () {
         return (
             <div className="gameroom-main-container">
@@ -226,7 +292,10 @@ export default class GameRoom extends React.Component {
                 </div>
                 {this.state.settings_open && 
                     <GameRoomSettings 
+                    options={this.state.options}
                     toggleSettings={this.toggle_settings.bind(this)}
+                    click_toggle={this.click_settings_toggle.bind(this)}
+                    setPlayerLimit={this.update_settings_max_players.bind(this)}
                     {...this.props}></GameRoomSettings>
                 }
             </div>

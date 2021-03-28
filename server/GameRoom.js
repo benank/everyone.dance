@@ -87,7 +87,7 @@ module.exports = class GameRoom
         player.game = this;
         player.client.join(this.game_code);
         this.server.io.to(this.game_code).emit('add player', player.getSyncData());
-        player.client.emit('enter game room', {players: this.get_all_players_sync_data(player), game_code: this.game_code});
+        player.client.emit('enter game room', this.get_sync_data(player));
     }
 
     /**
@@ -135,6 +135,16 @@ module.exports = class GameRoom
     sync_options()
     {
         this.server.io.to(this.game_code).emit('update options', this.options);
+    }
+
+    get_sync_data(player)
+    {
+        return {
+            players: this.get_all_players_sync_data(player), 
+            game_code: this.game_code,
+            host_id: this.host_id,
+            options: this.options
+        }
     }
 
     /**

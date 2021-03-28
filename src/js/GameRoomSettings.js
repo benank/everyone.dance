@@ -10,42 +10,11 @@ export default class GameRoomSettings extends React.Component {
     constructor (props)
     {
         super(props);
-        this.state = 
-        {
-            options:
-            {
-                ["show_game_code"]: true,
-                ["allow_spectators"]: true,
-                ["allow_players"]: true,
-                ["player_limit"]: -1,
-                ["sync_mode"]: SYNC_MODE.Realtime
-            }
-        }
-    }
-
-    click_toggle(option)
-    {
-        if (typeof this.state.options[option] == 'undefined') {return;}
-
-        const options_copy = JSON.parse(JSON.stringify(this.state.options));
-        
-        if (option != "player_limit")
-        {
-            options_copy[option] = !options_copy[option];
-        }
-        else if (option == "player_limit")
-        {
-            options_copy[option] = options_copy[option] == -1 ? 2 : -1;
-        }
-
-        this.setState({
-            options: options_copy
-        })
     }
 
     input_max_players_field_changed(event)
     {
-
+        this.props.setPlayerLimit(parseInt(event.target.value));
     }
 
     render () {
@@ -64,34 +33,34 @@ export default class GameRoomSettings extends React.Component {
                             <div className='option'>
                                 <div className='text'>Show Game Code</div>
                                 <ToggleComponent 
-                                clickToggle={() => this.click_toggle("show_game_code")}
-                                active={this.state.options["show_game_code"]}></ToggleComponent>
+                                clickToggle={() => this.props.click_toggle("show_game_code")}
+                                active={this.props.options["show_game_code"]}></ToggleComponent>
                             </div>
                             <div className='option'>
                                 <div className='text'>Allow Spectators</div>
                                 <ToggleComponent 
-                                clickToggle={() => this.click_toggle("allow_spectators")}
-                                active={this.state.options["allow_spectators"]}></ToggleComponent>
+                                clickToggle={() => this.props.click_toggle("allow_spectators")}
+                                active={this.props.options["allow_spectators"]}></ToggleComponent>
                             </div>
                             <div className='option'>
                                 <div className='text'>Allow Players</div>
                                 <ToggleComponent 
-                                clickToggle={() => this.click_toggle("allow_players")}
-                                active={this.state.options["allow_players"]}></ToggleComponent>
+                                clickToggle={() => this.props.click_toggle("allow_players")}
+                                active={this.props.options["allow_players"]}></ToggleComponent>
                             </div>
                             <div className='option'>
                                 <div className='text'>Player Limit</div>
                                 <div className='input-container'>
                                     <ToggleComponent 
-                                    clickToggle={() => this.click_toggle("player_limit")}
-                                    active={this.state.options["player_limit"] > -1}></ToggleComponent>
-                                    {this.state.options["player_limit"] > -1 && <input 
+                                    clickToggle={() => this.props.click_toggle("player_limit")}
+                                    active={this.props.options["player_limit"] > -1}></ToggleComponent>
+                                    {this.props.options["player_limit"] > -1 && <input 
                                     className="player-limit" 
                                     type="number" 
                                     pattern="[^0-9]+" 
                                     maxLength="2" 
                                     placeholder="2" 
-                                    value={this.state["player_limit"]}
+                                    value={this.props.options["player_limit"]}
                                     onChange={(event) => this.input_max_players_field_changed(event)}></input>}
                                 </div>
                             </div>
@@ -104,7 +73,7 @@ export default class GameRoomSettings extends React.Component {
                             </div>
                         </div>
                         <div className='container'>
-                            asdfasdf
+                            [player and spectator list here]
                         </div>
                     </div>
                 </div>

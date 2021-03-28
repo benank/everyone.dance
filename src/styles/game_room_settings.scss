@@ -50,14 +50,9 @@ div.game-room-settings div.settings-content
     display: grid;
     grid-template-rows: auto;
     grid-template-columns: 50% 50%;
-    // border: 2px dashed red;
+    column-gap: 30px;
     height: fit-content;
 }
-
-// div.game-room-settings div.container
-// {
-//     border: 2px dashed green;
-// }
 
 div.game-room-settings div.container div.option
 {
