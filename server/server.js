@@ -5,6 +5,7 @@ const Player = require("./Player");
 const {Config} = require("./Config");
 const Log = require("./Log");
 const SYNC_MODE = require("./SyncMode")
+const LATEST_VERSION = require('../package.json').version;
 
 dotenv.config();
 
@@ -448,7 +449,7 @@ class Server
         }
 
         // If the room has version check enabled, disallow if not latest version
-        if (game_room.options.version_check && player.version != LATEST_VERSION)
+        if (game_room.options.version_check && client.player.version < LATEST_VERSION)
         {
             client.emit("notification", {
                 bg_color: '#E54C4C', 
