@@ -62,7 +62,7 @@ export default class App extends React.Component {
                     if (response.ok) {
                         response.json().then((json) => 
                         {
-                            if (json.version < VERSION)
+                            if (json.version > VERSION)
                             {
                                 this.setState({
                                     latest_version: json.version,
