@@ -70,7 +70,7 @@ module.exports = class GameRoom
             // Check all client versions and kick if not latest
             Object.values(this.players).forEach((player) => 
             {
-                if (player.version != LATEST_VERSION)
+                if (player.version < LATEST_VERSION)
                 {
                     this.remove_player(player);
                     player.client.emit("notification", {
