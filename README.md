@@ -8,7 +8,9 @@ This is available at [everyone.dance](https://everyone.dance/). Please keep read
 ### Installation
 Head on over to [releases](https://github.com/benank/everyone.dance/releases) and download the latest zip release for your platform. Unzip that after downloading and run `everyone.dance`.
 
-Once it opens, click Installation. This will take you to the installation screen where you can install the StepMania script for your theme. Select your StepMania directory (where the game is) and then choose the theme you want to install it to and hit Install.
+Once it opens, click Installation. This will take you to the installation screen where you can install the StepMania script for your theme. Select your StepMania directory (where the game is) and then choose the theme you want to install it to and hit Install. 
+
+If you find that your game is stuttering or laggy after installing, hit Uninstall and try adjusting the Sync Interval. A larger number means that your scores will be synced less frequently and should result in better performance. If you have a decent computer, lower numbers are better so your scores are synced quicker.
 
 After it's installed, you can go back and create a room. When you're in a room, you can see the synced scores and song info of everyone in it. Click your room code to copy it and give it to other people so they can join your game! You can also invite people to spectate through the web view at [everyone.dance](https://everyone.dance). They won't show up in the game and will just be a spectator.
 
