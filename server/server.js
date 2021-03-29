@@ -222,6 +222,12 @@ class Server
             text_color: 'white',
             text: `Made ${client.player.game.players[id].name} host of the game.`
         });
+        
+        client.player.game.players[id].client.emit("notification", {
+            bg_color: '#00BC13', 
+            text_color: 'white',
+            text: `You are now host of the game.`
+        });
     }
 
     // Called when a client attempts to update options in a game room
