@@ -5,6 +5,27 @@ div.background
     height: 100vh;
     background: linear-gradient(162deg, rgba(255,75,75,1) 0%, rgba(54,68,255,1) 100%); 
     -webkit-app-region: drag;
+    transition: 600s linear background-color;
+}
+
+div.background.morning
+{
+    background: linear-gradient(162deg, rgb(245, 237, 127) 0%, rgb(49, 138, 94) 100%);
+}
+
+div.background.day
+{
+    background: linear-gradient(162deg, rgba(255,75,75,1) 0%, rgba(54,68,255,1) 100%);
+}
+
+div.background.evening
+{
+    background: linear-gradient(162deg, rgb(255, 162, 75) 0%, rgb(85, 55, 219) 100%);
+}
+
+div.background.night
+{
+    background: linear-gradient(162deg, rgb(22, 7, 58) 0%, rgb(41, 50, 179) 100%);
 }
 
 img.close-button

@@ -18,6 +18,22 @@ import { ENDPOINT } from "./constants/endpoint"
 import {VERSION} from "./constants/version"
 import {isWebVersion} from "./constants/isWebVersion";
 
+const DAY_STATE = 
+{
+    Morning: 1,
+    Day: 2,
+    Evening: 3,
+    Night: 4
+}
+
+const background_color_classes = 
+{
+    [DAY_STATE.Morning]: `morning`,
+    [DAY_STATE.Day]: `day`,
+    [DAY_STATE.Evening]: `evening`,
+    [DAY_STATE.Night]: `night`
+}
+
 export default class App extends React.Component {
 
     constructor (props)
@@ -31,7 +47,8 @@ export default class App extends React.Component {
             update_ready: false,
             current_version: "",
             latest_version: "",
-            notification: null
+            notification: null,
+            day_state: DAY_STATE.Day
         }
     }
 
@@ -80,7 +97,55 @@ export default class App extends React.Component {
 
             electron.send("ready")
         }
-        
+
+        this.updateBackgroundColor();
+    }
+
+    // Change background color based on time of day ... because I can
+    updateBackgroundColor()
+    {
+        const time = (new Date()).getHours();
+
+        if (time >= 5 && time < 10)
+        {
+            // Morning
+            if (this.state.day_state != DAY_STATE.Morning)
+            {
+                this.setState({
+                    day_state: DAY_STATE.Morning
+                })
+            }
+        }
+        else if (time >= 17 && time < 20)
+        {
+            // Evening
+            if (this.state.day_state != DAY_STATE.Evening)
+            {
+                this.setState({
+                    day_state: DAY_STATE.Evening
+                })
+            }
+        }
+        else if (time >= 20 || time <= 5)
+        {
+            // Night
+            if (this.state.day_state != DAY_STATE.Night)
+            {
+                this.setState({
+                    day_state: DAY_STATE.Night
+                })
+            }
+        }
+        else
+        {
+            // Day
+            if (this.state.day_state != DAY_STATE.Day)
+            {
+                this.setState({
+                    day_state: DAY_STATE.Day
+                })
+            }
+        }
     }
 
     setAppState(state)
@@ -91,7 +156,7 @@ export default class App extends React.Component {
     render () {
         return (
             <>
-                <div className="background"></div>
+                <div className={`background ${background_color_classes[this.state.day_state]}`}></div>
                 {((!isWebVersion && electron.isDev) || this.state.app_state == APP_STATE.INSTALL_VIEW) && <div className='dev-version'>{VERSION}</div>}
                 {/* {!isWebVersion && <img src={close_icon} className="close-button" onClick={() => electron.closeWindow()}></img>} */}
                 {!this.state.connected && <img src={loading_icon} className='connecting-icon'></img>}
