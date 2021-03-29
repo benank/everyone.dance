@@ -163,7 +163,8 @@ local function RefreshActiveSongData()
             steps_info = {},
             progress = 0,
             score = 0,
-            failed = STATSMAN:GetCurStageStats():GetPlayerStageStats(pn):GetFailed()
+            failed = STATSMAN:GetCurStageStats():GetPlayerStageStats(pn):GetFailed(),
+            sync_interval = SYNC_INTERVAL
         }
 
         local song = GAMESTATE:GetCurrentSong() -- Works for both music select and gameplay

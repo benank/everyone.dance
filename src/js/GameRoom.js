@@ -18,7 +18,7 @@ import {SYNC_MODE} from "./constants/SyncMode"
 // Raw SM import data from txt file
 let sm_data = ""
 let sm_check_interval;
-const SM_CHECK_INTERVAL_TIME = 250; // TODO: update this to be same interval as lua
+let SM_CHECK_INTERVAL_TIME = 250;
 let SM_FILE_PATH = "/StepMania 5/Save/everyone.dance.txt"
 let NOT_APPDATA = false
 
@@ -350,6 +350,18 @@ export default class GameRoom extends React.Component {
             {
                 const data_after_separator = line.replace(split[0] + ":", "");
                 data[player][split[0]] = data_after_separator;
+
+                if (split[0] == "sync_interval" && data_after_separator != SM_CHECK_INTERVAL_TIME)
+                {
+                    SM_CHECK_INTERVAL_TIME = data_after_separator;
+                    if (typeof sm_check_interval != 'undefined')
+                    {
+                        clearInterval(sm_check_interval);
+                        sm_check_interval = setInterval(() => {
+                            this.check_for_sm_updates();
+                        }, SM_CHECK_INTERVAL_TIME);
+                    }
+                }
             }
             else if (depth == 2)
             {
