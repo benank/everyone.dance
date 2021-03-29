@@ -53,6 +53,7 @@ module.exports = class GameRoom
             ["show_game_code"]: true,
             ["allow_spectators"]: true,
             ["allow_players"]: true,
+            ["itg_mode"]: false,
             ["player_limit"]: -1,
             ["sync_mode"]: SYNC_MODE.Realtime
         }

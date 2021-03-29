@@ -13,6 +13,7 @@ const notescore_names =
     "Perfect",
     "Great",
     "Good",
+    "Way Off",
     "Miss",
     "OK",
     "NG"
@@ -148,19 +149,42 @@ export default class PlayerCard extends React.Component {
     {
         const judgement_map = this.get_player_data().steps_info;
         
-        return notescore_names.map((key) => 
+        let notescore_filtered_names = JSON.parse(JSON.stringify(notescore_names));
+
+        if (this.props.options["itg_mode"] != true)
         {
+            notescore_filtered_names = notescore_filtered_names.filter((name) => name != "Way Off");
+        }
+
+        return notescore_filtered_names.map((key) => 
+        {
+            let steps = parseInt(this.get_player_data().steps_info[key]);
+            if (key == "Good" && this.props.options["itg_mode"] != true)
+            {
+                steps += parseInt(this.get_player_data().steps_info["Way Off"]);
+            }
+
             return (
                 <div className="step-score-container" key={key}>
                     <div className="step-score-title">{key}</div>
                     <div className="step-score"><CountUp 
-                        start={parseInt(this.get_old_player_data().steps_info[key])} 
+                        start={steps} 
                         duration={1.2} 
                         useEasing={false} 
-                        end={parseInt(this.get_player_data().steps_info[key])}/></div>
+                        end={steps}/></div>
                 </div>
             )
         })
+    }
+
+    get_player_score()
+    {
+        let score = parseFloat(this.get_old_player_data().score);
+        if (isNaN(score))
+        {
+            score = 0;
+        }
+        return score.toFixed(2);
     }
 
     render () {
@@ -192,7 +216,7 @@ export default class PlayerCard extends React.Component {
                         <div className="info song-charter"><CardIcon icon_type={ICON_TYPE.CHARTER}/>{this.get_player_data().song_info.charter || "--"}</div>
                         <div className="info song-pack"><CardIcon icon_type={ICON_TYPE.FOLDER}/>{this.get_player_data().song_info.pack || "--"}</div>
                         <div className="info song-difficulty"><CardIcon icon_type={ICON_TYPE.LEVEL}/>{this.get_player_data().song_info.difficulty_name || "--"} {this.get_player_data().song_info.difficulty || "--"} ({this.get_player_data().song_info.steps || "--"})</div>
-                        {this.get_player_data().ingame == "true" && <div className="song-score">{parseFloat(this.get_old_player_data().score).toFixed(2)}%</div>}
+                        {this.get_player_data().ingame == "true" && <div className="song-score">{this.get_player_score()}%</div>}
                     </div>
                     {this.get_player_data().ingame == "true" && <div className="song-progress-bar">
                         <div className="song-progress-bar-fill" style={{width: `${this.get_player_data().progress * 100}%`}}></div>

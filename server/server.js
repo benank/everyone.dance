@@ -253,6 +253,7 @@ class Server
         if (typeof options["show_game_code"] == 'undefined' ||
             typeof options["allow_spectators"] == 'undefined' ||
             typeof options["allow_players"] == 'undefined' ||
+            typeof options["itg_mode"] == 'undefined' ||
             typeof options["player_limit"] == 'undefined' ||
             typeof options["sync_mode"] == 'undefined')
         {
@@ -273,6 +274,12 @@ class Server
 
         if (options["allow_players"] != true &&
             options["allow_players"] != false)
+        {
+            return false;   
+        }
+
+        if (options["itg_mode"] != true &&
+            options["itg_mode"] != false)
         {
             return false;   
         }

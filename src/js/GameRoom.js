@@ -38,6 +38,9 @@ export default class GameRoom extends React.Component {
             settings_open: false,
             options: props.game_room_data.options
         }
+
+        this.timed_sync_data = {};
+        this.last_sync_time = 0;
     }
 
     /**
@@ -51,6 +54,120 @@ export default class GameRoom extends React.Component {
     get_host()
     {
         return this.state.players[this.state.host_id];
+    }
+
+    get_sync_mode()
+    {
+        return this.state.options["sync_mode"]
+    }
+
+    get_slowest_player()
+    {
+        let slowest_player;
+        Object.values(this.state.players).forEach((player) => {
+            if ((typeof slowest_player == 'undefined' || player.progress < slowest_player.progress) &&
+                !player.spectate && !player.failed)
+            {
+                slowest_player = player;
+            }
+        });
+
+        return slowest_player;
+    }
+
+    get_player_data(player)
+    {
+        return typeof player.data["PlayerNumber_P1"] != 'undefined' ? player.data["PlayerNumber_P1"] : player.data["PlayerNumber_P2"];
+    }
+
+    have_all_players_started()
+    {
+        return Object.values(this.state.players).filter((p) => !p.spectate && p.ingame).length 
+            == Object.values(this.state.players).filter((p) => !p.spectate).length;
+    }
+
+    // Called when player data is synced from server, including scores
+    sync_player_data(args)
+    {
+        if (typeof this.state.players[args.id] == 'undefined') {return;}
+
+        if (this.get_sync_mode() == SYNC_MODE.Realtime)
+        {
+            const players_copy = JSON.parse(JSON.stringify(this.state.players));
+            players_copy[args.id] = args;
+            players_copy[args.id].is_me = args.id == this.state.my_id;
+
+            this.setState({players: players_copy});
+        }
+        else if (this.get_sync_mode() == SYNC_MODE.SongTime)
+        {
+            const players_copy = JSON.parse(JSON.stringify(this.state.players));
+
+            players_copy[args.id].spectate = args.spectate;
+            players_copy[args.id].name = args.name;
+            players_copy[args.id].is_me = args.id == this.state.my_id;
+
+            players_copy[args.id].ingame = this.get_player_data(args).ingame == "true"
+            players_copy[args.id].progress = this.get_player_data(args).progress
+            players_copy[args.id].failed = this.get_player_data(args).failed == "true"
+
+            if (!players_copy[args.id].ingame)
+            {
+                players_copy[args.id].data = args.data;
+            }
+
+            // Replace steps info with empty array temporarily and clear 
+            const data_copy = JSON.parse(JSON.stringify(args.data));
+            if (typeof data_copy["PlayerNumber_P1"] != 'undefined')
+            {
+                players_copy[args.id].data["PlayerNumber_P1"].song_info = data_copy["PlayerNumber_P1"].song_info;
+            }
+
+            if (typeof data_copy["PlayerNumber_P2"] != 'undefined')
+            {
+                players_copy[args.id].data["PlayerNumber_P2"].song_info = data_copy["PlayerNumber_P2"].song_info;
+            }
+
+            this.setState({players: players_copy});
+
+            const progress = Math.floor(this.get_player_data(args).progress * 1000);
+
+            if (typeof this.timed_sync_data[progress] == 'undefined')
+            {
+                this.timed_sync_data[progress] = {}
+            }
+
+            this.timed_sync_data[progress][args.id] = args;
+
+            // If not all players have started, don't start syncing
+            if (!this.have_all_players_started()) {return;}
+
+            const slowest_player = this.get_slowest_player();
+            if (typeof slowest_player == 'undefined') {return;}
+
+            const slowest_progress = Math.floor(slowest_player.progress * 1000);
+
+            const player_data = JSON.parse(JSON.stringify(this.state.players));
+
+            for (let i = this.last_sync_time; i <= slowest_progress; i++)
+            {
+                if (typeof this.timed_sync_data[i] == 'undefined') {continue;}
+
+                Object.values(this.timed_sync_data[i]).forEach((args) => {
+                    if (typeof player_data[args.id] != 'undefined')
+                    {
+                        player_data[args.id].data = args.data;
+                    }
+                });
+
+                delete this.timed_sync_data[i];
+            }
+
+            this.setState({
+                players: player_data
+            })
+            this.last_sync_time = slowest_progress;
+        }
     }
 
     componentDidMount()
@@ -82,14 +199,7 @@ export default class GameRoom extends React.Component {
 
         this.props.socket.on("sync player data", (args) => 
         {
-            if (this.state.players[args.id])
-            {
-                const players_copy = JSON.parse(JSON.stringify(this.state.players));
-                players_copy[args.id] = args;
-                players_copy[args.id].is_me = args.id == this.state.my_id;
-
-                this.setState({players: players_copy});
-            }
+            this.sync_player_data(args);
         })
 
         this.props.socket.on("change player name", (data) => 
@@ -304,7 +414,7 @@ export default class GameRoom extends React.Component {
                                 if (player.spectate) {return;}
 
                                 return player.data["PlayerNumber_P1"] != undefined &&
-                                    <PlayerCard {...this.props} key={key} player_data={player} p2={false} update={true} path={this.state.full_file_path}/>
+                                    <PlayerCard {...this.props} options={this.state.options} key={key} player_data={player} p2={false} update={true} path={this.state.full_file_path}/>
                             })}
                             {Object.keys(this.state.players).map((key) => 
                             {
@@ -312,7 +422,7 @@ export default class GameRoom extends React.Component {
                                 if (player.spectate) {return;}
 
                                 return player.data["PlayerNumber_P2"] != undefined &&
-                                        <PlayerCard {...this.props} key={key + "2"} player_data={player} p2={true} path={this.state.full_file_path}/>
+                                        <PlayerCard {...this.props} options={this.state.options} key={key + "2"} player_data={player} p2={true} path={this.state.full_file_path}/>
                             })}
                         </div>
                     </div>

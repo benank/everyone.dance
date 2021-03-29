@@ -41,7 +41,7 @@ local function remove(tbl, num_to_remove)
     return new_tbl
 end
 
-local DEBUG_ON = false
+local DEBUG_ON = true
 
 -- Print for debugging, only enabled if DEBUG_ON is true
 local function print(t)
@@ -50,11 +50,6 @@ local function print(t)
 end
 
 local data_filename = "Save/everyone.dance.txt"
-
--- Timer so we can perform actions on timed intervals :)
-local start_time = GetTimeSinceStart()
-local time = 0 -- Current time in seconds that has elapsed in this song
-local last_check_time = 0
 
 -- Originally from STARLIGHT theme
 function FullComboType(pss)
@@ -167,7 +162,8 @@ local function RefreshActiveSongData()
             ingame = false,
             steps_info = {},
             progress = 0,
-            score = 0
+            score = 0,
+            failed = STATSMAN:GetCurStageStats():GetPlayerStageStats(pn):GetFailed()
         }
 
         local song = GAMESTATE:GetCurrentSong() -- Works for both music select and gameplay
@@ -193,6 +189,11 @@ local function RefreshActiveSongData()
 
         player_data.progress = math.min(1, song_progress)
 
+        -- Set progress to 1 after finishing
+        if SCREENMAN:GetTopScreen():GetName():find("ScreenEvaluation") then
+            player_data.progress = 1
+        end
+
         -- Potentially use this to get player profile name: PROFILEMAN:GetProfile(pn):GetDisplayName()
 
         local cur_stats = STATSMAN:GetCurStageStats()
@@ -217,9 +218,8 @@ local function RefreshActiveSongData()
         local Marvelous = player_stats:GetTapNoteScores("TapNoteScore_W1");
         local Perfect = player_stats:GetTapNoteScores("TapNoteScore_W2");
         local Great = player_stats:GetTapNoteScores("TapNoteScore_W3");
-        local W4 = player_stats:GetTapNoteScores("TapNoteScore_W4");
-        local W5 = player_stats:GetTapNoteScores("TapNoteScore_W5");
-        local Good = W4 + W5;
+        local Good = player_stats:GetTapNoteScores("TapNoteScore_W4");
+        local WayOff = player_stats:GetTapNoteScores("TapNoteScore_W5");
         local OK = player_stats:GetHoldNoteScores("HoldNoteScore_Held");
         local RealMiss = player_stats:GetTapNoteScores("TapNoteScore_Miss");
         local LetGo = player_stats:GetHoldNoteScores("HoldNoteScore_LetGo");
@@ -231,6 +231,7 @@ local function RefreshActiveSongData()
             ['Perfect'] = Perfect,
             ['Great'] = Great,
             ['Good'] = Good,
+            ['Way Off'] = WayOff,
             ['Miss'] = RealMiss,
             ['OK'] = OK,
             ['NG'] = LetGo
@@ -255,27 +256,6 @@ local function RefreshActiveSongData()
 
 end
 
-local function OnSecondTick(s)
-    RefreshActiveSongData()
-end
-
--- Called every beat of the song
-local function OnSongBeat(s)
-
-    time = GetTimeSinceStart() - start_time
-
-    if time - last_check_time >= 0.5 then
-        -- One second elapsed, call the function
-        OnSecondTick(s)
-        last_check_time = time
-    end
-
-end
-
-local function OnCodeMessageCommand(s)
-    RefreshActiveSongData()
-end
-
 local function OnCurrentStepsChanged(s)
     RefreshActiveSongData()
 end
@@ -287,10 +267,7 @@ local function OnInit(s)
     -- Clear file so we don't crash
     WriteFile("", goto_filename)
     
-    start_time = GetTimeSinceStart()
-    time = 0
-
-    s:sleep(1):queuecommand("Update")
+    s:sleep(SYNC_INTERVAL / 1000):queuecommand("Update")
 
 end
 
@@ -300,11 +277,9 @@ return Def.ActorFrame{
             OnInit(s)
         end,
         UpdateCommand = function(s)
-            ReadGotoData() -- Oh hey I finally found out how to to real timed events LOL
-            s:sleep(1):queuecommand("Update")
-        end,
-        BeatCrossedMessageCommand = function(s)
-            OnSongBeat(s)
+            RefreshActiveSongData()
+            ReadGotoData()
+            s:sleep(SYNC_INTERVAL / 1000):queuecommand("Update")
         end,
         CurrentStepsP1ChangedMessageCommand = function(s, param) -- Called when difficulty or song changes for P1
             OnCurrentStepsChanged(s, param)

@@ -158,7 +158,8 @@ div.installview-main-container div.right-container div.theme-title
 }
 
 div.installview-main-container div.right-container div.theme-status,
-div.installview-main-container div.right-container div.theme-version
+div.installview-main-container div.right-container div.theme-version,
+div.installview-main-container div.right-container div.theme-sync
 {
     margin-top: 20px;
     font-size: 18px;
@@ -169,6 +170,15 @@ div.installview-main-container div.right-container div.theme-version
 div.installview-main-container div.right-container div.theme-version
 {
     margin-top: 2px;
+}
+
+div.installview-main-container div.right-container div.theme-sync
+{
+    margin-top: 10px;
+    display: grid;
+    grid-template-columns: 60% auto;
+    grid-template-rows: auto;
+    column-gap: 10px;
 }
 
 div.installview-main-container div.right-container div.theme-status div.cardicon-container
@@ -224,3 +234,15 @@ div.installview-main-container div.button.update
 ::-webkit-scrollbar-corner {
     background-color: transparent;
 }
+
+
+
+// font-size: 18px;
+// display: inline-block;
+// width: 40px;
+// padding: 0px;
+// cursor: auto;
+// outline: none;
+// border: none;
+// border-bottom: 1px solid gray;
+// margin-left: 8px;

@@ -103,7 +103,6 @@ export default class GameRoomSettings extends React.Component {
         // Trying to change the status of someone else when not host
         if (player.id != this.props.my_id && !this.am_i_host()) {return;}
         
-        console.log("change status")
         this.props.socket.emit("change player status", player.id);
     }
 
@@ -155,6 +154,13 @@ export default class GameRoomSettings extends React.Component {
                                 active={this.props.options["allow_players"]}></ToggleComponent>
                             </div>
                             <div className='option'>
+                                <div className='text'>ITG Mode</div>
+                                <ToggleComponent 
+                                clickToggle={() => this.props.click_toggle("itg_mode")}
+                                {...this.props}
+                                active={this.props.options["itg_mode"]}></ToggleComponent>
+                            </div>
+                            <div className='option'>
                                 <div className='text'>Player Limit</div>
                                 <div className='input-container'>
                                     <ToggleComponent 
@@ -181,9 +187,10 @@ export default class GameRoomSettings extends React.Component {
                                 onChange={(e) => this.on_select_sync_mode(e)}
                                 className='dropdown' 
                                 name="sync_mode" 
+                                value={this.props.options["sync_mode"]}
                                 id="sync_mode">
-                                    <option selected={this.props.options["sync_mode"] == SYNC_MODE.Realtime} value={SYNC_MODE.Realtime}>Realtime</option>
-                                    <option selected={this.props.options["sync_mode"] == SYNC_MODE.SongTime} value={SYNC_MODE.SongTime}>Song Time</option>
+                                    <option value={SYNC_MODE.Realtime}>Realtime</option>
+                                    <option value={SYNC_MODE.SongTime}>Song Time</option>
                                 </select>
                             </div>
                         </div>
