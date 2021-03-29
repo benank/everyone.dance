@@ -138,11 +138,18 @@ class Server
         if (typeof client.player.game.players[id] == 'undefined') {return;} // Player does not exist
 
         const player_name = client.player.game.players[id].name;
+        const target_client = client.player.game.players[id].client;
         client.player.game.remove_player(client.player.game.players[id]);
         client.emit("notification", {
             bg_color: '#00BC13', 
             text_color: 'white',
             text: `Kicked ${player_name} from the game.`
+        });
+        
+        target_client.emit("notification", {
+            bg_color: '#E54C4C', 
+            text_color: 'white',
+            text: 'You have been kicked from the game.'
         });
     }
 
