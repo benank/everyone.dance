@@ -5,7 +5,6 @@ div.background
     height: 100vh;
     background: linear-gradient(162deg, rgba(255,75,75,1) 0%, rgba(54,68,255,1) 100%); 
     -webkit-app-region: drag;
-    transition: 600s linear background-color;
 }
 
 div.background.morning
