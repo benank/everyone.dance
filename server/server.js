@@ -97,6 +97,11 @@ class Server
         {
             this.client_make_player_host(client, id)
         })
+
+        client.on('set version', (version) => 
+        {
+            client.player.version = version;
+        })
         
         client.on('leave game room', () => 
         {
@@ -270,6 +275,7 @@ class Server
             typeof options["allow_spectators"] == 'undefined' ||
             typeof options["allow_players"] == 'undefined' ||
             typeof options["itg_mode"] == 'undefined' ||
+            typeof options["version_check"] == 'undefined' ||
             typeof options["rank_players"] == 'undefined' ||
             typeof options["player_limit"] == 'undefined' ||
             typeof options["sync_mode"] == 'undefined')
@@ -303,6 +309,12 @@ class Server
 
         if (options["itg_mode"] != true &&
             options["itg_mode"] != false)
+        {
+            return false;   
+        }
+
+        if (options["version_check"] != true &&
+            options["version_check"] != false)
         {
             return false;   
         }
@@ -431,6 +443,17 @@ class Server
                 bg_color: '#E54C4C', 
                 text_color: 'white',
                 text: 'Failed to join game room: Spectators not allowed.'
+            });
+            return;
+        }
+
+        // If the room has version check enabled, disallow if not latest version
+        if (game_room.options.version_check && player.version != LATEST_VERSION)
+        {
+            client.emit("notification", {
+                bg_color: '#E54C4C', 
+                text_color: 'white',
+                text: 'Failed to join game room: outdated client version. Please download the latest at everyone.dance.'
             });
             return;
         }

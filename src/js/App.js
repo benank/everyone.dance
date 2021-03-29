@@ -88,8 +88,9 @@ export default class App extends React.Component {
             this.setState({connected: true});
             if (localStorage.getItem("player_name"))
             {
-                this.socket.emit("set name", localStorage.getItem("player_name"))
+                this.socket.emit("set name", localStorage.getItem("player_name"));
             }
+            this.socket.emit("set version", VERSION);
         })
 
         this.socket.on("disconnect", () => 

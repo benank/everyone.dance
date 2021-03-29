@@ -187,6 +187,13 @@ export default class GameRoomSettings extends React.Component {
                                 active={this.props.options["itg_mode"]}></ToggleComponent>
                             </div>
                             <div className='option'>
+                                <div className='text'>Version Check</div>
+                                <ToggleComponent 
+                                clickToggle={() => this.props.click_toggle("version_check")}
+                                {...this.props}
+                                active={this.props.options["version_check"]}></ToggleComponent>
+                            </div>
+                            <div className='option'>
                                 <div className='text'>Sync Mode</div>
                                 <select 
                                 disabled={!this.am_i_host()} 

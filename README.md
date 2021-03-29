@@ -26,14 +26,17 @@ When in a game room, you can click the settings icon the top right corner to acc
 #### **Allow Players**
 - Toggles whether or not players are allowed. If disabled, users who join will automatically become spectators. The host can manually switch a user's mode into a player to overwrite this setting.
 
+#### **Player Limit**
+- Toggles whether or not there is a maximum player limit in the room. If enabled, the host can set the player limit between 0-99. Keep in mind that this does not restrict spectating; if the game room is full, users will join as spectators if spectators are allowed.
+
 #### **Rank Players**
 - Toggles whether or not players will be ranked according to their scores in real time. This does not change the order of players in the game room, but instead will place a number next to their name indicator their rank relative to everyone else in the game room. For example, first place will have a "1" next to their name.
 
 #### **ITG Mode**
 - Toggles whether or not ITG mode will be used. When active, the names of the judgements change to ITG style and also adds the "Way Off" judgement. When inactive, DDR style judgements will be used, with "Good" combining W4 and W5 judgements.
 
-#### **Player Limit**
-- Toggles whether or not there is a maximum player limit in the room. If enabled, the host can set the player limit between 0-99. Keep in mind that this does not restrict spectating; if the game room is full, users will join as spectators if spectators are allowed.
+#### **Version Check**
+- Toggles whether or not the game room will only allow players with the latest version of everyone.dance to join. If enabled, players in the game room with outdated clients will be kicked immediately, and players with outdated clients will not be able to join.
 
 #### **Sync Mode**
 - Sets the score sync mode in the room.
@@ -64,7 +67,7 @@ Please note that the current implementation of this uses dance points as the per
 When you're in a game room with other people, you'll see a small arrow pointing to the top right in each player card. Click that and your StepMania will automatically navigate to the song that they are currently on.
 
 ## Updates
-everyone.dance has automatic updates! If there's an update available, a new button will appear on the main screen called Update. Click that to automatically download and install the latest version. However, you will need to also update the StepMania script as well if it was changed, so click Installation and you'll see a new icon next to your theme. Click your theme and hit Update to install the latest script to your theme.
+When you run everyone.dance, it will automatically check for new updates. You'll get a notification if there's a new update, and you will be able to click the "Update" button to download the latest version. After downloading, unzip and run it! You will likely have to reinstall it as well, so make sure to go to the Installation menu to do that as well.
 
 ## Developing: Installation
 Install the required node modules.

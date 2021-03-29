@@ -8,6 +8,7 @@ module.exports = class Player
         this.data = {"PlayerNumber_P1": {song_info: {}, steps_info: {}}}
         this.spectate = false; // If this player is spectating
         this.web_view = false; // If this player joined through the web view
+        this.version = '1.x.x'; // Version that the client is running, will be 1.x.x if not updated
     }
 
     getName()

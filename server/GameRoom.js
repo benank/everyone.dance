@@ -1,5 +1,6 @@
 const Log = require("./Log")
 const SYNC_MODE = require("./SyncMode")
+const LATEST_VERSION = require('../package.json').version;
 
 module.exports = class GameRoom
 {
@@ -55,6 +56,7 @@ module.exports = class GameRoom
             ["allow_players"]: true,
             ["rank_players"]: false,
             ["itg_mode"]: false,
+            ["version_check"]: false,
             ["player_limit"]: -1,
             ["sync_mode"]: SYNC_MODE.Realtime
         }
@@ -62,6 +64,24 @@ module.exports = class GameRoom
 
     update_options(options)
     {
+        // If they just turned on version check, check all client versions
+        if (options["version_check"] && !this.options["version_check"])
+        {
+            // Check all client versions and kick if not latest
+            Object.values(this.players).forEach((player) => 
+            {
+                if (player.version != LATEST_VERSION)
+                {
+                    this.remove_player(player);
+                    player.client.emit("notification", {
+                        bg_color: '#E54C4C', 
+                        text_color: 'white',
+                        text: 'You have been kicked: outdated client version. Please download the latest at everyone.dance.'
+                    });
+                }
+            })
+        }
+
         this.options = options;
         this.sync_options();
     }
