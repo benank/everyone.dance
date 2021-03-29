@@ -54,6 +54,33 @@ export default class App extends React.Component {
 
     componentDidMount()
     {
+        if (!isWebVersion)
+        {
+            setTimeout(() => {
+                fetch("https://raw.githubusercontent.com/benank/everyone.dance/main/package.json").then((response) => 
+                {
+                    if (response.ok) {
+                        response.json().then((json) => 
+                        {
+                            if (json.version < VERSION)
+                            {
+                                this.setState({
+                                    latest_version: json.version,
+                                    update_ready: true
+                                })
+
+                                this.createNotification({
+                                    bg_color: '#1539c6', 
+                                    text_color: 'white',
+                                    text: `New version available: ${json.version}! Click Update below to download.`
+                                });
+                            }
+                        })
+                    }
+                })
+            }, 1000);
+        }
+
         this.socket = io(ENDPOINT);
 
         this.socket.on("connect", () => 
@@ -78,27 +105,33 @@ export default class App extends React.Component {
 
         this.socket.on("notification", (data) => 
         {
-            if (typeof this.state.notification_timeout != 'undefined')
-            {
-                clearTimeout(this.state.notification_timeout);
-            }
-
-            this.setState({notification: data, notification_timeout: setTimeout(() => {
-                this.setState({notification: null})
-            }, 4990)});
+            this.createNotification(data);
         })
         
-        if (!isWebVersion)
-        {
-            electron.on("update ready", (args) => 
-            {
-                this.setState({update_ready: true, current_version: args.current_version, latest_version: args.latest_version})
-            })
+        // No auto updates for now
+        // if (!isWebVersion)
+        // {
+        //     electron.on("update ready", (args) => 
+        //     {
+        //         this.setState({update_ready: true, current_version: args.current_version, latest_version: args.latest_version})
+        //     })
 
-            electron.send("ready")
-        }
+        //     electron.send("ready")
+        // }
 
         this.updateBackgroundColor();
+    }
+
+    createNotification(data)
+    {
+        if (typeof this.state.notification_timeout != 'undefined')
+        {
+            clearTimeout(this.state.notification_timeout);
+        }
+
+        this.setState({notification: data, notification_timeout: setTimeout(() => {
+            this.setState({notification: null})
+        }, 5000)});
     }
 
     // Change background color based on time of day ... because I can
@@ -160,14 +193,14 @@ export default class App extends React.Component {
                 {((!isWebVersion && electron.isDev) || this.state.app_state == APP_STATE.INSTALL_VIEW) && <div className='dev-version'>{VERSION}</div>}
                 {/* {!isWebVersion && <img src={close_icon} className="close-button" onClick={() => electron.closeWindow()}></img>} */}
                 {!this.state.connected && <img src={loading_icon} className='connecting-icon'></img>}
-                {this.state.app_state == APP_STATE.MAIN_MENU && <MainMenu update_ready={this.state.update_ready} socket={this.socket} setAppState={(state) => this.setAppState(state)}></MainMenu>}
+                {this.state.app_state == APP_STATE.MAIN_MENU && <MainMenu update_ready={this.state.update_ready} latest_version={this.state.latest_version} update_ready={this.state.update_ready} socket={this.socket} setAppState={(state) => this.setAppState(state)}></MainMenu>}
                 {this.state.app_state == APP_STATE.GAME_ROOM && <GameRoom game_room_data={this.state.game_room_data} socket={this.socket} setAppState={(state) => this.setAppState(state)}></GameRoom>}
                 {this.state.app_state == APP_STATE.INSTALL_VIEW && <InstallMenu setAppState={(state) => this.setAppState(state)}></InstallMenu>}
-                {this.state.app_state == APP_STATE.UPDATE_VIEW && <UpdateMenu 
+                {/* {this.state.app_state == APP_STATE.UPDATE_VIEW && <UpdateMenu 
                     update_ready={this.state.update_ready} 
                     current_version={this.state.current_version}
                     latest_version={this.state.latest_version}
-                    setAppState={(state) => this.setAppState(state)}></UpdateMenu>}
+                    setAppState={(state) => this.setAppState(state)}></UpdateMenu>} */}
                 {this.state.notification != null && 
                     <div 
                     style={{

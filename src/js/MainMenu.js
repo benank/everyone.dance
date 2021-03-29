@@ -56,6 +56,11 @@ export default class MainMenu extends React.Component {
         electron.send("start update");
     }
 
+    get_latest_version()
+    {
+        return typeof this.props.latest_version != 'undefined' ? this.props.latest_version : VERSION;
+    }
+
     click_download()
     {
         let filename = "";
@@ -64,7 +69,19 @@ export default class MainMenu extends React.Component {
         else if (window.navigator.userAgent.indexOf("Mac") != -1) {filename = "everyone.dance-macos-x64.zip"}
         else if (window.navigator.userAgent.indexOf("Linux") != -1) {filename = "everyone.dance-linux-x64.zip"}
 
-        window.open(`https://github.com/benank/everyone.dance/releases/download/${VERSION}/${filename}`, "_blank");
+        const link = `https://github.com/benank/everyone.dance/releases/download/${this.get_latest_version()}/${filename}`;
+
+        if (isWebVersion)
+        {
+            window.open(link, "_blank");
+        }
+        else
+        {
+            electron.shell.openExternal(link);
+            setTimeout(() => {
+                electron.closeWindow();
+            }, 500);
+        }
     }
 
     render () {
@@ -88,12 +105,11 @@ export default class MainMenu extends React.Component {
                             {this.state.game_code_input_value.length == 4 && <img src={forward_arrow_icon} className="submit-gamecode-button" onClick={() => this.click_submit_gamecode()}></img>}
                         </div>}
                         {!isWebVersion && <div className="button create" onClick={() => this.click_create_game_room()}>Create a Game</div>}
-                        {(!isWebVersion && this.props.update_ready) && <div className="button update" onClick={() => this.click_update()}>Update</div>}
+                        {/* {(!isWebVersion && this.props.update_ready) && <div className="button update" onClick={() => this.click_update()}>Update</div>} */}
                         {isWebVersion && 
                             <div className="button github" onClick={() => window.open("https://github.com/benank/everyone.dance", "_blank")}>GitHub</div>}
-                        {!isWebVersion ? 
-                            <div className="button install" onClick={() => this.props.setAppState(APP_STATE.INSTALL_VIEW)}>Installation</div> :
-                            <div className="button download" onClick={() => this.click_download()}>Download</div>}
+                        {!isWebVersion && <div className="button install" onClick={() => this.props.setAppState(APP_STATE.INSTALL_VIEW)}>Installation</div>}
+                        {(isWebVersion || this.props.update_ready) && <div className="button download" onClick={() => this.click_download()}>{isWebVersion ? "Download" : "Update"}</div>}
                     </div>
                 </div>
             </>

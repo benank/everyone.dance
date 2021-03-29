@@ -87,7 +87,7 @@ div.notification
     top: 15%;
     left: 50%;
     transform: translate(-50%, -50%);
-    animation: 0.5s ease-in-out notification-appear, 5s ease-in-out notification-fadeout;
+    animation: 0.5s ease-in-out notification-appear, 5.5s ease-in-out notification-fadeout;
     border-radius: 20px;
     z-index: 100;
     padding: 40px;
@@ -109,6 +109,7 @@ div.notification
 
 @keyframes notification-fadeout
 {
-    90% {opacity: 1;}
+    80% {opacity: 1;}
+    90% {opacity: 0;}
     100% {opacity: 0;}
 }
