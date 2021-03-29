@@ -204,6 +204,11 @@ export default class PlayerCard extends React.Component {
         return (
             <div className="player-card-container" key={this.state.id} style={{backgroundImage: this.state.background_color}}>
                 <div className="top-bar">
+                    {(this.props.options["rank_players"]) && (
+                        (typeof this.get_player_data().rank != 'undefined' && this.get_player_data().ingame == "true") ? 
+                            <div className={`player-rank rank${this.get_player_data().rank}`}>{this.get_player_data().rank}</div> :
+                            <div className={`player-rank`}>?</div>
+                        )}
                     {!this.state.editing ? 
                         <div className="player-name">{this.state.player_data.name}{this.state.p2 && " (2)"}</div> :
                         <input 

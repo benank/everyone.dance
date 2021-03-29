@@ -121,6 +121,9 @@ class Server
     // Called when a client syncs their data from stepmania to server
     client_sync_data(client, data)
     {
+        // Do not sync data from spectators
+        if (client.player.spectate) {return;}
+
         client.player.data = data;
         
         if (client.player.game)

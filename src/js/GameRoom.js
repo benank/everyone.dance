@@ -18,7 +18,7 @@ import {SYNC_MODE} from "./constants/SyncMode"
 // Raw SM import data from txt file
 let sm_data = ""
 let sm_check_interval;
-const SM_CHECK_INTERVAL_TIME = 250;
+const SM_CHECK_INTERVAL_TIME = 250; // TODO: update this to be same interval as lua
 let SM_FILE_PATH = "/StepMania 5/Save/everyone.dance.txt"
 let NOT_APPDATA = false
 
@@ -41,6 +41,56 @@ export default class GameRoom extends React.Component {
 
         this.timed_sync_data = {};
         this.last_sync_time = 0;
+    }
+
+    /**
+     * Loops through all players and assigns them a numerical rank based on their current score.
+     */
+    rank_players()
+    {
+        let sorted_ids = [];
+
+        Object.values(this.state.players).forEach((player) => {
+            Object.keys(player.data).forEach((player_number) => 
+            {
+                if (player.data[player_number].ingame == "true" && !player.spectate)
+                {
+                    sorted_ids.push(`${player.id} ${player_number}`);
+                }
+            })
+        });
+
+        sorted_ids.sort((id1, id2) => 
+        {
+            const id1_split = id1.split(" ");
+            const p1_id = id1_split[0];
+            const p1_pn = id1_split[1];
+            const p1 = this.state.players[p1_id].data[p1_pn];
+
+            const id2_split = id2.split(" ");
+            const p2_id = id2_split[0];
+            const p2_pn = id2_split[1];
+            const p2 = this.state.players[p2_id].data[p2_pn];
+
+            return p2.score - p1.score;
+        })
+
+        const players_copy = JSON.parse(JSON.stringify(this.state.players));
+
+        for (let i = 0; i < sorted_ids.length; i++)
+        {
+            const sorted_id = sorted_ids[i];
+            const id_split = sorted_id.split(" ");
+            const p_id = id_split[0];
+            const p_pn = id_split[1];
+            const p = players_copy[p_id].data[p_pn];
+
+            p.rank = i + 1;
+        }
+
+        this.setState({
+            players: players_copy
+        })
     }
 
     /**
@@ -168,6 +218,11 @@ export default class GameRoom extends React.Component {
             })
             this.last_sync_time = slowest_progress;
         }
+        
+        if (this.state.options["rank_players"])
+        {
+            this.rank_players();
+        }
     }
 
     componentDidMount()
@@ -218,6 +273,11 @@ export default class GameRoom extends React.Component {
             this.setState({
                 options: options
             })
+
+            if (this.state.options["rank_players"])
+            {
+                this.rank_players();
+            }
         })
 
         this.props.socket.on("new host", (id) => 
@@ -243,6 +303,9 @@ export default class GameRoom extends React.Component {
 
     check_for_sm_updates()
     {
+        // Don't try to read data if spectating
+        if (this.state.players[this.state.my_id].spectate) {return;}
+
         const file_path = SM_FILE_PATH;
         if (this.state.full_file_path != file_path)
         {

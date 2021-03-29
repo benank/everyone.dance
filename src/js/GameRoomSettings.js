@@ -154,20 +154,6 @@ export default class GameRoomSettings extends React.Component {
                                 active={this.props.options["allow_players"]}></ToggleComponent>
                             </div>
                             <div className='option'>
-                                <div className='text'>Rank Players</div>
-                                <ToggleComponent 
-                                clickToggle={() => this.props.click_toggle("rank_players")}
-                                {...this.props}
-                                active={this.props.options["rank_players"]}></ToggleComponent>
-                            </div>
-                            <div className='option'>
-                                <div className='text'>ITG Mode</div>
-                                <ToggleComponent 
-                                clickToggle={() => this.props.click_toggle("itg_mode")}
-                                {...this.props}
-                                active={this.props.options["itg_mode"]}></ToggleComponent>
-                            </div>
-                            <div className='option'>
                                 <div className='text'>Player Limit</div>
                                 <div className='input-container'>
                                     <ToggleComponent 
@@ -185,6 +171,20 @@ export default class GameRoomSettings extends React.Component {
                                     value={this.props.options["player_limit"]}
                                     onChange={(event) => this.input_max_players_field_changed(event)}></input>}
                                 </div>
+                            </div>
+                            <div className='option'>
+                                <div className='text'>Rank Players</div>
+                                <ToggleComponent 
+                                clickToggle={() => this.props.click_toggle("rank_players")}
+                                {...this.props}
+                                active={this.props.options["rank_players"]}></ToggleComponent>
+                            </div>
+                            <div className='option'>
+                                <div className='text'>ITG Mode</div>
+                                <ToggleComponent 
+                                clickToggle={() => this.props.click_toggle("itg_mode")}
+                                {...this.props}
+                                active={this.props.options["itg_mode"]}></ToggleComponent>
                             </div>
                             <div className='option'>
                                 <div className='text'>Sync Mode</div>
