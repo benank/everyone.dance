@@ -24,6 +24,12 @@ When in a game room, you can click the settings icon the top right corner to acc
 #### **Allow Players**
 - Toggles whether or not players are allowed. If disabled, users who join will automatically become spectators. The host can manually switch a user's mode into a player to overwrite this setting.
 
+#### **Rank Players**
+- Toggles whether or not players will be ranked according to their scores in real time. This does not change the order of players in the game room, but instead will place a number next to their name indicator their rank relative to everyone else in the game room. For example, first place will have a "1" next to their name.
+
+#### **ITG Mode**
+- Toggles whether or not ITG mode will be used. When active, the names of the judgements change to ITG style and also adds the "Way Off" judgement. When inactive, DDR style judgements will be used, with "Good" combining W4 and W5 judgements.
+
 #### **Player Limit**
 - Toggles whether or not there is a maximum player limit in the room. If enabled, the host can set the player limit between 0-99. Keep in mind that this does not restrict spectating; if the game room is full, users will join as spectators if spectators are allowed.
 

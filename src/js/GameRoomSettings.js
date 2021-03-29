@@ -154,6 +154,13 @@ export default class GameRoomSettings extends React.Component {
                                 active={this.props.options["allow_players"]}></ToggleComponent>
                             </div>
                             <div className='option'>
+                                <div className='text'>Rank Players</div>
+                                <ToggleComponent 
+                                clickToggle={() => this.props.click_toggle("rank_players")}
+                                {...this.props}
+                                active={this.props.options["rank_players"]}></ToggleComponent>
+                            </div>
+                            <div className='option'>
                                 <div className='text'>ITG Mode</div>
                                 <ToggleComponent 
                                 clickToggle={() => this.props.click_toggle("itg_mode")}
