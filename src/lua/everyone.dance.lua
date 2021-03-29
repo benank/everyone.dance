@@ -215,11 +215,11 @@ local function RefreshActiveSongData()
         local failed = player_stats:GetFailed()
 
         -- Taken from STARLIGHT theme
-        local Marvelous = player_stats:GetTapNoteScores("TapNoteScore_W1");
-        local Perfect = player_stats:GetTapNoteScores("TapNoteScore_W2");
-        local Great = player_stats:GetTapNoteScores("TapNoteScore_W3");
-        local Good = player_stats:GetTapNoteScores("TapNoteScore_W4");
-        local WayOff = player_stats:GetTapNoteScores("TapNoteScore_W5");
+        local W1 = player_stats:GetTapNoteScores("TapNoteScore_W1");
+        local W2 = player_stats:GetTapNoteScores("TapNoteScore_W2");
+        local W3 = player_stats:GetTapNoteScores("TapNoteScore_W3");
+        local W4 = player_stats:GetTapNoteScores("TapNoteScore_W4");
+        local W5 = player_stats:GetTapNoteScores("TapNoteScore_W5");
         local OK = player_stats:GetHoldNoteScores("HoldNoteScore_Held");
         local RealMiss = player_stats:GetTapNoteScores("TapNoteScore_Miss");
         local LetGo = player_stats:GetHoldNoteScores("HoldNoteScore_LetGo");
@@ -227,11 +227,11 @@ local function RefreshActiveSongData()
 
         player_data.steps_info = 
         {
-            ['Marvelous'] = Marvelous,
-            ['Perfect'] = Perfect,
-            ['Great'] = Great,
-            ['Good'] = Good,
-            ['Way Off'] = WayOff,
+            ['W1'] = W1,
+            ['W2'] = W2,
+            ['W3'] = W3,
+            ['W4'] = W4,
+            ['W5'] = W5,
             ['Miss'] = RealMiss,
             ['OK'] = OK,
             ['NG'] = LetGo

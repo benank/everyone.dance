@@ -7,17 +7,28 @@ import {isWebVersion} from "./constants/isWebVersion";
 
 import { CardIcon, ICON_TYPE } from "./CardIcon"
 
-const notescore_names = 
-[
-    "Marvelous",
-    "Perfect",
-    "Great",
-    "Good",
-    "Way Off",
-    "Miss",
-    "OK",
-    "NG"
-]
+const notescore_names_ddr = 
+{
+    ["W1"]:  "Marvelous",
+    ["W2"]:  "Perfect",
+    ["W3"]:  "Great",
+    ["W4+W5"]:  "Good",
+    ["Miss"]:  "Miss",
+    ["OK"]:  "OK",
+    ["NG"]:  "NG"
+}
+
+const notescore_names_itg = 
+{
+    ["W1"]:  "Fantastic",
+    ["W2"]:  "Excellent",
+    ["W3"]:  "Great",
+    ["W4"]:  "Decent",
+    ["W5"]:  "Way Off",
+    ["Miss"]:  "Miss",
+    ["OK"]:  "OK",
+    ["NG"]:  "NG"
+}
 
 export default class PlayerCard extends React.Component {
 
@@ -149,24 +160,26 @@ export default class PlayerCard extends React.Component {
     {
         const judgement_map = this.get_player_data().steps_info;
         
-        let notescore_filtered_names = JSON.parse(JSON.stringify(notescore_names));
+        let notescore_names = this.props.options["itg_mode"] == true ? 
+            notescore_names_itg : notescore_names_ddr;
 
-        if (this.props.options["itg_mode"] != true)
+        return Object.keys(notescore_names).map((key) => 
         {
-            notescore_filtered_names = notescore_filtered_names.filter((name) => name != "Way Off");
-        }
-
-        return notescore_filtered_names.map((key) => 
-        {
-            let steps = parseInt(this.get_player_data().steps_info[key]);
-            if (key == "Good" && this.props.options["itg_mode"] != true)
+            const judgement_name = notescore_names[key];
+            let steps = 0;
+            if (key == "W4+W5")
             {
-                steps += parseInt(this.get_player_data().steps_info["Way Off"]);
+                steps += parseInt(this.get_player_data().steps_info["W4"]);
+                steps += parseInt(this.get_player_data().steps_info["W5"]);
+            }
+            else
+            {
+                steps = parseInt(this.get_player_data().steps_info[key]);
             }
 
             return (
                 <div className="step-score-container" key={key}>
-                    <div className="step-score-title">{key}</div>
+                    <div className="step-score-title">{judgement_name}</div>
                     <div className="step-score"><CountUp 
                         start={steps} 
                         duration={1.2} 
