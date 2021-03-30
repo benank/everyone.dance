@@ -1,5 +1,5 @@
 # everyone.dance
-A synchronized near-realtime score sharing system for Stepmania. It's meant to be an easily accessible and usable platform for playing with others in Stepmania without hassle.
+A realtime score sharing system for Stepmania. It's meant to be an easily accessible and usable platform for playing with others in Stepmania without hassle.
 
 This is available at [everyone.dance](https://everyone.dance/). Please keep reading for usage instructions. You can download from that website or from the releases page here.
 
@@ -8,9 +8,40 @@ This is available at [everyone.dance](https://everyone.dance/). Please keep read
 ### Installation
 Head on over to [releases](https://github.com/benank/everyone.dance/releases) and download the latest zip release for your platform. Unzip that after downloading and run `everyone.dance`.
 
-Once it opens, click Installation. This will take you to the installation screen where you can install the StepMania script for your theme. Select your StepMania directory (where the game is) and then choose the theme you want to install it to and hit Install.
+Once it opens, click Installation. This will take you to the installation screen where you can install the StepMania script for your theme. Select your StepMania directory (where the game is) and then choose the theme you want to install it to and hit Install. 
+
+If you find that your game is stuttering or laggy after installing, hit Uninstall and try adjusting the Sync Interval. A larger number means that your scores will be synced less frequently and should result in better performance. If you have a decent computer, lower numbers are better so your scores are synced quicker.
 
 After it's installed, you can go back and create a room. When you're in a room, you can see the synced scores and song info of everyone in it. Click your room code to copy it and give it to other people so they can join your game! You can also invite people to spectate through the web view at [everyone.dance](https://everyone.dance). They won't show up in the game and will just be a spectator.
+
+### Game Room Settings
+When in a game room, you can click the settings icon the top right corner to access the game room settings. In this menu, there are a few settings for customizing your room. Only the host of a room can change these settings. 
+
+#### **Show Game Code**
+- Toggles whether or not the game code is shown in the top center of the window.
+
+#### **Allow Spectators**
+- Toggles whether or not spectators are allowed. If disabled, spectators will not be able to join from the website and players will not be able to go into spectate mode.
+
+#### **Allow Players**
+- Toggles whether or not players are allowed. If disabled, users who join will automatically become spectators. The host can manually switch a user's mode into a player to overwrite this setting.
+
+#### **Player Limit**
+- Toggles whether or not there is a maximum player limit in the room. If enabled, the host can set the player limit between 0-99. Keep in mind that this does not restrict spectating; if the game room is full, users will join as spectators if spectators are allowed.
+
+#### **Rank Players**
+- Toggles whether or not players will be ranked according to their scores in real time. This does not change the order of players in the game room, but instead will place a number next to their name indicator their rank relative to everyone else in the game room. For example, first place will have a "1" next to their name.
+
+#### **ITG Mode**
+- Toggles whether or not ITG mode will be used. When active, the names of the judgements change to ITG style and also adds the "Way Off" judgement. When inactive, DDR style judgements will be used, with "Good" combining W4 and W5 judgements.
+
+#### **Version Check**
+- Toggles whether or not the game room will only allow players with the latest version of everyone.dance to join. If enabled, players in the game room with outdated clients will be kicked immediately, and players with outdated clients will not be able to join.
+
+#### **Sync Mode**
+- Sets the score sync mode in the room.
+  - **Realtime** (default): player scores are synced instantly. This means that the players might be at different locations in the song if they are playing the same song, so comparing live scores may not be completely accurate until the songs are finished. This option is great for casual matches, especially if the players in the game room aren't playing the same songs.
+  - **Song Time**: player scores are synced perfectly in time. However, this means that *all* players in the game room must start playing a song in order for the scores to begin displaying. This option is great for tournament settings where you want to display perfectly synced scores side-by-side in live matches for the same songs.
 
 ## Supported Themes
 These themes have been tested to work with this system and the installation procedure. Any other themes may or may not work. Please feel free to create an issue for any themes that do not work and I can modify it to include them.
@@ -36,7 +67,7 @@ Please note that the current implementation of this uses dance points as the per
 When you're in a game room with other people, you'll see a small arrow pointing to the top right in each player card. Click that and your StepMania will automatically navigate to the song that they are currently on.
 
 ## Updates
-everyone.dance has automatic updates! If there's an update available, a new button will appear on the main screen called Update. Click that to automatically download and install the latest version. However, you will need to also update the StepMania script as well if it was changed, so click Installation and you'll see a new icon next to your theme. Click your theme and hit Update to install the latest script to your theme.
+When you run everyone.dance, it will automatically check for new updates. You'll get a notification if there's a new update, and you will be able to click the "Update" button to download the latest version. After downloading, unzip and run it! You will likely have to reinstall it as well, so make sure to go to the Installation menu to do that as well.
 
 ## Developing: Installation
 Install the required node modules.

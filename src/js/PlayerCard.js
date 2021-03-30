@@ -3,19 +3,32 @@ import "../styles/player_card.scss"
 import CountUp from 'react-countup';
 
 import "../styles/navitem.scss"
+import {isWebVersion} from "./constants/isWebVersion";
 
 import { CardIcon, ICON_TYPE } from "./CardIcon"
 
-const notescore_names = 
-[
-    "Marvelous",
-    "Perfect",
-    "Great",
-    "Good",
-    "Miss",
-    "OK",
-    "NG"
-]
+const notescore_names_ddr = 
+{
+    ["W1"]:  "Marvelous",
+    ["W2"]:  "Perfect",
+    ["W3"]:  "Great",
+    ["W4+W5"]:  "Good",
+    ["Miss"]:  "Miss",
+    ["OK"]:  "OK",
+    ["NG"]:  "NG"
+}
+
+const notescore_names_itg = 
+{
+    ["W1"]:  "Fantastic",
+    ["W2"]:  "Excellent",
+    ["W3"]:  "Great",
+    ["W4"]:  "Decent",
+    ["W5"]:  "Way Off",
+    ["Miss"]:  "Miss",
+    ["OK"]:  "OK",
+    ["NG"]:  "NG"
+}
 
 export default class PlayerCard extends React.Component {
 
@@ -147,25 +160,55 @@ export default class PlayerCard extends React.Component {
     {
         const judgement_map = this.get_player_data().steps_info;
         
-        return notescore_names.map((key) => 
+        let notescore_names = this.props.options["itg_mode"] == true ? 
+            notescore_names_itg : notescore_names_ddr;
+
+        return Object.keys(notescore_names).map((key) => 
         {
+            const judgement_name = notescore_names[key];
+            let steps = 0;
+            if (key == "W4+W5")
+            {
+                steps += parseInt(this.get_player_data().steps_info["W4"]);
+                steps += parseInt(this.get_player_data().steps_info["W5"]);
+            }
+            else
+            {
+                steps = parseInt(this.get_player_data().steps_info[key]);
+            }
+
             return (
                 <div className="step-score-container" key={key}>
-                    <div className="step-score-title">{key}</div>
+                    <div className="step-score-title">{judgement_name}</div>
                     <div className="step-score"><CountUp 
-                        start={parseInt(this.get_old_player_data().steps_info[key])} 
+                        start={steps} 
                         duration={1.2} 
                         useEasing={false} 
-                        end={parseInt(this.get_player_data().steps_info[key])}/></div>
+                        end={steps}/></div>
                 </div>
             )
         })
+    }
+
+    get_player_score()
+    {
+        let score = parseFloat(this.get_old_player_data().score);
+        if (isNaN(score))
+        {
+            score = 0;
+        }
+        return score.toFixed(2);
     }
 
     render () {
         return (
             <div className="player-card-container" key={this.state.id} style={{backgroundImage: this.state.background_color}}>
                 <div className="top-bar">
+                    {(this.props.options["rank_players"]) && (
+                        (typeof this.get_player_data().rank != 'undefined' && this.get_player_data().ingame == "true") ? 
+                            <div className={`player-rank rank${this.get_player_data().rank}`}>{this.get_player_data().rank}</div> :
+                            <div className={`player-rank`}>?</div>
+                        )}
                     {!this.state.editing ? 
                         <div className="player-name">{this.state.player_data.name}{this.state.p2 && " (2)"}</div> :
                         <input 
@@ -179,7 +222,7 @@ export default class PlayerCard extends React.Component {
                         {/* <CardIcon icon_type={ICON_TYPE.ROTATE_PORTRAIT} callback={() => this.pressRotateButton()}></CardIcon>
                         <CardIcon icon_type={this.state.visible ? ICON_TYPE.VISIBLE : ICON_TYPE.HIDDEN} callback={() => this.pressVisibilityButton()}></CardIcon> */}
                         {!this.state.player_data.is_me ? 
-                            (typeof electron != 'undefined' && <CardIcon icon_type={ICON_TYPE.GOTO} callback={() => this.pressGotoButton()}></CardIcon>) : 
+                            (!isWebVersion && <CardIcon icon_type={ICON_TYPE.GOTO} callback={() => this.pressGotoButton()}></CardIcon>) : 
                             <CardIcon icon_type={ICON_TYPE.EDIT} callback={() => this.pressEditButton()}></CardIcon> }
                     </div>
                 </div>
@@ -191,7 +234,7 @@ export default class PlayerCard extends React.Component {
                         <div className="info song-charter"><CardIcon icon_type={ICON_TYPE.CHARTER}/>{this.get_player_data().song_info.charter || "--"}</div>
                         <div className="info song-pack"><CardIcon icon_type={ICON_TYPE.FOLDER}/>{this.get_player_data().song_info.pack || "--"}</div>
                         <div className="info song-difficulty"><CardIcon icon_type={ICON_TYPE.LEVEL}/>{this.get_player_data().song_info.difficulty_name || "--"} {this.get_player_data().song_info.difficulty || "--"} ({this.get_player_data().song_info.steps || "--"})</div>
-                        {this.get_player_data().ingame == "true" && <div className="song-score">{parseFloat(this.get_old_player_data().score).toFixed(2)}%</div>}
+                        {this.get_player_data().ingame == "true" && <div className="song-score">{this.get_player_score()}%</div>}
                     </div>
                     {this.get_player_data().ingame == "true" && <div className="song-progress-bar">
                         <div className="song-progress-bar-fill" style={{width: `${this.get_player_data().progress * 100}%`}}></div>

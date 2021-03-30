@@ -15,6 +15,9 @@ const LOCALSTORAGE_STEPMANIA_DIR = "stepmania_dir"
 const SCRIPT_VERSION = VERSION
 const SCRIPT_VERSION_PREFIX = "-- everyone.dance Version: "
 
+const SCRIPT_SYNC_INTERVAL_PREFIX = "local SYNC_INTERVAL = "
+const DEFAULT_SYNC_INTERVAL = 500;
+
 // The everyone.dance.lua script is copied to Themes/Theme/BGAnimations
 // and it is prepended with the script version and version prefix
 
@@ -67,7 +70,8 @@ export default class InstallMenu extends React.Component {
         {
             themes: {}, // All info about each theme
             stepmania_folder: localStorage.getItem(LOCALSTORAGE_STEPMANIA_DIR) || "",
-            selected_theme_path: ""
+            selected_theme_path: "",
+            sync_interval: DEFAULT_SYNC_INTERVAL
         }
 
     }
@@ -175,13 +179,14 @@ export default class InstallMenu extends React.Component {
             path: theme_path,
             status: INSTALL_STATUS.NOT_INSTALLED,
             version: "--",
+            sync_interval: DEFAULT_SYNC_INTERVAL,
             install_paths: [] // List of valid install paths
         }
         
         // Valid install paths
         const valid_install_paths = 
         {
-            // 'ScreenEvaluation': ['decorations', 'common', 'overlay'], // Currently unused because Init/Begin causes the game to hang
+            'ScreenEvaluation': ['decorations', 'common', 'overlay', 'underlay'], // Currently unused because Init/Begin causes the game to hang
             'ScreenGameplay': ['overlay', 'decorations'],
             'ScreenSelectMusic': ['overlay', 'decorations'],
         }
@@ -228,14 +233,21 @@ export default class InstallMenu extends React.Component {
         
         if (electron.fs.existsSync(lua_file_path))
         {
-            // Installed, so get version
+            // Installed, so get version and sync interval
             theme_data.status = INSTALL_STATUS.INSTALLED;
             
             const file = electron.fs.readFileSync(lua_file_path, 'utf8').toString();
             const version = file.split("\n").filter((line) => line.includes(SCRIPT_VERSION_PREFIX))[0].replace(SCRIPT_VERSION_PREFIX, "").trim();
 
             theme_data.version = version;
-        }
+
+            // SCRIPT_SYNC_INTERVAL_PREFIX
+            if (file.split("\n").filter((line) => line.includes(SCRIPT_SYNC_INTERVAL_PREFIX)).length > 0)
+            {
+                const sync_interval = file.split("\n").filter((line) => line.includes(SCRIPT_SYNC_INTERVAL_PREFIX))[0].replace(SCRIPT_SYNC_INTERVAL_PREFIX, "").trim();
+                theme_data.sync_interval = sync_interval;
+            }
+        }   
         else
         {
             // Not installed
@@ -259,7 +271,8 @@ export default class InstallMenu extends React.Component {
             }
 
             const file = electron.fs.readFileSync(default_file, 'utf8').toString();
-            const installable = file.split("\n").filter((line) => line.includes("LoadActor")).length > 0
+            const installable = file.split("\n").filter((line) => 
+                line.includes("LoadActor") || line.includes("LoadFallbackB")).length > 0
 
             if (!installable)
             {
@@ -321,6 +334,41 @@ export default class InstallMenu extends React.Component {
         }
     }
 
+    input_sync_interval_changed(event)
+    {
+        this.setState({
+            sync_interval: Math.ceil(event.target.value / 100) * 100
+        })
+    }
+
+    get_sync_interval()
+    {
+        if (this.state.themes[this.state.selected_theme_path].status == INSTALL_STATUS.NOT_INSTALLED)
+        {
+            return this.state.sync_interval;
+        }
+        else
+        {
+            return this.state.themes[this.state.selected_theme_path].sync_interval;
+        }
+    }
+
+    show_selected_sync_interval()
+    {
+        // Show installed sync interval if exists, otherwise show input box for sync interval
+        if (this.state.themes[this.state.selected_theme_path].status == INSTALL_STATUS.NOT_INSTALLED)
+        {
+            // Display input for sync interval
+            return <input 
+                type="range" 
+                min="100" 
+                step="100" 
+                max="3000" 
+                value={this.state.sync_interval}
+                onChange={(event) => this.input_sync_interval_changed(event)}></input>
+        }
+    }
+
     install_to_selected_theme()
     {
         const theme = this.state.themes[this.state.selected_theme_path];
@@ -368,6 +416,13 @@ export default class InstallMenu extends React.Component {
                 if (line.includes(`LoadActor("./MenuTimer.lua"),`))
                 {
                     new_file_contents += `LoadActor("../everyone.dance.lua"),\n`;
+                    inserted = true;
+                }
+                
+                // StarLight Support
+                if (line.includes(`t[#t+1] = StandardDecorationFromFile("StageDisplay","StageDisplay");`))
+                {
+                    new_file_contents += `t[#t+1] = LoadActor("../everyone.dance.lua"),\n`;
                     inserted = true;
                 }
             }
@@ -443,7 +498,7 @@ export default class InstallMenu extends React.Component {
 
         // Now write version to the copied lua file
         let data = electron.fs.readFileSync(dest_path, 'utf8').toString();
-        data = `${SCRIPT_VERSION_PREFIX}${SCRIPT_VERSION}\n` + data;
+        data = `${SCRIPT_VERSION_PREFIX}${SCRIPT_VERSION}\n` + `${SCRIPT_SYNC_INTERVAL_PREFIX}${this.state.sync_interval}\n` + data;
 
         electron.fs.writeFileSync(dest_path, data);
     }
@@ -503,6 +558,10 @@ export default class InstallMenu extends React.Component {
                             </div>
                             <div className="theme-version">
                                 Version: {this.get_selected_version()} ({this.get_latest_version_string()})
+                            </div>
+                            <div className="theme-sync">
+                                <div className='sync-text'>Sync Interval: {this.get_sync_interval()}ms </div>
+                                {this.show_selected_sync_interval()}
                             </div>
                             {this.get_selected_status() == INSTALL_STATUS.UPDATE_READY && 
                                 <div className="button update" onClick={() => this.update_selected_theme()}>Update</div>}

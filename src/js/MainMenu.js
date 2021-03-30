@@ -5,6 +5,7 @@ import "../styles/main_menu.scss"
 import forward_arrow_icon from '../icons/arrow_forward-24px.svg'
 import { APP_STATE } from './constants/app_state'
 import { VERSION } from "./constants/version"
+import {isWebVersion} from "./constants/isWebVersion"
 
 
 export default class MainMenu extends React.Component {
@@ -29,8 +30,10 @@ export default class MainMenu extends React.Component {
         if (this.state.game_code_input_value.length != 4) {return;}
         if (!this.props.socket.connected) {return;}
 
-        const is_electron = typeof electron != 'undefined';
-        this.props.socket.emit("enter game code", {game_code: this.state.game_code_input_value, spectate: !is_electron});
+        this.props.socket.emit("enter game code", {
+            game_code: this.state.game_code_input_value, 
+            isWebVersion: isWebVersion
+        });
         this.state.game_code_input_value = "";
     }
 
@@ -53,6 +56,11 @@ export default class MainMenu extends React.Component {
         electron.send("start update");
     }
 
+    get_latest_version()
+    {
+        return typeof this.props.latest_version != 'undefined' ? this.props.latest_version : VERSION;
+    }
+
     click_download()
     {
         let filename = "";
@@ -61,17 +69,29 @@ export default class MainMenu extends React.Component {
         else if (window.navigator.userAgent.indexOf("Mac") != -1) {filename = "everyone.dance-macos-x64.zip"}
         else if (window.navigator.userAgent.indexOf("Linux") != -1) {filename = "everyone.dance-linux-x64.zip"}
 
-        window.open(`https://github.com/benank/everyone.dance/releases/download/${VERSION}/${filename}`, "_blank");
+        const link = `https://github.com/benank/everyone.dance/releases/download/${this.get_latest_version()}/${filename}`;
+
+        if (isWebVersion)
+        {
+            window.open(link, "_blank");
+        }
+        else
+        {
+            electron.shell.openExternal(link);
+            setTimeout(() => {
+                electron.closeWindow();
+            }, 500);
+        }
     }
 
     render () {
         return (
             <>
-                <div className="title-container">
+                <div className="main-menu-title-container">
                     <div className="title">everyone.dance</div>
                     <div className="buttons-container">
                         {!this.state.game_code_open && <div className="button join" onClick={() => this.click_join_game()}>
-                            {typeof electron != 'undefined' ? "Join a Game" : "Spectate a Game"}
+                            {!isWebVersion ? "Join a Game" : "Spectate a Game"}
                         </div>}
                         {this.state.game_code_open && <div className="gamecode-container">
                             <input 
@@ -84,13 +104,12 @@ export default class MainMenu extends React.Component {
                                 onChange={(event) => this.input_code_field_changed(event)}></input>
                             {this.state.game_code_input_value.length == 4 && <img src={forward_arrow_icon} className="submit-gamecode-button" onClick={() => this.click_submit_gamecode()}></img>}
                         </div>}
-                        {typeof electron != 'undefined' && <div className="button create" onClick={() => this.click_create_game_room()}>Create a Game</div>}
-                        {(typeof electron != 'undefined' && this.props.update_ready) && <div className="button update" onClick={() => this.click_update()}>Update</div>}
-                        {typeof electron == 'undefined' && 
+                        {!isWebVersion && <div className="button create" onClick={() => this.click_create_game_room()}>Create a Game</div>}
+                        {/* {(!isWebVersion && this.props.update_ready) && <div className="button update" onClick={() => this.click_update()}>Update</div>} */}
+                        {isWebVersion && 
                             <div className="button github" onClick={() => window.open("https://github.com/benank/everyone.dance", "_blank")}>GitHub</div>}
-                        {typeof electron != 'undefined' ? 
-                            <div className="button install" onClick={() => this.props.setAppState(APP_STATE.INSTALL_VIEW)}>Installation</div> :
-                            <div className="button download" onClick={() => this.click_download()}>Download</div>}
+                        {!isWebVersion && <div className="button install" onClick={() => this.props.setAppState(APP_STATE.INSTALL_VIEW)}>Installation</div>}
+                        {(isWebVersion || this.props.update_ready) && <div className="button download" onClick={() => this.click_download()}>{isWebVersion ? "Download" : "Update"}</div>}
                     </div>
                 </div>
             </>

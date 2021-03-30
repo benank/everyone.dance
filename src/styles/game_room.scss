@@ -24,26 +24,28 @@ div.gameroom-main-container
     100% {opacity: 1; transform: translate(-50%, -50%) scale(1);}
 }
 
-div.gameroom-main-container div.content
+div.gameroom-main-container>div.content
 {
     position: relative;
     width: 100%;
     height: calc(100% - 60px);
 }
 
-div.gameroom-main-container div.navbar-left-container
+div.gameroom-main-container>div.content div.navbar-left-container
 {
     width: fit-content;
     display: inline-block;
+    user-select: none;
 }
 
-div.gameroom-main-container div.navbar-right-container
+div.gameroom-main-container>div.content div.navbar-right-container
 {
     width: fit-content;
     float: right;
+    user-select: none;
 }
 
-div.gameroom-main-container div.title-container
+div.gameroom-main-container>div.content div.title-container
 {
     position: absolute;
     top: 0;
@@ -59,12 +61,12 @@ div.gameroom-main-container div.title-container
     user-select: none;
 }
 
-div.gameroom-main-container span.code-bold
+div.gameroom-main-container>div.content span.code-bold
 {
     font-weight: bold;
 }
 
-div.gameroom-main-container div.cards-container-outer
+div.gameroom-main-container>div.content div.cards-container-outer
 {
     position: relative;
     margin-top: 24px;
@@ -72,7 +74,7 @@ div.gameroom-main-container div.cards-container-outer
     overflow-y: auto;
 }
 
-div.gameroom-main-container div.cards-container
+div.gameroom-main-container>div.content div.cards-container
 {
     position: relative;
     display: flex;

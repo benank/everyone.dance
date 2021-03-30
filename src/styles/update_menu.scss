@@ -1,5 +1,14 @@
 
-div.title
+div.update-menu-title-container
+{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+div.update-menu-title-container div.title
 {
     font-size: 40px;
     user-select: none;
@@ -14,16 +23,7 @@ div.title
     100% {opacity: 1; transform: translateY(0)}
 }
 
-div.title-container
-{
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-}
-
-div.buttons-container
+div.update-menu-title-container div.buttons-container
 {
     color: white;
     position: relative;
@@ -34,7 +34,7 @@ div.buttons-container
     animation: 0.7s ease-in-out button-anim;
 }
 
-div.button
+div.update-menu-title-container div.button
 {
     position: relative;
     width: 200px;
@@ -58,35 +58,30 @@ div.button
     100% {opacity: 1; transform: translateY(0)}
 }
 
-div.button:hover
-{
-    // transform: scale(1.05);
-}
-
-div.button.disabled
+div.update-menu-title-container div.button.disabled
 {
     opacity: 0.5;
     cursor: not-allowed;
 }
 
-div.button.disabled:hover
+div.update-menu-title-container div.button.disabled:hover
 {
     transform: none;
 }
 
-div.button.cancel
+div.update-menu-title-container div.button.cancel
 {
     margin-top: 40px;
 }
 
-div.version
+div.update-menu-title-container div.version
 {
     font-size: 24px;
     display: inline-block;
     user-select: none;
 }
 
-div.loader-progress-background
+div.update-menu-title-container div.loader-progress-background
 {
     position: relative;
     margin-top: 40px;
@@ -98,7 +93,7 @@ div.loader-progress-background
     overflow: hidden;
 }
 
-div.loader-progress-background div.loader-progress-inside
+div.update-menu-title-container div.loader-progress-background div.loader-progress-inside
 {
     position: absolute;
     z-index: -1;
@@ -109,7 +104,7 @@ div.loader-progress-background div.loader-progress-inside
     transition: 0.5s linear width;
 }
 
-div.loader-progress-background div.loader-progress-text
+div.update-menu-title-container div.loader-progress-background div.loader-progress-text
 {
     z-index: 5;
     font-size: 20px;

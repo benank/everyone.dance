@@ -25,6 +25,13 @@ div.player-card-container div.stop-editing-container
     border-radius: 12px;
 }
 
+div.player-card-container div.top-bar
+{
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
 div.player-card-container div.top-bar div.cardicon-container
 {
     margin-left: 8px;
@@ -33,7 +40,53 @@ div.player-card-container div.top-bar div.cardicon-container
 div.player-card-container div.top-bar *
 {
     display: inline-block;
+    align-items: center;
     z-index: 5;
+}
+
+div.player-card-container div.top-bar div.player-rank
+{
+    display: inline-block;
+    font-size: 16px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50px;
+    background-color: black;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    line-height: 28px;
+    margin-right: 2px;
+    border: 2px solid white;
+    transform: scale(1);
+    animation: 0.2s ease-in-out player-rank-appear;
+}
+
+@keyframes player-rank-appear
+{
+    0% {transform: scale(0);}
+    100% {transform: scale(1);}
+}
+
+div.player-card-container div.top-bar div.player-rank.rank1
+{
+    background-color: gold;
+    color: black;
+    border: 2px solid black;
+}
+
+div.player-card-container div.top-bar div.player-rank.rank2
+{
+    background-color: silver;
+    color: black;
+    border: 2px solid black;
+}
+
+div.player-card-container div.top-bar div.player-rank.rank3
+{
+    background-color: #b8876d;
+    color: black;
+    border: 2px solid black;
 }
 
 div.player-card-container div.top-bar div.player-name,
@@ -41,7 +94,7 @@ div.player-card-container div.top-bar input.player-name
 {
     font-size: 24px;
     font-weight: bold;
-    margin-bottom: 10px;
+    margin-left: 2px;
 }
 
 div.player-card-container div.top-bar input.player-name.name-input
@@ -61,7 +114,8 @@ div.player-card-container div.top-bar input.player-name.name-input
 
 div.player-card-container div.top-bar div.nav-items
 {
-    float: right;
+    display: flex;
+    justify-content: flex-end;
 }
 
 div.player-card-container div.song-info

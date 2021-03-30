@@ -1,0 +1,1 @@
+export const isWebVersion = typeof electron == 'undefined';

@@ -6,7 +6,9 @@ module.exports = class Player
         this.background_color = this.getRandomBackgroundColor();
         this.name = `Player ${Math.ceil(Math.random() * 1000)}`;
         this.data = {"PlayerNumber_P1": {song_info: {}, steps_info: {}}}
-        this.spectate = false; // If this player joined through the website and is spectating
+        this.spectate = false; // If this player is spectating
+        this.web_view = false; // If this player joined through the web view
+        this.version = '1.x.x'; // Version that the client is running, will be 1.x.x if not updated
     }
 
     getName()
@@ -38,7 +40,8 @@ module.exports = class Player
             name: this.name,
             background_color: this.background_color,
             data: this.data,
-            spectate: this.spectate
+            spectate: this.spectate,
+            web_view: this.web_view
         }
 
         return typeof field == 'undefined' ? sync_data : {[field]: sync_data[field]}

@@ -41,7 +41,7 @@ export default class UpdateMenu extends React.Component {
     render () {
         return (
             <>
-                <div className="title-container">
+                <div className="update-menu-title-container">
                     <div className="title">Updating...</div>
                     <div className="buttons-container">
                         <div className="version">{this.props.current_version}</div> to <div className="version">{this.props.latest_version}</div>

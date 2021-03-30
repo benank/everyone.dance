@@ -1,0 +1,163 @@
+div.game-room-settings
+{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
+    border-radius: 20px;
+    width: 75%;
+    height: 75%;
+    padding: 16px;
+    animation: 0.5s ease-in-out container-appear;
+    padding: 16px;
+    user-select: none;
+}
+
+// Nice appear animation :)
+@keyframes container-appear
+{
+    0% {opacity: 0; transform: translate(-50%, -50%) scale(0.8);}
+    50% {transform: translate(-50%, -50%) scale(1.02);}
+    100% {opacity: 1; transform: translate(-50%, -50%) scale(1);}
+}
+
+div.game-room-settings div.content
+{
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+div.game-room-settings div.content div.close-button
+{
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+div.game-room-settings div.content div.title-container
+{
+    font-size: 28px;
+    user-select: none;
+    text-align: center;
+}
+
+div.game-room-settings div.settings-content
+{
+    margin-top: 30px;
+    display: grid;
+    grid-template-rows: auto;
+    grid-template-columns: 50% 50%;
+    column-gap: 30px;
+    height: 90%;
+}
+
+div.game-room-settings div.container
+{
+    width: 90%;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+div.game-room-settings div.container div.option
+{
+    display: grid;
+    grid-template-rows: auto;
+    grid-template-columns: 60% auto;
+    align-items: center;
+    margin-bottom: 10px;
+    margin-right: 4px;
+}
+
+div.game-room-settings div.container div.option div.text
+{
+    font-size: 22px;
+}
+
+div.game-room-settings div.container div.option input.player-limit
+{
+    font-size: 18px;
+    display: inline-block;
+    width: 40px;
+    padding: 0px;
+    cursor: auto;
+    outline: none;
+    border: none;
+    border-bottom: 1px solid gray;
+    margin-left: 8px;
+}
+
+div.game-room-settings div.container div.option div.input-container
+{
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex-flow: row wrap;
+}
+
+div.game-room-settings div.container div.option select.dropdown
+{
+    font-size: 20px;
+    outline: none;
+    border: none;
+    border-bottom: 1px solid gray;
+    cursor: pointer;
+    transition: 0.2s ease-in-out all;
+}
+
+div.game-room-settings div.container div.players-title
+{
+    text-align: center;
+    font-size: 22px;
+}
+
+div.game-room-settings div.container div.players-subtitle
+{
+    text-align: center;
+    font-size: 14px;
+    color: gray;
+    margin-top: 4px;
+}
+
+div.game-room-settings div.container div.players-container
+{
+    margin-top: 10px;
+    min-height: 50%;
+    height: fit-content;
+    padding: 12px;
+    background-color: #EBEBEB;
+    border-radius: 8px;
+    overflow-y: auto;
+    max-height: 85%;
+}
+
+div.game-room-settings div.container div.players-container div.players-content div.user-entry
+{
+    background-color: #ffffffd7;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 6px;
+}
+
+div.game-room-settings div.container div.players-container div.players-content div.user-entry div.user-name
+{
+    display: inline-block;
+    font-size: 20px;
+    width: 100%;
+}
+
+img.navitem.normal-mouse
+{
+    cursor: default;
+}
+
+div.game-room-settings div.container div.players-container div.players-content div.user-entry div.float-left
+{
+    display: flex;
+    justify-content: flex-end;
+}

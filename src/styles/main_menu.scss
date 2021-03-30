@@ -1,5 +1,14 @@
 
-div.title
+div.main-menu-title-container
+{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+div.main-menu-title-container div.title
 {
     font-size: 40px;
     user-select: none;
@@ -14,7 +23,7 @@ div.title
     100% {opacity: 1; transform: translateY(0)}
 }
 
-img.submit-gamecode-button
+div.main-menu-title-container img.submit-gamecode-button
 {
     position: absolute;
     right: -10px;
@@ -39,16 +48,7 @@ img.submit-gamecode-button
     100% {opacity: 1; transform: translate(100%, 0)}
 }
 
-div.title-container
-{
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-}
-
-div.buttons-container
+div.main-menu-title-container div.buttons-container
 {
     position: relative;
     display: inline-block;
@@ -58,7 +58,7 @@ div.buttons-container
     animation: 0.7s ease-in-out button-anim;
 }
 
-div.button, input.gamecode
+div.main-menu-title-container div.button, input.gamecode
 {
     position: relative;
     display: inline-block;
@@ -83,23 +83,18 @@ div.button, input.gamecode
     100% {opacity: 1; transform: translateY(0)}
 }
 
-div.button:hover
-{
-    // transform: scale(1.05);
-}
-
-div.button.disabled
+div.main-menu-title-container div.button.disabled
 {
     opacity: 0.5;
     cursor: not-allowed;
 }
 
-div.button.disabled:hover
+div.main-menu-title-container div.button.disabled:hover
 {
     transform: none;
 }
 
-input.gamecode
+div.main-menu-title-container input.gamecode
 {
     padding-top: 9px;
     padding-bottom: 9px;
@@ -112,7 +107,7 @@ input.gamecode
     -webkit-app-region: no-drag;
 }
 
-div.gamecode-container
+div.main-menu-title-container div.gamecode-container
 {
     position: relative;
     display: inline-block;

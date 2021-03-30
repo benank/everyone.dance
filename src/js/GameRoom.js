@@ -8,12 +8,17 @@ import { APP_STATE } from './constants/app_state'
 import back_arrow_icon from "../icons/back_arrow.svg"
 import popout_icon from "../icons/popout.svg"
 import info_icon from "../icons/info.svg"
+import settings_icon from "../icons/settings.svg"
 import SMInstallation from './SMEnvironment';
+import GameRoomSettings from "./GameRoomSettings"
+
+import {isWebVersion} from "./constants/isWebVersion"
+import {SYNC_MODE} from "./constants/SyncMode"
 
 // Raw SM import data from txt file
 let sm_data = ""
 let sm_check_interval;
-const SM_CHECK_INTERVAL_TIME = 250;
+let SM_CHECK_INTERVAL_TIME = 250;
 let SM_FILE_PATH = "/StepMania 5/Save/everyone.dance.txt"
 let NOT_APPDATA = false
 
@@ -26,7 +31,197 @@ export default class GameRoom extends React.Component {
         {
             game_code: props.game_room_data.game_code,
             players: props.game_room_data.players,
-            full_file_path: "" // Full file path to everyone.dance.txt
+            host_id: props.game_room_data.host_id,
+            // Our player is guaranteed to exist
+            my_id: Object.values(props.game_room_data.players).filter((player) => player.is_me)[0].id,
+            full_file_path: "", // Full file path to everyone.dance.txt
+            settings_open: false,
+            options: props.game_room_data.options
+        }
+
+        this.timed_sync_data = {};
+        this.last_sync_time = 0;
+    }
+
+    /**
+     * Loops through all players and assigns them a numerical rank based on their current score.
+     */
+    rank_players()
+    {
+        let sorted_ids = [];
+
+        Object.values(this.state.players).forEach((player) => {
+            Object.keys(player.data).forEach((player_number) => 
+            {
+                if (player.data[player_number].ingame == "true" && !player.spectate)
+                {
+                    sorted_ids.push(`${player.id} ${player_number}`);
+                }
+            })
+        });
+
+        sorted_ids.sort((id1, id2) => 
+        {
+            const id1_split = id1.split(" ");
+            const p1_id = id1_split[0];
+            const p1_pn = id1_split[1];
+            const p1 = this.state.players[p1_id].data[p1_pn];
+
+            const id2_split = id2.split(" ");
+            const p2_id = id2_split[0];
+            const p2_pn = id2_split[1];
+            const p2 = this.state.players[p2_id].data[p2_pn];
+
+            return p2.score - p1.score;
+        })
+
+        const players_copy = JSON.parse(JSON.stringify(this.state.players));
+
+        for (let i = 0; i < sorted_ids.length; i++)
+        {
+            const sorted_id = sorted_ids[i];
+            const id_split = sorted_id.split(" ");
+            const p_id = id_split[0];
+            const p_pn = id_split[1];
+            const p = players_copy[p_id].data[p_pn];
+
+            p.rank = i + 1;
+        }
+
+        this.setState({
+            players: players_copy
+        })
+    }
+
+    /**
+     * Returns whether or not this client is the host or not.
+     */
+    am_i_host()
+    {
+        return this.state.my_id == this.state.host_id;
+    }
+
+    get_host()
+    {
+        return this.state.players[this.state.host_id];
+    }
+
+    get_sync_mode()
+    {
+        return this.state.options["sync_mode"]
+    }
+
+    get_slowest_player()
+    {
+        let slowest_player;
+        Object.values(this.state.players).forEach((player) => {
+            if ((typeof slowest_player == 'undefined' || player.progress < slowest_player.progress) &&
+                !player.spectate && !player.failed)
+            {
+                slowest_player = player;
+            }
+        });
+
+        return slowest_player;
+    }
+
+    get_player_data(player)
+    {
+        return typeof player.data["PlayerNumber_P1"] != 'undefined' ? player.data["PlayerNumber_P1"] : player.data["PlayerNumber_P2"];
+    }
+
+    have_all_players_started()
+    {
+        return Object.values(this.state.players).filter((p) => !p.spectate && p.ingame).length 
+            == Object.values(this.state.players).filter((p) => !p.spectate).length;
+    }
+
+    // Called when player data is synced from server, including scores
+    sync_player_data(args)
+    {
+        if (typeof this.state.players[args.id] == 'undefined') {return;}
+
+        if (this.get_sync_mode() == SYNC_MODE.Realtime)
+        {
+            const players_copy = JSON.parse(JSON.stringify(this.state.players));
+            players_copy[args.id] = args;
+            players_copy[args.id].is_me = args.id == this.state.my_id;
+
+            this.setState({players: players_copy});
+        }
+        else if (this.get_sync_mode() == SYNC_MODE.SongTime)
+        {
+            const players_copy = JSON.parse(JSON.stringify(this.state.players));
+
+            players_copy[args.id].spectate = args.spectate;
+            players_copy[args.id].name = args.name;
+            players_copy[args.id].is_me = args.id == this.state.my_id;
+
+            players_copy[args.id].ingame = this.get_player_data(args).ingame == "true"
+            players_copy[args.id].progress = this.get_player_data(args).progress
+            players_copy[args.id].failed = this.get_player_data(args).failed == "true"
+
+            if (!players_copy[args.id].ingame)
+            {
+                players_copy[args.id].data = args.data;
+            }
+
+            // Replace steps info with empty array temporarily and clear 
+            const data_copy = JSON.parse(JSON.stringify(args.data));
+            if (typeof data_copy["PlayerNumber_P1"] != 'undefined')
+            {
+                players_copy[args.id].data["PlayerNumber_P1"].song_info = data_copy["PlayerNumber_P1"].song_info;
+            }
+
+            if (typeof data_copy["PlayerNumber_P2"] != 'undefined')
+            {
+                players_copy[args.id].data["PlayerNumber_P2"].song_info = data_copy["PlayerNumber_P2"].song_info;
+            }
+
+            this.setState({players: players_copy});
+
+            const progress = Math.floor(this.get_player_data(args).progress * 1000);
+
+            if (typeof this.timed_sync_data[progress] == 'undefined')
+            {
+                this.timed_sync_data[progress] = {}
+            }
+
+            this.timed_sync_data[progress][args.id] = args;
+
+            // If not all players have started, don't start syncing
+            if (!this.have_all_players_started()) {return;}
+
+            const slowest_player = this.get_slowest_player();
+            if (typeof slowest_player == 'undefined') {return;}
+
+            const slowest_progress = Math.floor(slowest_player.progress * 1000);
+
+            const player_data = JSON.parse(JSON.stringify(this.state.players));
+
+            for (let i = this.last_sync_time; i <= slowest_progress; i++)
+            {
+                if (typeof this.timed_sync_data[i] == 'undefined') {continue;}
+
+                Object.values(this.timed_sync_data[i]).forEach((args) => {
+                    if (typeof player_data[args.id] != 'undefined')
+                    {
+                        player_data[args.id].data = args.data;
+                    }
+                });
+
+                delete this.timed_sync_data[i];
+            }
+
+            this.setState({
+                players: player_data
+            })
+            this.last_sync_time = slowest_progress;
+        }
+        
+        if (this.state.options["rank_players"])
+        {
+            this.rank_players();
         }
     }
 
@@ -59,13 +254,7 @@ export default class GameRoom extends React.Component {
 
         this.props.socket.on("sync player data", (args) => 
         {
-            if (this.state.players[args.id])
-            {
-                const players_copy = JSON.parse(JSON.stringify(this.state.players));
-                players_copy[args.id].data = args.data;
-
-                this.setState({players: players_copy});
-            }
+            this.sync_player_data(args);
         })
 
         this.props.socket.on("change player name", (data) => 
@@ -79,7 +268,26 @@ export default class GameRoom extends React.Component {
             }
         })
 
-        if (typeof electron != 'undefined')
+        this.props.socket.on("update options", (options) => 
+        {
+            this.setState({
+                options: options
+            })
+
+            if (this.state.options["rank_players"])
+            {
+                this.rank_players();
+            }
+        })
+
+        this.props.socket.on("new host", (id) => 
+        {
+            this.setState({
+                host_id: id
+            })
+        })
+
+        if (!isWebVersion)
         {
             sm_check_interval = setInterval(() => {
                 this.check_for_sm_updates();
@@ -91,23 +299,21 @@ export default class GameRoom extends React.Component {
             NOT_APPDATA = sm_install.is_portable;
             SM_FILE_PATH = sm_install.score_file;
         }
-
     }
 
     check_for_sm_updates()
     {
+        // Don't try to read data if spectating
+        if (this.state.players[this.state.my_id].spectate) {return;}
+
         const file_path = SM_FILE_PATH;
         if (this.state.full_file_path != file_path)
         {
             this.setState({full_file_path: file_path})
         }
 
-        console.log(`file path: ${file_path}`)
-
         // File does not exist
         if (!electron.fs.existsSync(file_path)) {return;}
-
-        console.log("exists, reading")
 
         const file = electron.fs.readFileSync(file_path, 'utf8').toString();
 
@@ -144,6 +350,18 @@ export default class GameRoom extends React.Component {
             {
                 const data_after_separator = line.replace(split[0] + ":", "");
                 data[player][split[0]] = data_after_separator;
+
+                if (split[0] == "sync_interval" && data_after_separator != SM_CHECK_INTERVAL_TIME)
+                {
+                    SM_CHECK_INTERVAL_TIME = data_after_separator;
+                    if (typeof sm_check_interval != 'undefined')
+                    {
+                        clearInterval(sm_check_interval);
+                        sm_check_interval = setInterval(() => {
+                            this.check_for_sm_updates();
+                        }, SM_CHECK_INTERVAL_TIME);
+                    }
+                }
             }
             else if (depth == 2)
             {
@@ -176,6 +394,74 @@ export default class GameRoom extends React.Component {
         this.props.setAppState(APP_STATE.MAIN_MENU)
     }
 
+    toggle_settings()
+    {
+        this.setState({
+            settings_open: !this.state.settings_open
+        })
+    }
+
+    click_settings_toggle(option)
+    {
+        // Not host, so return
+        if (!this.am_i_host()) {return;}
+
+        if (typeof this.state.options[option] == 'undefined') {return;}
+
+        const options_copy = JSON.parse(JSON.stringify(this.state.options));
+        
+        if (option != "player_limit")
+        {
+            options_copy[option] = !options_copy[option];
+        }
+        else if (option == "player_limit")
+        {
+            options_copy[option] = options_copy[option] == -1 ? 2 : -1;
+        }
+
+        this.setState({
+            options: options_copy
+        })
+
+        this.props.socket.emit("update options", options_copy);
+    }
+
+    update_settings_max_players(amount)
+    {
+        // Not host, so return
+        if (!this.am_i_host()) {return;}
+
+        if (amount <= 0)
+        {
+            this.click_settings_toggle("player_limit");
+            return;
+        }
+
+        const options_copy = JSON.parse(JSON.stringify(this.state.options));
+        options_copy["player_limit"] = Math.max(1, Math.min(amount, 99));
+
+        this.setState({
+            options: options_copy
+        })
+
+        this.props.socket.emit("update options", options_copy);
+    }
+
+    update_settings_sync_mode(mode)
+    {
+        // Not host, so return
+        if (!this.am_i_host()) {return;}
+
+        const options_copy = JSON.parse(JSON.stringify(this.state.options));
+        options_copy["sync_mode"] = mode;
+
+        this.setState({
+            options: options_copy
+        })
+
+        this.props.socket.emit("update options", options_copy);
+    }
+
     render () {
         return (
             <div className="gameroom-main-container">
@@ -184,16 +470,17 @@ export default class GameRoom extends React.Component {
                         <div className="navbar-left-container">
                             <img src={back_arrow_icon} className="navitem leave" onClick={() => this.leave_game_room()}></img>
                         </div>
-                        {/* <div className="navbar-right-container">
-                            <img src={info_icon} className="navitem info"></img>
-                            <img src={popout_icon} className="navitem popout"></img>
-                        </div> */}
+                        <div className="navbar-right-container">
+                            <img src={settings_icon} onClick={() => this.toggle_settings()} className="navitem settings"></img>
+                            {/* <img src={info_icon} className="navitem info"></img>
+                            <img src={popout_icon} className="navitem popout"></img> */}
+                        </div>
                     </div>
-                    <div className="title-container" onClick={() => typeof electron != 'undefined' ?
+                    {this.state.options["show_game_code"] && <div className="title-container" onClick={() => !isWebVersion ?
                         electron.clipboard.writeText(this.state.game_code) : 
                         navigator.clipboard.writeText(this.state.game_code)}>
                         Game Code: <span className="code-bold">{this.state.game_code}</span>
-                    </div>
+                    </div>}
                     <div className="cards-container-outer">
                         <div className="cards-container">
                             {Object.keys(this.state.players).map((key) => 
@@ -202,7 +489,7 @@ export default class GameRoom extends React.Component {
                                 if (player.spectate) {return;}
 
                                 return player.data["PlayerNumber_P1"] != undefined &&
-                                    <PlayerCard {...this.props} key={key} player_data={player} p2={false} update={true} path={this.state.full_file_path}/>
+                                    <PlayerCard {...this.props} options={this.state.options} key={key} player_data={player} p2={false} update={true} path={this.state.full_file_path}/>
                             })}
                             {Object.keys(this.state.players).map((key) => 
                             {
@@ -210,11 +497,23 @@ export default class GameRoom extends React.Component {
                                 if (player.spectate) {return;}
 
                                 return player.data["PlayerNumber_P2"] != undefined &&
-                                        <PlayerCard {...this.props} key={key + "2"} player_data={player} p2={true} path={this.state.full_file_path}/>
+                                        <PlayerCard {...this.props} options={this.state.options} key={key + "2"} player_data={player} p2={true} path={this.state.full_file_path}/>
                             })}
                         </div>
                     </div>
                 </div>
+                {this.state.settings_open && 
+                    <GameRoomSettings 
+                    options={this.state.options}
+                    host_id={this.state.host_id}
+                    my_id={this.state.my_id}
+                    players={this.state.players}
+                    toggleSettings={this.toggle_settings.bind(this)}
+                    click_toggle={this.click_settings_toggle.bind(this)}
+                    setPlayerLimit={this.update_settings_max_players.bind(this)}
+                    setSyncMode={this.update_settings_sync_mode.bind(this)}
+                    {...this.props}></GameRoomSettings>
+                }
             </div>
         )
     }
