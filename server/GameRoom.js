@@ -147,7 +147,10 @@ module.exports = class GameRoom
         }
 
         // Get all non spectating players
-        if (!this.removed && Object.keys(this.players).filter((key) => !this.players[key].web_view).length == 0)
+        // if (!this.removed && Object.keys(this.players).filter((key) => !this.players[key].web_view).length == 0)
+
+        // If there are no more players
+        if (!this.removed && Object.keys(this.players).length == 0)
         {
             Object.keys(this.players).forEach((key) => 
             {
