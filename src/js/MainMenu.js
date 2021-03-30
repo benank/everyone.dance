@@ -58,7 +58,7 @@ export default class MainMenu extends React.Component {
 
     get_latest_version()
     {
-        return typeof this.props.latest_version != 'undefined' ? this.props.latest_version : VERSION;
+        return typeof this.props.latest_version.length > 0 ? this.props.latest_version : VERSION;
     }
 
     click_download()
