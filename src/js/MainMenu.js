@@ -61,6 +61,20 @@ export default class MainMenu extends React.Component {
         return typeof this.props.latest_version.length > 0 ? this.props.latest_version : VERSION;
     }
 
+    click_help()
+    {
+        const link = `https://www.youtube.com/watch?v=aYH5NSDtg5M`;
+
+        if (isWebVersion)
+        {
+            window.open(link, "_blank");
+        }
+        else
+        {
+            electron.shell.openExternal(link);
+        }
+    }
+
     click_download()
     {
         let filename = "";
@@ -110,6 +124,7 @@ export default class MainMenu extends React.Component {
                             <div className="button github" onClick={() => window.open("https://github.com/benank/everyone.dance", "_blank")}>GitHub</div>}
                         {!isWebVersion && <div className="button install" onClick={() => this.props.setAppState(APP_STATE.INSTALL_VIEW)}>Installation</div>}
                         {(isWebVersion || this.props.update_ready) && <div className="button download" onClick={() => this.click_download()}>{isWebVersion ? "Download" : "Update"}</div>}
+                        {<div className="button help" onClick={() => this.click_help()}>Help</div>}
                     </div>
                 </div>
             </>

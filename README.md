@@ -6,6 +6,8 @@ This is available at [everyone.dance](https://everyone.dance/). Please keep read
 ## How to Install / Use
 
 ### Installation
+[Video tutorial here!](https://www.youtube.com/watch?v=aYH5NSDtg5M)
+
 Head on over to [releases](https://github.com/benank/everyone.dance/releases) and download the latest zip release for your platform. Unzip that after downloading and run `everyone.dance`.
 
 Once it opens, click Installation. This will take you to the installation screen where you can install the StepMania script for your theme. Select your StepMania directory (where the game is) and then choose the theme you want to install it to and hit Install. 
