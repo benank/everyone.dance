@@ -200,9 +200,20 @@ export default class PlayerCard extends React.Component {
         return score.toFixed(2);
     }
 
+    pressPopoutButton()
+    {
+        electron.send('popout-player', 
+        {
+            id: this.props.id, 
+            p2: this.state.p2, 
+            name: this.state.player_data.name,
+            game_room_data: this.props.game_room_data
+        });
+    }
+
     render () {
         return (
-            <div className="player-card-container" key={this.state.id} style={{backgroundImage: this.state.background_color}}>
+            <div className={`player-card-container ${this.props.popout ? 'popout' : ''}`} key={`${this.props.id}${this.state.p2 ? '_2' : ''}`} style={{backgroundImage: this.state.background_color}}>
                 <div className="top-bar">
                     {(this.props.options["rank_players"]) && (
                         (typeof this.get_player_data().rank != 'undefined' && this.get_player_data().ingame == "true") ? 
@@ -218,13 +229,14 @@ export default class PlayerCard extends React.Component {
                         placeholder={this.state.player_data.name} 
                         value={this.state.name_input}
                         onChange={(event) => this.input_code_field_changed(event)}></input>}
-                    <div className="nav-items">
+                    {!this.props.popout && <div className="nav-items">
                         {/* <CardIcon icon_type={ICON_TYPE.ROTATE_PORTRAIT} callback={() => this.pressRotateButton()}></CardIcon>
                         <CardIcon icon_type={this.state.visible ? ICON_TYPE.VISIBLE : ICON_TYPE.HIDDEN} callback={() => this.pressVisibilityButton()}></CardIcon> */}
                         {!this.state.player_data.is_me ? 
                             (!isWebVersion && <CardIcon icon_type={ICON_TYPE.GOTO} callback={() => this.pressGotoButton()}></CardIcon>) : 
                             <CardIcon icon_type={ICON_TYPE.EDIT} callback={() => this.pressEditButton()}></CardIcon> }
-                    </div>
+                        {!isWebVersion && <CardIcon icon_type={ICON_TYPE.POPOUT} callback={() => this.pressPopoutButton()}></CardIcon>}
+                    </div>}
                 </div>
                 {this.state.editing && <div className="stop-editing-container" onClick={() => this.stop_editing()}></div>}
                 <div className="content">

@@ -15,6 +15,7 @@ function createWindow() {
     win = new BrowserWindow({
         width: 1024,
         height: 720,
+        title: 'everyone.dance',
         webPreferences: {
             nodeIntegration: true,
             enableRemoteModule: true,
@@ -22,6 +23,7 @@ function createWindow() {
             preload: path.join(__dirname, 'src', 'js', 'preload.js'),
         },
         icon: path.join(__dirname, 'src', require('os').platform() == 'darwin' ? 'favicon.icns' : 'favicon.ico'),
+        show: false
         // frame: false // Looks nice, but the drag css properties have issues. Might look into later
     })
 
@@ -31,6 +33,18 @@ function createWindow() {
     }
 
     win.loadFile('src/index.html');
+    
+    win.on('ready-to-show', () => 
+    {
+        win.show();
+    })
+
+    win.on('close', () => 
+    {
+        Object.values(popout_windows).forEach((window) => {
+            window.close();
+        });
+    })
 }
 
 app.whenReady().then(createWindow);
@@ -49,4 +63,99 @@ app.on('activate', () => {
 
 ipcMain.on('close-window', (_, message) => {
     app.quit();
+})
+
+const popout_data = {}
+const popout_windows = {}
+const window_id_to_player_id = {}
+
+function GetWindowKey(id, p2)
+{
+    return `${id}${p2 ? '2' : ''}`
+}
+
+ipcMain.on('popout-player', (_, args) => {
+
+    const key = GetWindowKey(args.id, args.p2);
+    // Close popout window if it is open
+    if (typeof popout_windows[key] != 'undefined')
+    {
+        popout_windows[key].close();
+        return;
+    }
+
+    const popout_window = new BrowserWindow({
+        // parent: win,
+        title: 'everyone.dance Card',
+        width: 700,
+        height: 300,
+        title: `everyone.dance (${args.name})`,
+        transparent: true,
+        webPreferences: {
+            nodeIntegration: true,
+            enableRemoteModule: true,
+            contextIsolation: true,
+            preload: path.join(__dirname, 'src', 'js', 'preload.js'),
+        },
+        icon: path.join(__dirname, 'src', require('os').platform() == 'darwin' ? 'favicon.icns' : 'favicon.ico'),
+        frame: false,
+        alwaysOnTop: true,
+        show: false
+    })
+
+    popout_data[key] = args
+
+    if (!isDev)
+    {
+        popout_window.removeMenu(); // Only enable in dev mode. Otherwise, it removes the devtools menu
+    }
+
+    popout_window.loadFile('src/index.html');
+
+    popout_window.on('close', () => 
+    {
+        delete window_id_to_player_id[popout_window.id];
+        delete popout_windows[key];
+    })
+
+    popout_windows[key] = popout_window;
+    window_id_to_player_id[popout_window.id] = key;
+})
+
+// Pass on data from main window to child windows
+ipcMain.on('window-ready', (window_data, ...args) => {
+    if (window_data.sender.id > 1)
+    {
+        const player_id = window_id_to_player_id[window_data.sender.id];
+        const window = popout_windows[player_id];
+        window.send('update-popout-info', popout_data[player_id]);
+        window.send('game-data', latest_game_data);
+        window.show();
+    }
+})
+
+ipcMain.on('update-popout-size', (window_data, args) => 
+{
+    if (window_data.sender.id > 1)
+    {
+        const player_id = window_id_to_player_id[window_data.sender.id];
+        const window = popout_windows[player_id];
+
+        const current_size = window.getContentSize()
+
+        if (current_size[0] != args.width || current_size[1] != args.height)
+        {
+            window.setContentSize(args.width, args.height);
+        }
+
+    }
+})
+
+let latest_game_data;
+// Pass on data from main window to child windows
+ipcMain.on('game-data', (_, ...args) => {
+    latest_game_data = args[0];
+    Object.values(popout_windows).forEach((window) => {
+        window.send('game-data', ...args);
+    });
 })
