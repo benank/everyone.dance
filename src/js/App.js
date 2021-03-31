@@ -152,7 +152,6 @@ export default class App extends React.Component {
 
             electron.on('game-data', (args) => 
             {
-                console.log('receive game data')
                 const game_room_data_copy = JSON.parse(JSON.stringify(this.state.game_room_data));
                 game_room_data_copy.players = args.players;
                 game_room_data_copy.options = args.options;
