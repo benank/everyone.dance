@@ -14,6 +14,8 @@ import GameRoom from './GameRoom'
 import InstallMenu from './InstallMenu'
 import UpdateMenu from './UpdateMenu'
 
+import PopoutCard from "./PopoutCard"
+
 import { ENDPOINT } from "./constants/endpoint"
 import {VERSION} from "./constants/version"
 import {isWebVersion} from "./constants/isWebVersion";
@@ -48,7 +50,9 @@ export default class App extends React.Component {
             current_version: "",
             latest_version: "",
             notification: null,
-            day_state: DAY_STATE.Day
+            day_state: DAY_STATE.Day,
+            popout_id: "",
+            popout_p2: false
         }
     }
 
@@ -119,6 +123,32 @@ export default class App extends React.Component {
 
         //     electron.send("ready")
         // }
+        if (!isWebVersion)
+        {
+            electron.on('update-popout-info', (args) => 
+            {
+                this.setState({
+                    app_state: APP_STATE.POPOUT_VIEW,
+                    game_room_data: args.game_room_data,
+                    popout_id: args.id,
+                    popout_p2: args.p2
+                })
+            })
+
+            electron.on('game-data', (args) => 
+            {
+                console.log('receive game data')
+                const game_room_data_copy = JSON.parse(JSON.stringify(this.state.game_room_data));
+                game_room_data_copy.players = args.players;
+                game_room_data_copy.options = args.options;
+
+                this.setState({
+                    game_room_data: game_room_data_copy
+                })
+            })
+
+            electron.send('window-ready');
+        }
 
         this.updateBackgroundColor();
     }
@@ -190,8 +220,8 @@ export default class App extends React.Component {
     render () {
         return (
             <>
-                <div className={`background ${background_color_classes[this.state.day_state]}`}></div>
-                {((!isWebVersion && electron.isDev) || this.state.app_state == APP_STATE.INSTALL_VIEW) && <div className='dev-version'>{VERSION}</div>}
+                {this.state.app_state != APP_STATE.POPOUT_VIEW && <div className={`background ${background_color_classes[this.state.day_state]}`}></div>}
+                {((!isWebVersion && electron.isDev && this.state.app_state != APP_STATE.POPOUT_VIEW) || this.state.app_state == APP_STATE.INSTALL_VIEW) && <div className='dev-version'>{VERSION}</div>}
                 {/* {!isWebVersion && <img src={close_icon} className="close-button" onClick={() => electron.closeWindow()}></img>} */}
                 {!this.state.connected && <img src={loading_icon} className='connecting-icon'></img>}
                 {this.state.app_state == APP_STATE.MAIN_MENU && <MainMenu update_ready={this.state.update_ready} latest_version={this.state.latest_version} update_ready={this.state.update_ready} socket={this.socket} setAppState={(state) => this.setAppState(state)}></MainMenu>}
@@ -202,6 +232,7 @@ export default class App extends React.Component {
                     current_version={this.state.current_version}
                     latest_version={this.state.latest_version}
                     setAppState={(state) => this.setAppState(state)}></UpdateMenu>} */}
+                {this.state.app_state == APP_STATE.POPOUT_VIEW && <PopoutCard p2={this.state.popout_p2} id={this.state.popout_id} game_room_data={this.state.game_room_data}></PopoutCard>}
                 {this.state.notification != null && 
                     <div 
                     style={{

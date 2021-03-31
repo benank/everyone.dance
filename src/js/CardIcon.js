@@ -18,7 +18,8 @@ const ICON_TYPE = {
     THEME: 12,
     CHECK: 13,
     UPDATE_READY: 14,
-    X: 15
+    X: 15,
+    POPOUT: 16
 }
 
 class CardIcon extends React.Component {
@@ -142,6 +143,12 @@ class CardIcon extends React.Component {
             {
                 return <svg height="100%" width="100%" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M18.1286 15L30 26.8714V30H26.8714L15 18.1286L3.12857 30H0V26.8714L11.8714 15L0 3.12857V0H3.12857L15 11.8714L26.8714 0H30V3.12857L18.1286 15Z" fill={this.state.color}/>
+                </svg>
+            }
+            case ICON_TYPE.POPOUT:
+            {
+                return <svg width="100%" height="100%" viewBox="0 0 37 37" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M22.4167 0.875V4.79167H29.4471L10.1967 24.0421L12.9579 26.8033L32.2083 7.55292V14.5833H36.125V0.875H22.4167ZM32.2083 32.2083H4.79167V4.79167H18.5V0.875H4.79167C3.7529 0.875 2.75668 1.28765 2.02216 2.02216C1.28765 2.75668 0.875 3.7529 0.875 4.79167V32.2083C0.875 33.2471 1.28765 34.2433 2.02216 34.9778C2.75668 35.7124 3.7529 36.125 4.79167 36.125H32.2083C33.2471 36.125 34.2433 35.7124 34.9778 34.9778C35.7124 34.2433 36.125 33.2471 36.125 32.2083V18.5H32.2083V32.2083Z" fill={this.state.color}/>
                 </svg>
             }
         }

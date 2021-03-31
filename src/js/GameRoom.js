@@ -43,6 +43,14 @@ export default class GameRoom extends React.Component {
         this.last_sync_time = 0;
     }
 
+    componentDidUpdate()
+    {
+        electron.send('game-data', {
+            players: this.state.players,
+            options: this.state.options
+        })
+    }
+
     /**
      * Loops through all players and assigns them a numerical rank based on their current score.
      */
@@ -489,7 +497,7 @@ export default class GameRoom extends React.Component {
                                 if (player.spectate) {return;}
 
                                 return player.data["PlayerNumber_P1"] != undefined &&
-                                    <PlayerCard {...this.props} options={this.state.options} key={key} player_data={player} p2={false} update={true} path={this.state.full_file_path}/>
+                                    <PlayerCard {...this.props} options={this.state.options} key={key} id={key} player_data={player} p2={false} path={this.state.full_file_path}/>
                             })}
                             {Object.keys(this.state.players).map((key) => 
                             {
@@ -497,7 +505,7 @@ export default class GameRoom extends React.Component {
                                 if (player.spectate) {return;}
 
                                 return player.data["PlayerNumber_P2"] != undefined &&
-                                        <PlayerCard {...this.props} options={this.state.options} key={key + "2"} player_data={player} p2={true} path={this.state.full_file_path}/>
+                                        <PlayerCard {...this.props} options={this.state.options} key={key + "2"} id={key} player_data={player} p2={true} path={this.state.full_file_path}/>
                             })}
                         </div>
                     </div>
