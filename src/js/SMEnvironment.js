@@ -81,7 +81,7 @@ export default class SMInstallation {
         else if (stepmania_dir.includes("5.1")) {
             return SM_INSTALL_VARIANT.SM_5_1;
         }
-        else if (stepmania_dir.includes("5.3")) {
+        else if (stepmania_dir.includes("5.3") || stepmania_dir.toLocaleLowerCase().includes("outfox")) {
             return SM_INSTALL_VARIANT.SM_5_3;
         }
         // Default to SM 5.0.x no matter the directory name
