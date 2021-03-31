@@ -85,6 +85,11 @@ export default class App extends React.Component {
             }, 1000);
         }
 
+        if (isWebVersion)
+        {
+            window.document.title = "everyone.dance - Play StepMania together!"
+        }
+
         this.socket = io(ENDPOINT);
 
         this.socket.on("connect", () => 
