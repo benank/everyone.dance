@@ -82,7 +82,7 @@ ipcMain.on('popout-player', (_, args) => {
     const popout_window = new BrowserWindow({
         // parent: win,
         title: 'everyone.dance Card',
-        width: 600,
+        width: 700,
         height: 300,
         title: `everyone.dance (${args.name})`,
         transparent: true,
@@ -126,6 +126,23 @@ ipcMain.on('window-ready', (window_data, ...args) => {
         window.send('update-popout-info', popout_data[player_id]);
         window.send('game-data', latest_game_data);
         window.show();
+    }
+})
+
+ipcMain.on('update-popout-size', (window_data, args) => 
+{
+    if (window_data.sender.id > 1)
+    {
+        const player_id = window_id_to_player_id[window_data.sender.id];
+        const window = popout_windows[player_id];
+
+        const current_size = window.getContentSize()
+
+        if (current_size[0] != args.width || current_size[1] != args.height)
+        {
+            window.setContentSize(args.width, args.height);
+        }
+
     }
 })
 

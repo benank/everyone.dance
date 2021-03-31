@@ -11,6 +11,15 @@ export default class PopoutCard extends React.Component {
         super(props);
     }
 
+    componentDidUpdate()
+    {
+        electron.send('update-popout-size', 
+        {
+            width: window.document.getElementById('popout-card').clientWidth,
+            height: window.document.getElementById('popout-card').clientHeight
+        })
+    }
+
     get_player_data()
     {
         return this.props.game_room_data.players[this.props.id];
@@ -18,7 +27,7 @@ export default class PopoutCard extends React.Component {
 
     render () {
         return (
-            <div>
+            <div id='popout-card'>
                 <PlayerCard 
                 {...this.props} 
                 options={this.props.game_room_data.options} 
