@@ -145,6 +145,8 @@ export default class App extends React.Component {
                 this.setState({
                     game_room_data: game_room_data_copy
                 })
+
+                console.log(game_room_data_copy)
             })
 
             electron.send('window-ready');

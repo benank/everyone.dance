@@ -69,15 +69,20 @@ const popout_data = {}
 const popout_windows = {}
 const window_id_to_player_id = {}
 
+function GetWindowKey(id, p2)
+{
+    return `${id}${p2 ? '2' : ''}`
+}
+
 ipcMain.on('popout-player', (_, args) => {
 
+    const key = GetWindowKey(args.id, args.p2);
     // Close popout window if it is open
-    if (typeof popout_windows[args.id] != 'undefined')
+    if (typeof popout_windows[key] != 'undefined')
     {
-        popout_windows[args.id].close();
+        popout_windows[key].close();
         return;
     }
-
 
     const popout_window = new BrowserWindow({
         // parent: win,
@@ -95,10 +100,10 @@ ipcMain.on('popout-player', (_, args) => {
         icon: path.join(__dirname, 'src', require('os').platform() == 'darwin' ? 'favicon.icns' : 'favicon.ico'),
         frame: false,
         alwaysOnTop: true,
-        show: false
+        // show: false
     })
 
-    popout_data[args.id] = args
+    popout_data[key] = args
 
     if (!isDev)
     {
@@ -110,11 +115,11 @@ ipcMain.on('popout-player', (_, args) => {
     popout_window.on('close', () => 
     {
         delete window_id_to_player_id[popout_window.id];
-        delete popout_windows[args.id];
+        delete popout_windows[key];
     })
 
-    popout_windows[args.id] = popout_window;
-    window_id_to_player_id[popout_window.id] = args.id;
+    popout_windows[key] = popout_window;
+    window_id_to_player_id[popout_window.id] = key;
 })
 
 // Pass on data from main window to child windows
