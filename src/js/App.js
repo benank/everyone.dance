@@ -170,7 +170,7 @@ export default class App extends React.Component {
     {
         const time = (new Date()).getHours();
 
-        if (time >= 5 && time < 10)
+        if (time >= 5 && time < 9)
         {
             // Morning
             if (this.state.day_state != DAY_STATE.Morning)
