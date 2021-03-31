@@ -45,10 +45,13 @@ export default class GameRoom extends React.Component {
 
     componentDidUpdate()
     {
-        electron.send('game-data', {
-            players: this.state.players,
-            options: this.state.options
-        })
+        if (!isWebVersion)
+        {
+            electron.send('game-data', {
+                players: this.state.players,
+                options: this.state.options
+            })
+        }
     }
 
     /**

@@ -107,6 +107,8 @@ div.player-card-container div.top-bar input.player-name
     font-weight: bold;
     margin-left: 2px;
     display: inline-block;
+    max-width: 75%;
+    flex: 1 0 70%;
 }
 
 div.player-card-container div.top-bar input.player-name.name-input
