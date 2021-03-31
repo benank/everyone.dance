@@ -28,7 +28,15 @@ export default class MainMenu extends React.Component {
     click_submit_gamecode()
     {
         if (this.state.game_code_input_value.length != 4) {return;}
-        if (!this.props.socket.connected) {return;}
+        if (!this.props.socket.connected)
+        {
+            this.props.createNotification({
+                bg_color: '#E54C4C', 
+                text_color: 'white',
+                text: 'Unable to join game room: not connected to the server.'
+            })
+            return;
+        }
 
         this.props.socket.emit("enter game code", {
             game_code: this.state.game_code_input_value, 
@@ -45,7 +53,15 @@ export default class MainMenu extends React.Component {
 
     click_create_game_room()
     {
-        if (!this.props.socket || !this.props.socket.connected) {return;}
+        if (!this.props.socket || !this.props.socket.connected)
+        {
+            this.props.createNotification({
+                bg_color: '#E54C4C', 
+                text_color: 'white',
+                text: 'Unable to create game room: not connected to the server.'
+            })
+            return;
+        }
 
         this.props.socket.emit("create game room");
     }

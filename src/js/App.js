@@ -95,11 +95,26 @@ export default class App extends React.Component {
                 this.socket.emit("set name", localStorage.getItem("player_name"));
             }
             this.socket.emit("set version", VERSION);
+
+            if (this.state.was_connected)
+            {
+                this.createNotification({
+                    bg_color: '#00BC13', 
+                    text_color: 'white',
+                    text: 'Reconnected to the server!'
+                })
+            }
         })
 
         this.socket.on("disconnect", () => 
         {
-            this.setState({connected: false, app_state: APP_STATE.MAIN_MENU});
+            this.setState({connected: false, app_state: APP_STATE.MAIN_MENU, was_connected: true});
+            
+            this.createNotification({
+                bg_color: '#E54C4C', 
+                text_color: 'white',
+                text: 'Disconnected from the server. Attempting to reconnect...'
+            })
         })
         
         // Called when the server puts the player in a game room
@@ -226,7 +241,7 @@ export default class App extends React.Component {
                 {((!isWebVersion && electron.isDev && this.state.app_state != APP_STATE.POPOUT_VIEW) || this.state.app_state == APP_STATE.INSTALL_VIEW) && <div className='dev-version'>{VERSION}</div>}
                 {/* {!isWebVersion && <img src={close_icon} className="close-button" onClick={() => electron.closeWindow()}></img>} */}
                 {!this.state.connected && <img src={loading_icon} className='connecting-icon'></img>}
-                {this.state.app_state == APP_STATE.MAIN_MENU && <MainMenu update_ready={this.state.update_ready} latest_version={this.state.latest_version} update_ready={this.state.update_ready} socket={this.socket} setAppState={(state) => this.setAppState(state)}></MainMenu>}
+                {this.state.app_state == APP_STATE.MAIN_MENU && <MainMenu createNotification={this.createNotification.bind(this)} update_ready={this.state.update_ready} latest_version={this.state.latest_version} update_ready={this.state.update_ready} socket={this.socket} setAppState={(state) => this.setAppState(state)}></MainMenu>}
                 {this.state.app_state == APP_STATE.GAME_ROOM && <GameRoom game_room_data={this.state.game_room_data} socket={this.socket} setAppState={(state) => this.setAppState(state)}></GameRoom>}
                 {this.state.app_state == APP_STATE.INSTALL_VIEW && <InstallMenu setAppState={(state) => this.setAppState(state)}></InstallMenu>}
                 {/* {this.state.app_state == APP_STATE.UPDATE_VIEW && <UpdateMenu 
