@@ -52,10 +52,13 @@ export default class GameRoom extends React.Component {
             players: JSON.parse(JSON.stringify(this.state.players))
         })
         
-        electron.send('game-data', {
-            players: this.state.players,
-            options: this.state.options
-        })
+        if (!isWebVersion)
+        {
+            electron.send('game-data', {
+                players: this.state.players,
+                options: this.state.options
+            })
+        }
     }
 
     toggleCSSMenuOpen(id)
