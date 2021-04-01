@@ -32,7 +32,7 @@ export default class GameRoomCustomCSS extends React.Component {
                         <img src={close_icon} onClick={() => this.props.toggleCSSMenuOpen()} className="navitem settings"></img>
                     </div>
                     <div className='title-container'>
-                        Custom CSS✨
+                        Custom CSS
                     </div>
                     <div className='settings-content'>
                         <div className='container'>
