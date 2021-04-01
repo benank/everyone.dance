@@ -119,6 +119,7 @@ export default class MainMenu extends React.Component {
             <>
                 <div className="main-menu-title-container">
                     <div className="title">everyone.dance</div>
+                    <div className="subtitle">Play StepMania together!</div>
                     <div className="buttons-container">
                         {!this.state.game_code_open && <div className="button join" onClick={() => this.click_join_game()}>
                             {!isWebVersion ? "Join a Game" : "Spectate a Game"}

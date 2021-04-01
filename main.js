@@ -100,7 +100,9 @@ ipcMain.on('popout-player', (_, args) => {
         icon: path.join(__dirname, 'src', require('os').platform() == 'darwin' ? 'favicon.icns' : 'favicon.ico'),
         frame: false,
         alwaysOnTop: true,
-        show: false
+        show: false,
+        maximizable: false,
+        fullscreenable: false
     })
 
     popout_data[key] = args

@@ -1,4 +1,4 @@
-# everyone.dance
+# everyone.dance - Play StepMania together!
 A realtime score sharing system for Stepmania. It's meant to be an easily accessible and usable platform for playing with others in Stepmania without hassle.
 
 This is available at [everyone.dance](https://everyone.dance/). Please keep reading for usage instructions. You can download from that website or from the releases page here.

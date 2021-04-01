@@ -17,6 +17,16 @@ div.main-menu-title-container div.title
     -webkit-app-region: drag;
 }
 
+div.main-menu-title-container div.subtitle
+{
+    margin-top: 10px;
+    font-size: 18px;
+    user-select: none;
+    color: rgba(255, 255, 255, 0.527);
+    animation: 0.7s ease-in-out title-anim;
+    -webkit-app-region: drag;
+}
+
 @keyframes title-anim
 {
     0% {opacity: 0; transform: translateY(-20px)}
@@ -53,7 +63,7 @@ div.main-menu-title-container div.buttons-container
     position: relative;
     display: inline-block;
     text-align: center;
-    margin-top: 40px;
+    margin-top: 30px;
     width: 300px;
     animation: 0.7s ease-in-out button-anim;
 }
