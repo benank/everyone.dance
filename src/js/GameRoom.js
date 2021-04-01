@@ -11,6 +11,7 @@ import info_icon from "../icons/info.svg"
 import settings_icon from "../icons/settings.svg"
 import SMInstallation from './SMEnvironment';
 import GameRoomSettings from "./GameRoomSettings"
+import GameRoomCustomCSS from "./GameRoomCustomCSS"
 
 import {isWebVersion} from "./constants/isWebVersion"
 import {SYNC_MODE} from "./constants/SyncMode"
@@ -36,11 +37,33 @@ export default class GameRoom extends React.Component {
             my_id: Object.values(props.game_room_data.players).filter((player) => player.is_me)[0].id,
             full_file_path: "", // Full file path to everyone.dance.txt
             settings_open: false,
-            options: props.game_room_data.options
+            options: props.game_room_data.options,
+            css_open: false
         }
 
         this.timed_sync_data = {};
         this.last_sync_time = 0;
+    }
+
+    cardStyleUpdated(style)
+    {
+        localStorage.setItem(this.getLocalStorageCardCSSName(this.state.custom_css_id), style);
+        this.setState({
+            players: JSON.parse(JSON.stringify(this.state.players))
+        })
+        
+        electron.send('game-data', {
+            players: this.state.players,
+            options: this.state.options
+        })
+    }
+
+    toggleCSSMenuOpen(id)
+    {
+        this.setState({
+            css_open: !this.state.css_open,
+            custom_css_id: id
+        })
     }
 
     componentDidUpdate()
@@ -473,6 +496,23 @@ export default class GameRoom extends React.Component {
         this.props.socket.emit("update options", options_copy);
     }
 
+    getNamedIdWithP2(name, p2)
+    {
+        return `pc_${name}${p2 ? "_2" : ''}`.toLowerCase().replace(' ', '_').replace('-', '_').replace(/\W/g, '');
+    }
+
+    getLocalStorageCardCSSName(id)
+    {
+        return `custom_card_css_${id}`;
+    }
+
+    getCardCustomStyle()
+    {
+        let custom_style = localStorage.getItem(this.getLocalStorageCardCSSName(this.state.custom_css_id));
+        if (custom_style == null) {custom_style = "";}
+        return custom_style;
+    }
+
     render () {
         return (
             <div className="gameroom-main-container">
@@ -498,17 +538,41 @@ export default class GameRoom extends React.Component {
                             {
                                 const player = this.state.players[key];
                                 if (player.spectate) {return;}
+                                let custom_style = localStorage.getItem(this.getLocalStorageCardCSSName(this.getNamedIdWithP2(player.name, false)));
+                                if (custom_style == null) {custom_style = "";}
 
                                 return player.data["PlayerNumber_P1"] != undefined &&
-                                    <PlayerCard {...this.props} options={this.state.options} key={key} id={key} player_data={player} p2={false} path={this.state.full_file_path}/>
+                                    <PlayerCard 
+                                    {...this.props} 
+                                    options={this.state.options} 
+                                    key={key} 
+                                    id={key} 
+                                    player_data={player} 
+                                    p2={false} 
+                                    path={this.state.full_file_path} 
+                                    toggleCSSMenuOpen={this.toggleCSSMenuOpen.bind(this)} 
+                                    getNamedIdWithP2={this.getNamedIdWithP2.bind(this)}
+                                    custom_style={custom_style}/>
                             })}
                             {Object.keys(this.state.players).map((key) => 
                             {
                                 const player = this.state.players[key];
                                 if (player.spectate) {return;}
+                                let custom_style = localStorage.getItem(this.getLocalStorageCardCSSName(this.getNamedIdWithP2(player.name, true)));
+                                if (custom_style == null) {custom_style = "";}
 
                                 return player.data["PlayerNumber_P2"] != undefined &&
-                                        <PlayerCard {...this.props} options={this.state.options} key={key + "2"} id={key} player_data={player} p2={true} path={this.state.full_file_path}/>
+                                        <PlayerCard 
+                                        {...this.props} 
+                                        options={this.state.options} 
+                                        key={key + "2"} 
+                                        id={key} 
+                                        player_data={player} 
+                                        p2={true} 
+                                        path={this.state.full_file_path} 
+                                        toggleCSSMenuOpen={this.toggleCSSMenuOpen.bind(this)} 
+                                        getNamedIdWithP2={this.getNamedIdWithP2.bind(this)}
+                                        custom_style={custom_style}/>
                             })}
                         </div>
                     </div>
@@ -525,6 +589,14 @@ export default class GameRoom extends React.Component {
                     setSyncMode={this.update_settings_sync_mode.bind(this)}
                     {...this.props}></GameRoomSettings>
                 }
+                {this.state.css_open && 
+                    <GameRoomCustomCSS
+                    toggleCSSMenuOpen={this.toggleCSSMenuOpen.bind(this)}
+                    cardStyleUpdated={this.cardStyleUpdated.bind(this)}
+                    card_custom_style={this.getCardCustomStyle()}
+                    custom_css_id={this.state.custom_css_id}
+                    {...this.props}>
+                    </GameRoomCustomCSS>}
             </div>
         )
     }

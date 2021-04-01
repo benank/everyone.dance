@@ -13,7 +13,6 @@ export default class PopoutCard extends React.Component {
 
     componentDidUpdate()
     {
-        console.log(this.props.id)
         electron.send('update-popout-size', 
         {
             width: window.document.getElementById('popout-card').clientWidth,
@@ -40,13 +39,35 @@ export default class PopoutCard extends React.Component {
         }
     }
 
+    getNamedIdWithP2(name, p2)
+    {
+        return `pc_${name}${p2 ? "_2" : ''}`.toLowerCase().replace(' ', '_').replace('-', '_').replace(/\W/g, '');
+    }
+
+    getLocalStorageCardCSSName(id)
+    {
+        return `custom_card_css_${id}`;
+    }
+
+    getCardCustomStyle()
+    {
+        let custom_style = localStorage.getItem(this.getLocalStorageCardCSSName(this.getNamedIdWithP2(this.get_player_data().name, this.props.p2)));
+        if (custom_style == null) {custom_style = "";}
+        return custom_style;
+    }
+
     render () {
         return (
             <div id='popout-card'>
                 {this.have_valid_player_data() && <PlayerCard 
                 {...this.props} 
                 options={this.props.game_room_data.options} 
-                id={this.props.id} player_data={this.get_player_data()} p2={this.props.p2} popout={true}/>}
+                id={this.props.id} 
+                player_data={this.get_player_data()} 
+                p2={this.props.p2} 
+                popout={true}
+                getNamedIdWithP2={this.getNamedIdWithP2.bind(this)}
+                custom_style={this.getCardCustomStyle()}/>}
             </div>
         )
     }

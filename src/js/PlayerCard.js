@@ -89,7 +89,10 @@ export default class PlayerCard extends React.Component {
         // I opted for doing this
         if (!Object.is(this.props.player_data, this.state.player_data))
         {
-            this.setState({player_data: this.props.player_data, old_player_data: this.state.player_data})
+            this.setState({
+                player_data: this.props.player_data, 
+                old_player_data: this.state.player_data
+            })
         }
     }
 
@@ -134,16 +137,6 @@ export default class PlayerCard extends React.Component {
         const input = event.target.value;
         localStorage.setItem("player_name", input);
         this.setState({name_input: input});
-    }
-
-    pressRotateButton()
-    {
-        
-    }
-
-    pressVisibilityButton()
-    {
-        
     }
 
     get_player_data()
@@ -211,9 +204,23 @@ export default class PlayerCard extends React.Component {
         });
     }
 
+    getIdWithP2()
+    {
+        return `${this.props.id}${this.state.p2 ? '_2' : ''}`;
+    }
+
+    pressCustomCSSButton()
+    {
+        this.props.toggleCSSMenuOpen(this.props.getNamedIdWithP2(this.state.player_data.name, this.state.p2));
+    }
+
     render () {
         return (
-            <div className={`player-card-container ${this.props.popout ? 'popout' : ''}`} key={`${this.props.id}${this.state.p2 ? '_2' : ''}`} style={{backgroundImage: this.state.background_color}}>
+            <div className={`player-card-container ${this.props.popout ? 'popout' : ''}`} id={this.props.getNamedIdWithP2(this.state.player_data.name, this.state.p2)} key={this.getIdWithP2()}>
+                {/* Must apply background color as style like below so custom css can modify it without issue */}
+                <style>{`div.player-card-container div.player-card-background {background-image: ${this.state.background_color}}`}</style>
+                <style>{this.props.custom_style}</style>
+                <div className='player-card-background'></div>
                 <div className="top-bar">
                     {(this.props.options["rank_players"]) && (
                         (typeof this.get_player_data().rank != 'undefined' && this.get_player_data().ingame == "true") ? 
@@ -230,11 +237,10 @@ export default class PlayerCard extends React.Component {
                         value={this.state.name_input}
                         onChange={(event) => this.input_code_field_changed(event)}></input>}
                     {!this.props.popout && <div className="nav-items">
-                        {/* <CardIcon icon_type={ICON_TYPE.ROTATE_PORTRAIT} callback={() => this.pressRotateButton()}></CardIcon>
-                        <CardIcon icon_type={this.state.visible ? ICON_TYPE.VISIBLE : ICON_TYPE.HIDDEN} callback={() => this.pressVisibilityButton()}></CardIcon> */}
                         {!this.state.player_data.is_me ? 
                             (!isWebVersion && <CardIcon icon_type={ICON_TYPE.GOTO} callback={() => this.pressGotoButton()}></CardIcon>) : 
                             <CardIcon icon_type={ICON_TYPE.EDIT} callback={() => this.pressEditButton()}></CardIcon> }
+                        <CardIcon icon_type={ICON_TYPE.CUSTOM_CSS} callback={() => this.pressCustomCSSButton()}></CardIcon>
                         {!isWebVersion && <CardIcon icon_type={ICON_TYPE.POPOUT} callback={() => this.pressPopoutButton()}></CardIcon>}
                     </div>}
                 </div>

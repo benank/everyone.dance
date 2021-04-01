@@ -68,6 +68,14 @@ Please note that the current implementation of this uses dance points as the per
 ## Goto Button
 When you're in a game room with other people, you'll see a small arrow pointing to the top right in each player card. Click that and your StepMania will automatically navigate to the song that they are currently on.
 
+## Popout Button
+When you're in a game room, you'll see a "popout" icon on the top right corner of each player card. Clicking that will pop out just that player's card so you can move it anywhere on the screen. It is always on top, so if you run StepMania in windowed mode, you can even see it when you are playing the game! This also makes it much easier to window capture in OBS - just select this specific window source. It should be titled "everyone.dance (Player Name)".
+
+## Custom CSS Button
+When you're in a game room, you'll see a button that looks like a page with the text "CSS" on it on the top right of each player card. Using this menu, you can adjust the global styling of the entire everyone.dance client, or you can adjust the specific style of that player card (using the # selector on the left). Styles are saved and persisted even when you leave the game room or close the client. Player-specific custom CSS only applies to the player if the name matches, so if the player's name changes, the CSS will no longer apply to them.
+
+To make the most use of this, you'll have to probably go digging in the CSS or HTML code to find out what classes everything uses so you can customize it to your liking. This is a feature for advanced users and can break everything.
+
 ## Updates
 When you run everyone.dance, it will automatically check for new updates. You'll get a notification if there's a new update, and you will be able to click the "Update" button to download the latest version. After downloading, unzip and run it! You will likely have to reinstall it as well, so make sure to go to the Installation menu to do that as well.
 

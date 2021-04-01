@@ -52,8 +52,17 @@ export default class App extends React.Component {
             notification: null,
             day_state: DAY_STATE.Day,
             popout_id: "",
-            popout_p2: false
+            popout_p2: false,
+            custom_style: localStorage.getItem("custom_style_global") == null ? "" : localStorage.getItem("custom_style_global")
         }
+    }
+
+    globalStyleUpdated(global_value)
+    {
+        localStorage.setItem('custom_style_global', global_value);
+        this.setState({
+            custom_style: global_value
+        })
     }
 
     componentDidMount()
@@ -162,10 +171,9 @@ export default class App extends React.Component {
                 game_room_data_copy.options = args.options;
 
                 this.setState({
-                    game_room_data: game_room_data_copy
+                    game_room_data: game_room_data_copy,
+                    custom_style: localStorage.getItem("custom_style_global") == null ? "" : localStorage.getItem("custom_style_global")
                 })
-
-                console.log(game_room_data_copy)
             })
 
             electron.send('window-ready');
@@ -241,12 +249,13 @@ export default class App extends React.Component {
     render () {
         return (
             <>
+                <style>{this.state.custom_style}</style>
                 {this.state.app_state != APP_STATE.POPOUT_VIEW && <div className={`background ${background_color_classes[this.state.day_state]}`}></div>}
                 {((!isWebVersion && electron.isDev && this.state.app_state != APP_STATE.POPOUT_VIEW) || this.state.app_state == APP_STATE.INSTALL_VIEW) && <div className='dev-version'>{VERSION}</div>}
                 {/* {!isWebVersion && <img src={close_icon} className="close-button" onClick={() => electron.closeWindow()}></img>} */}
                 {!this.state.connected && <img src={loading_icon} className='connecting-icon'></img>}
                 {this.state.app_state == APP_STATE.MAIN_MENU && <MainMenu createNotification={this.createNotification.bind(this)} update_ready={this.state.update_ready} latest_version={this.state.latest_version} update_ready={this.state.update_ready} socket={this.socket} setAppState={(state) => this.setAppState(state)}></MainMenu>}
-                {this.state.app_state == APP_STATE.GAME_ROOM && <GameRoom game_room_data={this.state.game_room_data} socket={this.socket} setAppState={(state) => this.setAppState(state)}></GameRoom>}
+                {this.state.app_state == APP_STATE.GAME_ROOM && <GameRoom game_room_data={this.state.game_room_data} socket={this.socket} setAppState={(state) => this.setAppState(state)} custom_style={this.state.custom_style} globalStyleUpdated={this.globalStyleUpdated.bind(this)}></GameRoom>}
                 {this.state.app_state == APP_STATE.INSTALL_VIEW && <InstallMenu setAppState={(state) => this.setAppState(state)}></InstallMenu>}
                 {/* {this.state.app_state == APP_STATE.UPDATE_VIEW && <UpdateMenu 
                     update_ready={this.state.update_ready} 
