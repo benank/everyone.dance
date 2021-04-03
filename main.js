@@ -145,7 +145,7 @@ ipcMain.on('update-popout-size', (window_data, args) =>
 
         const current_size = window.getContentSize()
 
-        if (current_size[0] != args.width || current_size[1] != args.height)
+        if (Math.abs(current_size[0] - args.width) > 2 || Math.abs(current_size[1] - args.height) > 2)
         {
             window.setContentSize(args.width, args.height);
         }

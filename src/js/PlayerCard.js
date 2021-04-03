@@ -214,6 +214,11 @@ export default class PlayerCard extends React.Component {
         this.props.toggleCSSMenuOpen(this.props.getNamedIdWithP2(this.state.player_data.name, this.state.p2));
     }
 
+    isPopoutAndNotIngame()
+    {
+        return this.get_player_data().ingame != "true" && this.props.popout;
+    }
+
     render () {
         return (
             <div className={`player-card-container ${this.props.popout ? 'popout' : ''}`} id={this.props.getNamedIdWithP2(this.state.player_data.name, this.state.p2)} key={this.getIdWithP2()}>
@@ -254,11 +259,11 @@ export default class PlayerCard extends React.Component {
                         <div className="info song-difficulty"><CardIcon icon_type={ICON_TYPE.LEVEL}/>{this.get_player_data().song_info.difficulty_name || "--"} {this.get_player_data().song_info.difficulty || "--"} ({this.get_player_data().song_info.steps || "--"})</div>
                         {this.get_player_data().ingame == "true" && <div className="song-score">{this.get_player_score()}%</div>}
                     </div>
-                    {this.get_player_data().ingame == "true" && <div className="song-progress-bar">
+                    {(this.get_player_data().ingame == "true" || this.props.popout) && <div className="song-progress-bar" style={{opacity: `${this.isPopoutAndNotIngame() ? '0' : '1'}`}}>
                         <div className="song-progress-bar-fill" style={{width: `${this.get_player_data().progress * 100}%`}}></div>
                     </div>}
-                    {this.get_player_data().ingame == "true" && <div className="step-scores-container">
-                        {this.get_player_data().ingame && this.renderJudgements()}
+                    {(this.get_player_data().ingame == "true" || this.props.popout) && <div className="step-scores-container" style={{opacity: `${this.isPopoutAndNotIngame() ? '0' : '1'}`}}>
+                        {this.renderJudgements()}
                     </div>}
                 </div>
             </div>
