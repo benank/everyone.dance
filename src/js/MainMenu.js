@@ -114,6 +114,14 @@ export default class MainMenu extends React.Component {
         }
     }
 
+    onKeyPress(event)
+    {
+        if (event.key == "Enter")
+        {
+            this.click_submit_gamecode();
+        }
+    }
+
     render () {
         return (
             <>
@@ -128,7 +136,9 @@ export default class MainMenu extends React.Component {
                             <input 
                                 className="gamecode" 
                                 type="text" 
+                                autoFocus={true}
                                 pattern="[^A-Z]+" 
+                                onKeyPress={(e) => this.onKeyPress(e)}
                                 maxLength="4" 
                                 placeholder="Game Code" 
                                 value={this.state.game_code_input_value}
