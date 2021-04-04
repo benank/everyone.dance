@@ -170,6 +170,8 @@ local function RefreshActiveSongData()
         local song = GAMESTATE:GetCurrentSong() -- Works for both music select and gameplay
         local step_data = GAMESTATE:GetCurrentSteps(pn)
 
+        if not song then return end
+
         player_data.song_info = 
         {
             name = song:GetTranslitFullTitle(),
@@ -190,8 +192,9 @@ local function RefreshActiveSongData()
 
         player_data.progress = math.min(1, song_progress)
 
+        local top_screen = SCREENMAN:GetTopScreen()
         -- Set progress to 1 after finishing
-        if SCREENMAN:GetTopScreen():GetName():find("ScreenEvaluation") then
+        if top_screen and top_screen:GetName() and top_screen:GetName():find("ScreenEvaluation") then
             player_data.progress = 1
         end
 

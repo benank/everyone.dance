@@ -270,6 +270,8 @@ export default class InstallMenu extends React.Component {
                 return theme_data;
             }
 
+            console.log("Exists!")
+
             const file = electron.fs.readFileSync(default_file, 'utf8').toString();
             const installable = file.split("\n").filter((line) => 
                 line.includes("LoadActor") || line.includes("LoadFallbackB")).length > 0
@@ -419,10 +421,24 @@ export default class InstallMenu extends React.Component {
                     inserted = true;
                 }
                 
+                // Simply Love 5.3 Support
+                if (line.includes(`af[#af+1] = LoadActor("./WhoIsCurrentlyWinning.lua")`))
+                {
+                    new_file_contents += `af[#af+1] = LoadActor("../everyone.dance.lua")\n`;
+                    inserted = true;
+                }
+                
+                // Simply Love 5.3 Support
+                if (line.includes(`t[#t+1] = LoadActor("./Shared/TitleAndBanner.lua")`))
+                {
+                    new_file_contents += `t[#t+1] = LoadActor("../everyone.dance.lua")\n`;
+                    inserted = true;
+                }
+                
                 // StarLight Support
                 if (line.includes(`t[#t+1] = StandardDecorationFromFile("StageDisplay","StageDisplay");`))
                 {
-                    new_file_contents += `t[#t+1] = LoadActor("../everyone.dance.lua"),\n`;
+                    new_file_contents += `t[#t+1] = LoadActor("../everyone.dance.lua")\n`;
                     inserted = true;
                 }
             }
