@@ -12,7 +12,7 @@ export const SM_INSTALL_VARIANT = {
     SM_5_1: 2,
     // 5.2 was never released, no one should be running it
     SM_5_3: 3,
-    SM_CLUB_FANTASTIC: 4,
+    SM_CLUB_FANTASTIC: 4
 };
 
 const SM_DATA_NAME = "Save/everyone.dance.txt"
@@ -68,6 +68,33 @@ export default class SMInstallation {
     }
 
     /**
+     * Returns the contents of log.txt in StepMania - either in StepMania/Logs/info.txt or StepMania/info.txt
+     */
+    _get_log_contents(stepmania_dir)
+    {
+        const info_file_name = "/info.txt";
+
+        let dir = stepmania_dir;
+        if (dir.includes("Appearance"))
+        {
+            dir = dir.replace("Appearance", "");
+        }
+
+        if (!electron.fs.existsSync(dir + "/Logs"))
+        {
+            // Possibly NotITG
+            if (!electron.fs.existsSync(dir + info_file_name)) {return;}
+
+            // Return contents of log file
+            return electron.fs.readFileSync(dir + info_file_name, 'utf8').toString();
+        }
+
+        if (!electron.fs.existsSync(dir + "/Logs" + info_file_name)) {return;}
+
+        return electron.fs.readFileSync(dir + "/Logs" + info_file_name, 'utf8').toString();
+    }
+
+    /**
      * Determine the overall variant of stepmania
      * @param {String} stepmania_dir Path to stepmania installation
      * @returns {SM_INSTALL_VARIANT} The installation variant
@@ -75,6 +102,31 @@ export default class SMInstallation {
     _install_variant(stepmania_dir) {
         if (!stepmania_dir) return SM_INSTALL_VARIANT.SM_UNKNOWN;
 
+        const log_contents = this._get_log_contents(stepmania_dir);
+        const log_first_line = log_contents.split("\n")[0];
+        console.log(`StepMania Version: ${log_first_line}`);
+
+        if (typeof log_contents != 'undefined')
+        {
+            // Search for version
+            /*
+                StepMania5.0.12
+                StepMania5.1-git-7bd2118e8c
+                StepMania5.3-git-7bd2118e8c
+                Club Fantastic StepMania5.1-git-ff63fe792e
+
+                ... and more?
+            */
+
+           if (log_first_line.includes("Club Fantastic StepMania5.1")) {return SM_INSTALL_VARIANT.SM_CLUB_FANTASTIC}
+
+           if (log_first_line.includes("StepMania5.0")) {return SM_INSTALL_VARIANT.SM_5_0}
+           if (log_first_line.includes("StepMania5.1")) {return SM_INSTALL_VARIANT.SM_5_1}
+           if (log_first_line.includes("StepMania5.3")) {return SM_INSTALL_VARIANT.SM_5_3}
+        }
+
+
+        // Fallback: check stepmania folder name
         if (stepmania_dir.toLowerCase().includes("club") && stepmania_dir.toLowerCase().includes("fantastic")) {
             return SM_INSTALL_VARIANT.SM_CLUB_FANTASTIC;
         }
@@ -84,8 +136,8 @@ export default class SMInstallation {
         else if (stepmania_dir.includes("5.3") || stepmania_dir.toLocaleLowerCase().includes("outfox")) {
             return SM_INSTALL_VARIANT.SM_5_3;
         }
-        // Default to SM 5.0.x no matter the directory name
-        return SM_INSTALL_VARIANT.SM_5_0;
+        
+        return SM_INSTALL_VARIANT.SM_UNKNOWN;
     }
 
     /**

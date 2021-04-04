@@ -9,7 +9,7 @@ import back_arrow_icon from "../icons/back_arrow.svg"
 import popout_icon from "../icons/popout.svg"
 import info_icon from "../icons/info.svg"
 import settings_icon from "../icons/settings.svg"
-import SMInstallation from './SMEnvironment';
+import SMInstallation, { SM_INSTALL_VARIANT } from './SMEnvironment';
 import GameRoomSettings from "./GameRoomSettings"
 import GameRoomCustomCSS from "./GameRoomCustomCSS"
 
@@ -333,6 +333,17 @@ export default class GameRoom extends React.Component {
             const dir = localStorage.getItem("stepmania_dir");
 
             const sm_install = new SMInstallation(dir);
+
+            if (sm_install.install_variant == SM_INSTALL_VARIANT.SM_UNKNOWN)
+            {
+                // Unknown variant, won't work :(
+                this.props.createNotification({
+                    bg_color: '#E54C4C', 
+                    text_color: 'white',
+                    text: 'Error: failed to read score files. Your StepMania version may be incompatible.'
+                })
+            }
+
             NOT_APPDATA = sm_install.is_portable;
             SM_FILE_PATH = sm_install.score_file;
         }
