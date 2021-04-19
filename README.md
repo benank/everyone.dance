@@ -52,12 +52,14 @@ These themes have been tested to work with this system and the installation proc
 - Simply Love
 - Waterfall
 - DDR Supernova 3
-- Default
-- 5.3 Default
+- Circo Cero (SM5.0)
+- Lambda (SM5.1)
+- Soundwaves (OutFox)
+- Infinitesimal (OutFox)
 - Club Fantastic
 
 ## StepMania 5.3
-StepMania 5.3 is supported! However, when installing, please select the Appearance folder within the StepMania directory instead of the root directory.
+StepMania 5.3 (OutFox) is supported! However, when installing, please select the Appearance folder within the StepMania directory instead of the root directory.
 
 ## Club Fantastic
 The Club Fantastic client is supported! However, make sure you also have the Club Fantastic theme in your themes folder. Otherwise, it will not work because you won't be able to see the Club Fantastic option in the installation menu.

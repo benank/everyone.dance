@@ -170,7 +170,6 @@ ipcMain.on('game-data', (_, ...args) => {
     Object.values(popout_windows).forEach((window) => {
         window.send('game-data', ...args);
     });
-    UpdateRichPresence();
 })
 
 ipcMain.on('discord-data', (_, ...args) => {

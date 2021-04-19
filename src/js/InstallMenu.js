@@ -441,6 +441,25 @@ export default class InstallMenu extends React.Component {
                     new_file_contents += `t[#t+1] = LoadActor("../everyone.dance.lua")\n`;
                     inserted = true;
                 }
+                
+                // Outfox Infinitesimal Support
+                if (line.includes(`t[#t+1] = LoadActor("GroupSelect")`))
+                {
+                    new_file_contents += `t[#t+1] = LoadActor("../everyone.dance.lua")\n`;
+                    inserted = true;
+                }
+                
+                if (line.includes(`local t =  Def.ActorFrame {}`))
+                {
+                    new_file_contents += `t[#t+1] = LoadActor("../everyone.dance.lua")\n`;
+                    inserted = true;
+                }
+                
+                if (line.includes(`t[#t+1] = LoadActor(THEME:GetPathG("","ModDisplay"))`))
+                {
+                    new_file_contents += `t[#t+1] = LoadActor("../everyone.dance.lua")\n`;
+                    inserted = true;
+                }
             }
 
             // Write new contents with the added line to the file
