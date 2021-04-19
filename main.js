@@ -201,7 +201,10 @@ function UpdateRichPresence(data)
     
     if (data.app_state == 1)
     {
-        activity.state = `Game Code: ${data.game_room_data.game_code}`;
+        if (data.game_room_data.options.show_game_code)
+        {
+            activity.state = `Game Code: ${data.game_room_data.game_code}`;
+        }
         activity.largeImageText = `${Object.keys(data.game_room_data.players).length} Players`;
     }
     

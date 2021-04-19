@@ -307,6 +307,7 @@ export default class GameRoom extends React.Component {
 
         this.props.socket.on("update options", (options) => 
         {
+            this.props.updateOptions(options);
             this.setState({
                 options: options
             })
