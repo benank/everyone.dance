@@ -175,11 +175,27 @@ export default class App extends React.Component {
                     custom_style: localStorage.getItem("custom_style_global") == null ? "" : localStorage.getItem("custom_style_global")
                 })
             })
+            
+            if (this.state != APP_STATE.POPOUT_VIEW)
+            {
+                this.syncDiscordGameData();
+                setInterval(() => {
+                    this.syncDiscordGameData();
+                }, 5000);
+            }
 
             electron.send('window-ready');
         }
 
         this.updateBackgroundColor();
+    }
+    
+    syncDiscordGameData()
+    {
+        electron.send('discord-data', {
+            app_state: this.state.app_state,
+            game_room_data: this.state.game_room_data,
+        })
     }
 
     createNotification(data)

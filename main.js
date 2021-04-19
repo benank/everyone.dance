@@ -3,6 +3,23 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const isDev = !app.isPackaged;
 
+const DiscordRPC = require("discord-rpc");
+
+// everyone.dance discord client ID
+const clientId = '833557751849418764';
+
+DiscordRPC.register(clientId);
+
+const rpc = new DiscordRPC.Client({ transport: 'ipc' });
+const startTimestamp = new Date();
+let rpc_ready = false;
+
+rpc.on('ready', () => {
+    rpc_ready = true;
+});
+
+rpc.login({ clientId }).catch(console.error);
+  
 if (isDev) {
     require('electron-reload')(__dirname, {
         electron: path.join(__dirname, 'node_modules', '.bin', 'electron')
@@ -27,20 +44,17 @@ function createWindow() {
         // frame: false // Looks nice, but the drag css properties have issues. Might look into later
     })
 
-    if (!isDev)
-    {
+    if (!isDev) {
         win.removeMenu(); // Only enable in dev mode. Otherwise, it removes the devtools menu
     }
 
     win.loadFile('src/index.html');
-    
-    win.on('ready-to-show', () => 
-    {
+
+    win.on('ready-to-show', () => {
         win.show();
     })
 
-    win.on('close', () => 
-    {
+    win.on('close', () => {
         Object.values(popout_windows).forEach((window) => {
             window.close();
         });
@@ -69,8 +83,7 @@ const popout_data = {}
 const popout_windows = {}
 const window_id_to_player_id = {}
 
-function GetWindowKey(id, p2)
-{
+function GetWindowKey(id, p2) {
     return `${id}${p2 ? '2' : ''}`
 }
 
@@ -78,8 +91,7 @@ ipcMain.on('popout-player', (_, args) => {
 
     const key = GetWindowKey(args.id, args.p2);
     // Close popout window if it is open
-    if (typeof popout_windows[key] != 'undefined')
-    {
+    if (typeof popout_windows[key] != 'undefined') {
         popout_windows[key].close();
         return;
     }
@@ -107,15 +119,13 @@ ipcMain.on('popout-player', (_, args) => {
 
     popout_data[key] = args
 
-    if (!isDev)
-    {
+    if (!isDev) {
         popout_window.removeMenu(); // Only enable in dev mode. Otherwise, it removes the devtools menu
     }
 
     popout_window.loadFile('src/index.html');
 
-    popout_window.on('close', () => 
-    {
+    popout_window.on('close', () => {
         delete window_id_to_player_id[popout_window.id];
         delete popout_windows[key];
     })
@@ -126,8 +136,7 @@ ipcMain.on('popout-player', (_, args) => {
 
 // Pass on data from main window to child windows
 ipcMain.on('window-ready', (window_data, ...args) => {
-    if (window_data.sender.id > 1)
-    {
+    if (window_data.sender.id > 1) {
         const player_id = window_id_to_player_id[window_data.sender.id];
         const window = popout_windows[player_id];
         window.send('update-popout-info', popout_data[player_id]);
@@ -136,17 +145,14 @@ ipcMain.on('window-ready', (window_data, ...args) => {
     }
 })
 
-ipcMain.on('update-popout-size', (window_data, args) => 
-{
-    if (window_data.sender.id > 1)
-    {
+ipcMain.on('update-popout-size', (window_data, args) => {
+    if (window_data.sender.id > 1) {
         const player_id = window_id_to_player_id[window_data.sender.id];
         const window = popout_windows[player_id];
 
         const current_size = window.getContentSize()
 
-        if (Math.abs(current_size[0] - args.width) > 2 || Math.abs(current_size[1] - args.height) > 2)
-        {
+        if (Math.abs(current_size[0] - args.width) > 2 || Math.abs(current_size[1] - args.height) > 2) {
             window.setContentSize(args.width, args.height);
         }
 
@@ -160,4 +166,44 @@ ipcMain.on('game-data', (_, ...args) => {
     Object.values(popout_windows).forEach((window) => {
         window.send('game-data', ...args);
     });
+    UpdateRichPresence();
 })
+
+ipcMain.on('discord-data', (_, ...args) => {
+    data = args[0];
+    UpdateRichPresence(data);
+})
+
+function UpdateRichPresence(data)
+{
+    if (typeof data == 'undefined') {return;}
+    
+    const details = data.app_state == 1 ? 'In Game Room' : 'In Main Menu';
+    
+    const activity = {
+        details: details,
+        startTimestamp,
+        largeImageKey: 'favicon',
+        instance: true,
+        // The buttons show up but don't do anything when clicked...
+        // If they worked, people could join with one click!
+        // buttons: [
+        //     {
+        //         label: 'Join',
+        //         url: 'https://everyone.dance'
+        //     },
+        //     {
+        //         label: 'Spectate',
+        //         url: 'https://everyone.dance'
+        //     }
+        // ]
+    }
+    
+    if (data.app_state == 1)
+    {
+        activity.state = `Game Code: ${data.game_room_data.game_code}`;
+        activity.largeImageText = `${Object.keys(data.game_room_data.players).length} Players`;
+    }
+    
+    rpc.setActivity(activity);
+}
