@@ -461,6 +461,18 @@ export default class InstallMenu extends React.Component {
                     inserted = true;
                 }
             }
+            
+            // Display error message for unsupported themes
+            if (!inserted)
+            {
+                this.uninstall_selected_theme();
+                this.props.createNotification({
+                    bg_color: '#E54C4C', 
+                    text_color: 'white',
+                    text: 'Failed to install to theme. Please contact StepOnIt to add support for this theme!'
+                })
+                break;
+            }
 
             // Write new contents with the added line to the file
             electron.fs.writeFileSync(default_path, new_file_contents);

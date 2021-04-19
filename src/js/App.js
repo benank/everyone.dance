@@ -294,7 +294,7 @@ export default class App extends React.Component {
                 {!this.state.connected && <img src={loading_icon} className='connecting-icon'></img>}
                 {this.state.app_state == APP_STATE.MAIN_MENU && <MainMenu createNotification={this.createNotification.bind(this)} update_ready={this.state.update_ready} latest_version={this.state.latest_version} update_ready={this.state.update_ready} socket={this.socket} setAppState={(state) => this.setAppState(state)}></MainMenu>}
                 {this.state.app_state == APP_STATE.GAME_ROOM && <GameRoom game_room_data={this.state.game_room_data} socket={this.socket} updateOptions={this.updateOptions.bind(this)} updatePlayers={this.updatePlayers.bind(this)} setAppState={(state) => this.setAppState(state)} custom_style={this.state.custom_style} globalStyleUpdated={this.globalStyleUpdated.bind(this)} createNotification={this.createNotification.bind(this)}></GameRoom>}
-                {this.state.app_state == APP_STATE.INSTALL_VIEW && <InstallMenu setAppState={(state) => this.setAppState(state)}></InstallMenu>}
+                {this.state.app_state == APP_STATE.INSTALL_VIEW && <InstallMenu createNotification={this.createNotification.bind(this)} setAppState={(state) => this.setAppState(state)}></InstallMenu>}
                 {/* {this.state.app_state == APP_STATE.UPDATE_VIEW && <UpdateMenu 
                     update_ready={this.state.update_ready} 
                     current_version={this.state.current_version}
