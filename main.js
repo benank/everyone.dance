@@ -159,10 +159,14 @@ ipcMain.on('update-popout-size', (window_data, args) => {
     }
 })
 
-let latest_game_data;
+let latest_game_data = {};
 // Pass on data from main window to child windows
 ipcMain.on('game-data', (_, ...args) => {
-    latest_game_data = args[0];
+    Object.keys(args[0]).forEach((key) => 
+    {
+        latest_game_data[key] = args[0][key];
+    })
+    
     Object.values(popout_windows).forEach((window) => {
         window.send('game-data', ...args);
     });
@@ -170,12 +174,15 @@ ipcMain.on('game-data', (_, ...args) => {
 })
 
 ipcMain.on('discord-data', (_, ...args) => {
-    data = args[0];
-    UpdateRichPresence(data);
+    const data = args[0];
+    latest_game_data.app_state = data.app_state;
+    latest_game_data.game_code = data.game_room_data.game_code;
+    UpdateRichPresence();
 })
 
-function UpdateRichPresence(data)
+function UpdateRichPresence()
 {
+    const data = latest_game_data;
     if (typeof data == 'undefined') {return;}
     
     const details = data.app_state == 1 ? 'In Game Room' : 'In Main Menu';
@@ -199,13 +206,13 @@ function UpdateRichPresence(data)
         // ]
     }
     
-    if (data.app_state == 1)
+    if (data.app_state == 1 && typeof data.options != 'undefined' && typeof data.players != 'undefined')
     {
-        if (data.game_room_data.options.show_game_code)
+        if (data.options.show_game_code)
         {
-            activity.state = `Game Code: ${data.game_room_data.game_code}`;
+            activity.state = `Game Code: ${data.game_code}`;
         }
-        activity.largeImageText = `${Object.keys(data.game_room_data.players).length} Players`;
+        activity.largeImageText = `${Object.keys(data.players).length} Players`;
     }
     
     rpc.setActivity(activity);

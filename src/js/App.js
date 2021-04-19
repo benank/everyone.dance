@@ -257,8 +257,20 @@ export default class App extends React.Component {
         }
     }
     
+    updatePlayers(players)
+    {
+        // Used for discord rich presence
+        const game_room_data_copy = JSON.parse(JSON.stringify(this.state.game_room_data));
+        game_room_data_copy.players = players;
+
+        this.setState({
+            game_room_data: game_room_data_copy
+        })
+    }
+
     updateOptions(options)
     {
+        // Used for discord rich presence
         const game_room_data_copy = JSON.parse(JSON.stringify(this.state.game_room_data));
         game_room_data_copy.options = options;
 
@@ -281,7 +293,7 @@ export default class App extends React.Component {
                 {/* {!isWebVersion && <img src={close_icon} className="close-button" onClick={() => electron.closeWindow()}></img>} */}
                 {!this.state.connected && <img src={loading_icon} className='connecting-icon'></img>}
                 {this.state.app_state == APP_STATE.MAIN_MENU && <MainMenu createNotification={this.createNotification.bind(this)} update_ready={this.state.update_ready} latest_version={this.state.latest_version} update_ready={this.state.update_ready} socket={this.socket} setAppState={(state) => this.setAppState(state)}></MainMenu>}
-                {this.state.app_state == APP_STATE.GAME_ROOM && <GameRoom game_room_data={this.state.game_room_data} socket={this.socket} updateOptions={this.updateOptions.bind(this)} setAppState={(state) => this.setAppState(state)} custom_style={this.state.custom_style} globalStyleUpdated={this.globalStyleUpdated.bind(this)} createNotification={this.createNotification.bind(this)}></GameRoom>}
+                {this.state.app_state == APP_STATE.GAME_ROOM && <GameRoom game_room_data={this.state.game_room_data} socket={this.socket} updateOptions={this.updateOptions.bind(this)} updatePlayers={this.updatePlayers.bind(this)} setAppState={(state) => this.setAppState(state)} custom_style={this.state.custom_style} globalStyleUpdated={this.globalStyleUpdated.bind(this)} createNotification={this.createNotification.bind(this)}></GameRoom>}
                 {this.state.app_state == APP_STATE.INSTALL_VIEW && <InstallMenu setAppState={(state) => this.setAppState(state)}></InstallMenu>}
                 {/* {this.state.app_state == APP_STATE.UPDATE_VIEW && <UpdateMenu 
                     update_ready={this.state.update_ready} 
