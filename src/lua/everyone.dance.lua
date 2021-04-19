@@ -41,7 +41,7 @@ local function remove(tbl, num_to_remove)
     return new_tbl
 end
 
-local DEBUG_ON = false
+local DEBUG_ON = true
 
 -- Print for debugging, only enabled if DEBUG_ON is true
 local function print(t)
@@ -50,6 +50,9 @@ local function print(t)
 end
 
 local data_filename = "Save/everyone.dance.txt"
+local data_timings_filename = "Save/everyone.dance.timings.txt"
+local data_game_code_filename = "Save/everyone.dance.gamecode.txt"
+local goto_filename = "Save/everyone.dance.txt.goto"
 
 -- Originally from STARLIGHT theme
 function FullComboType(pss)
@@ -65,8 +68,6 @@ function FullComboType(pss)
 		return nil
 	end
 end
-
-local goto_filename = "Save/everyone.dance.txt.goto"
 
 local function FindSongMatchingData(data)
     
@@ -260,6 +261,53 @@ local function RefreshActiveSongData()
 
 end
 
+local running_time = 0
+
+local timing_data_interval = 10
+
+local itg_timing_prefs = 
+{
+    "TimingWindowAdd",
+    "RegenComboAfterMiss",
+    "MaxRegenComboAfterMiss",
+
+    "TimingWindowSecondsW1",
+    "TimingWindowSecondsW2",
+    "TimingWindowSecondsW3",
+    "TimingWindowSecondsW4",
+    "TimingWindowSecondsW5",
+    "TimingWindowSecondsHold",
+    "TimingWindowSecondsMine",
+    "TimingWindowSecondsRoll",
+
+    "LifeDifficultyScale",
+    "LifePercentChangeW1",
+    "LifePercentChangeW2",
+    "LifePercentChangeW3",
+    "LifePercentChangeW4",
+    "LifePercentChangeW5",
+    "LifePercentChangeMiss",
+    "LifePercentChangeLetGo",
+    "LifePercentChangeHeld",
+    "LifePercentChangeHitMine"
+}
+
+local function WriteTimingDataToFile(s)
+    local data_to_write = ""
+    for _, pref in pairs(itg_timing_prefs) do
+        local value = PREFSMAN:GetPreference(pref) or THEME:GetMetric("LifeMeterBar", pref)
+        data_to_write = data_to_write .. tostring(pref) .. ":" .. tostring(value) .. "\n"
+    end
+    
+    WriteFile(data_to_write, data_timings_filename)
+end
+
+local function ReadGameCodeFromFile(s)
+    local contents = ReadFile(data_game_code_filename)
+    EVERYONE_DANCE_GAME_CODE = contents
+    print(EVERYONE_DANCE_GAME_CODE)
+end
+
 local function OnCurrentStepsChanged(s)
     RefreshActiveSongData()
 end
@@ -272,6 +320,7 @@ local function OnInit(s)
     WriteFile("", goto_filename)
     
     s:sleep(SYNC_INTERVAL / 1000):queuecommand("Update")
+    s:sleep(timing_data_interval / 1000):queuecommand("Update2")
 
 end
 
@@ -284,6 +333,11 @@ return Def.ActorFrame{
             RefreshActiveSongData()
             ReadGotoData()
             s:sleep(SYNC_INTERVAL / 1000):queuecommand("Update")
+        end,
+        Update2Command = function(s)
+            WriteTimingDataToFile(s)
+            ReadGameCodeFromFile(s)
+            s:sleep(timing_data_interval / 1000):queuecommand("Update2")
         end,
         CurrentStepsP1ChangedMessageCommand = function(s, param) -- Called when difficulty or song changes for P1
             OnCurrentStepsChanged(s, param)
