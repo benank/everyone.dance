@@ -28,6 +28,11 @@ export default class GameRoomSettings extends React.Component {
     {
         this.props.setSyncMode(parseInt(event.target.value));
     }
+    
+    on_select_game_mode(event)
+    {
+        this.props.setGameMode(event.target.value);
+    }
 
     get_num_players()
     {
@@ -180,11 +185,18 @@ export default class GameRoomSettings extends React.Component {
                                 active={this.props.options["rank_players"]}></ToggleComponent>
                             </div>
                             <div className='option'>
+                                <div className='text'>Version Check</div>
+                                <ToggleComponent 
+                                clickToggle={() => this.props.click_toggle("version_check")}
+                                {...this.props}
+                                active={this.props.options["version_check"]}></ToggleComponent>
+                            </div>
+                            <div className='option'>
                                 <div className='text'>Game Mode</div>
                                 <select 
                                 disabled={!this.am_i_host()} 
                                 style={!this.am_i_host() ? {userSelect: 'none', cursor: 'not-allowed'} : {}} 
-                                onChange={(e) => this.on_select_sync_mode(e)}
+                                onChange={(e) => this.on_select_game_mode(e)}
                                 className='dropdown' 
                                 name="game_mode" 
                                 value={this.props.options["game_mode"]}
@@ -194,13 +206,6 @@ export default class GameRoomSettings extends React.Component {
                                     <option value={"ITG (Strict)"}>ITG (Strict)</option>
                                     <option value={"Pump"}>Pump</option>
                                 </select>
-                            </div>
-                            <div className='option'>
-                                <div className='text'>Version Check</div>
-                                <ToggleComponent 
-                                clickToggle={() => this.props.click_toggle("version_check")}
-                                {...this.props}
-                                active={this.props.options["version_check"]}></ToggleComponent>
                             </div>
                             <div className='option'>
                                 <div className='text'>Sync Mode</div>

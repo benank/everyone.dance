@@ -552,6 +552,21 @@ export default class GameRoom extends React.Component {
         this.props.socket.emit("update options", options_copy);
     }
 
+    update_settings_game_mode(mode)
+    {
+        // Not host, so return
+        if (!this.am_i_host()) {return;}
+
+        const options_copy = JSON.parse(JSON.stringify(this.state.options));
+        options_copy["game_mode"] = mode;
+
+        this.setState({
+            options: options_copy
+        })
+
+        this.props.socket.emit("update options", options_copy);
+    }
+
     getNamedIdWithP2(name, p2)
     {
         return `pc_${name}${p2 ? "_2" : ''}`.toLowerCase().replace(' ', '_').replace('-', '_').replace(/\W/g, '');
@@ -643,6 +658,7 @@ export default class GameRoom extends React.Component {
                     click_toggle={this.click_settings_toggle.bind(this)}
                     setPlayerLimit={this.update_settings_max_players.bind(this)}
                     setSyncMode={this.update_settings_sync_mode.bind(this)}
+                    setGameMode={this.update_settings_game_mode.bind(this)}
                     {...this.props}></GameRoomSettings>
                 }
                 {this.state.css_open && 
