@@ -285,7 +285,7 @@ class Server
         if (typeof options["show_game_code"] == 'undefined' ||
             typeof options["allow_spectators"] == 'undefined' ||
             typeof options["allow_players"] == 'undefined' ||
-            typeof options["itg_mode"] == 'undefined' ||
+            typeof options["game_mode"] == 'undefined' ||
             typeof options["version_check"] == 'undefined' ||
             typeof options["rank_players"] == 'undefined' ||
             typeof options["player_limit"] == 'undefined' ||
@@ -318,8 +318,11 @@ class Server
             return false;   
         }
 
-        if (options["itg_mode"] != true &&
-            options["itg_mode"] != false)
+        if (options["game_mode"] != "DDR" &&
+            options["game_mode"] != "ITG" &&
+            options["game_mode"] != "ITG (Strict)" &&
+            options["game_mode"] != "Pump"
+            )
         {
             return false;   
         }

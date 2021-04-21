@@ -24,7 +24,7 @@ module.exports = class GameRoom
      */
     check_player_timings(player)
     {
-        if (!this.options["itg_mode"]) {return;}
+        if (this.options["game_mode"] != "ITG (Strict)") {return;}
         if (player.web_view) {return;}
         
         if (typeof player.timing_data == 'undefined')
@@ -110,7 +110,7 @@ module.exports = class GameRoom
             ["allow_spectators"]: true,
             ["allow_players"]: true,
             ["rank_players"]: false,
-            ["itg_mode"]: false,
+            ["game_mode"]: "DDR", // Can be DDR, ITG, ITG (Strict), Pump
             ["version_check"]: false,
             ["player_limit"]: -1,
             ["sync_mode"]: SYNC_MODE.Realtime
@@ -139,7 +139,7 @@ module.exports = class GameRoom
         
         let should_check_timings = false;
         // Turned on ITG Mode, so check timings of everyone
-        if (options["itg_mode"] && !this.options["itg_mode"])
+        if (options["game_mode"] == "ITG (Strict)" && this.options["game_mode"] != "ITG (Strict)")
         {
             should_check_timings = true;
         }

@@ -7,27 +7,49 @@ import {isWebVersion} from "./constants/isWebVersion";
 
 import { CardIcon, ICON_TYPE } from "./CardIcon"
 
-const notescore_names_ddr = 
+const notescore_names = 
 {
-    ["W1"]:  "Marvelous",
-    ["W2"]:  "Perfect",
-    ["W3"]:  "Great",
-    ["W4+W5"]:  "Good",
-    ["Miss"]:  "Miss",
-    ["OK"]:  "OK",
-    ["NG"]:  "NG"
-}
-
-const notescore_names_itg = 
-{
-    ["W1"]:  "Fantastic",
-    ["W2"]:  "Excellent",
-    ["W3"]:  "Great",
-    ["W4"]:  "Decent",
-    ["W5"]:  "Way Off",
-    ["Miss"]:  "Miss",
-    ["OK"]:  "OK",
-    ["NG"]:  "NG"
+    ["DDR"]:
+    {
+        ["W1"]:  "Marvelous",
+        ["W2"]:  "Perfect",
+        ["W3"]:  "Great",
+        ["W4+W5"]:  "Good",
+        ["Miss"]:  "Miss",
+        ["OK"]:  "OK",
+        ["NG"]:  "NG"
+    },
+    ["ITG"]:
+    {
+        ["W1"]:  "Fantastic",
+        ["W2"]:  "Excellent",
+        ["W3"]:  "Great",
+        ["W4"]:  "Decent",
+        ["W5"]:  "Way Off",
+        ["Miss"]:  "Miss",
+        ["OK"]:  "OK",
+        ["NG"]:  "NG"
+    },
+    ["ITG (Strict)"]:
+    {
+        ["W1"]:  "Fantastic",
+        ["W2"]:  "Excellent",
+        ["W3"]:  "Great",
+        ["W4"]:  "Decent",
+        ["W5"]:  "Way Off",
+        ["Miss"]:  "Miss",
+        ["OK"]:  "OK",
+        ["NG"]:  "NG"
+    },
+    ["Pump"]:
+    {
+        ["W1"]:  "Superb",
+        ["W2"]:  "Perfect",
+        ["W3"]:  "Great",
+        ["W4"]:  "Good",
+        ["W5"]:  "Bad",
+        ["Miss"]:  "Miss"
+    }
 }
 
 export default class PlayerCard extends React.Component {
@@ -153,17 +175,17 @@ export default class PlayerCard extends React.Component {
     {
         const judgement_map = this.get_player_data().steps_info;
         
-        let notescore_names = this.props.options["itg_mode"] == true ? 
-            notescore_names_itg : notescore_names_ddr;
+        let _notescore_names = notescore_names[this.props.options["game_mode"]];
 
-        return Object.keys(notescore_names).map((key) => 
+        return Object.keys(_notescore_names).map((key) => 
         {
-            const judgement_name = notescore_names[key];
+            const judgement_name = _notescore_names[key];
             let steps = 0;
-            if (key == "W4+W5")
+            if (key.includes("+"))
             {
-                steps += parseInt(this.get_player_data().steps_info["W4"]);
-                steps += parseInt(this.get_player_data().steps_info["W5"]);
+                const split = key.split("+");
+                steps += parseInt(this.get_player_data().steps_info[split[0]]);
+                steps += parseInt(this.get_player_data().steps_info[split[1]]);
             }
             else
             {

@@ -180,11 +180,20 @@ export default class GameRoomSettings extends React.Component {
                                 active={this.props.options["rank_players"]}></ToggleComponent>
                             </div>
                             <div className='option'>
-                                <div className='text'>ITG Mode</div>
-                                <ToggleComponent 
-                                clickToggle={() => this.props.click_toggle("itg_mode")}
-                                {...this.props}
-                                active={this.props.options["itg_mode"]}></ToggleComponent>
+                                <div className='text'>Game Mode</div>
+                                <select 
+                                disabled={!this.am_i_host()} 
+                                style={!this.am_i_host() ? {userSelect: 'none', cursor: 'not-allowed'} : {}} 
+                                onChange={(e) => this.on_select_sync_mode(e)}
+                                className='dropdown' 
+                                name="game_mode" 
+                                value={this.props.options["game_mode"]}
+                                id="game_mode">
+                                    <option value={"DDR"}>DDR</option>
+                                    <option value={"ITG"}>ITG</option>
+                                    <option value={"ITG (Strict)"}>ITG (Strict)</option>
+                                    <option value={"Pump"}>Pump</option>
+                                </select>
                             </div>
                             <div className='option'>
                                 <div className='text'>Version Check</div>
