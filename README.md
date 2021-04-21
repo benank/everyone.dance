@@ -78,6 +78,11 @@ When you're in a game room, you'll see a button that looks like a page with the 
 
 To make the most use of this, you'll have to probably go digging in the CSS or HTML code to find out what classes everything uses so you can customize it to your liking. This is a feature for advanced users and can break everything.
 
+## New Global StepMania Variables
+These variables are created by everyone.dance and are available everywhere in the StepMania Lua system:
+
+- `EVERYONE_DANCE_GAME_CODE`: string containing the four digit game code of the room you are currently in, if any. Might return `nil` sometimes, so check if it exists before using.
+
 ## Updates
 When you run everyone.dance, it will automatically check for new updates. You'll get a notification if there's a new update, and you will be able to click the "Update" button to download the latest version. After downloading, unzip and run it! You will likely have to reinstall it as well, so make sure to go to the Installation menu to do that as well.
 

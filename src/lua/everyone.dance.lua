@@ -305,7 +305,6 @@ end
 local function ReadGameCodeFromFile(s)
     local contents = ReadFile(data_game_code_filename)
     EVERYONE_DANCE_GAME_CODE = contents
-    print(EVERYONE_DANCE_GAME_CODE)
 end
 
 local function OnCurrentStepsChanged(s)

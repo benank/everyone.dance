@@ -346,9 +346,20 @@ export default class GameRoom extends React.Component {
 
             NOT_APPDATA = sm_install.is_portable;
             SM_FILE_PATH = sm_install.score_file;
+            
+            this.write_game_code_to_file(SM_FILE_PATH.replace("everyone.dance.txt", "everyone.dance.gamecode.txt"));
         }
     }
-
+    
+    write_game_code_to_file(path)
+    {
+        // Directory does not exist
+        if (!electron.fs.existsSync(path.replace("everyone.dance.gamecode.txt", ""))) {return;}
+        
+        // Write game code to file for SM to read
+        electron.fs.writeFileSync(path, this.state.game_code, { flag: 'w' });
+    }
+    
     check_for_sm_updates()
     {
         // Don't try to read data if spectating
