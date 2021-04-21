@@ -137,8 +137,17 @@ module.exports = class GameRoom
             })
         }
         
+        let should_check_timings = false;
         // Turned on ITG Mode, so check timings of everyone
         if (options["itg_mode"] && !this.options["itg_mode"])
+        {
+            should_check_timings = true;
+        }
+        
+        this.options = options;
+        this.sync_options();
+        
+        if (should_check_timings)
         {
             // Check all player timings
             Object.values(this.players).forEach((player) => 
@@ -146,9 +155,6 @@ module.exports = class GameRoom
                 this.check_player_timings(player);
             })
         }
-        
-        this.options = options;
-        this.sync_options();
     }
 
     is_host(player)
