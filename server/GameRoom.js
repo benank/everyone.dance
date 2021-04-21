@@ -1,6 +1,7 @@
 const Log = require("./Log")
 const SYNC_MODE = require("./SyncMode")
 const LATEST_VERSION = require('../package.json').version;
+const ITG_TIMING = require("./ITG_Timing");
 
 module.exports = class GameRoom
 {
@@ -12,6 +13,60 @@ module.exports = class GameRoom
         this.players = {};
         this.options = this.get_default_options();
         this.host_id = -1;
+    }
+    
+    /**
+     * Checks the timings of a player to ensure they match ITG timings.
+     * Kicks players that do not match.
+     * Does not kick web view players.
+     * @param {*} player 
+     * @returns 
+     */
+    check_player_timings(player)
+    {
+        if (!this.options["itg_mode"]) {return;}
+        if (player.web_view) {return;}
+        
+        if (typeof player.timing_data == 'undefined')
+        {
+            // Kick
+            player.client.emit("notification", {
+                bg_color: '#E54C4C', 
+                text_color: 'white',
+                text: `You have been kicked: invalid ITG timings`
+            });
+            this.remove_player(player);
+            return;
+        }
+        
+        Object.keys(ITG_TIMING).forEach((key) => 
+        {
+            const expected = ITG_TIMING[key];
+            const actual = player.timing_data[key];
+            
+            if (typeof actual == 'undefined')
+            {
+                // Kick
+                player.client.emit("notification", {
+                    bg_color: '#E54C4C', 
+                    text_color: 'white',
+                    text: `You have been kicked: invalid ITG timing for ${key}`
+                });
+                this.remove_player(player);
+                return;
+            }
+            else if (Math.abs(expected - actual) > 0.0001)
+            {
+                // Kick
+                player.client.emit("notification", {
+                    bg_color: '#E54C4C', 
+                    text_color: 'white',
+                    text: `You have been kicked: invalid ITG timing for ${key}`
+                });
+                this.remove_player(player);
+                return;
+            }
+        })
     }
 
     /**
@@ -81,7 +136,17 @@ module.exports = class GameRoom
                 }
             })
         }
-
+        
+        // Turned on ITG Mode, so check timings of everyone
+        if (option["itg_mode"] && !this.options["itg_mode"])
+        {
+            // Check all player timings
+            Object.values(this.players).forEach((player) => 
+            {
+                this.check_player_timings(player);
+            })
+        }
+        
         this.options = options;
         this.sync_options();
     }

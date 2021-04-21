@@ -348,7 +348,38 @@ export default class GameRoom extends React.Component {
             SM_FILE_PATH = sm_install.score_file;
             
             this.write_game_code_to_file(SM_FILE_PATH.replace("everyone.dance.txt", "everyone.dance.gamecode.txt"));
+            
+            this.sync_timing_data();
+            setInterval(() => {
+                // Check timing data every 10 seconds and sync to server
+                this.sync_timing_data();
+            }, 1000 * 10);
         }
+    }
+    
+    sync_timing_data()
+    {
+        const path = SM_FILE_PATH.replace("everyone.dance.txt", "everyone.dance.timings.txt");
+        if (!electron.fs.existsSync(path)) {return;}
+        
+        const timings = electron.fs.readFileSync(path, 'utf8').toString();
+        const lines = timings.split("\n");
+        
+        const timing_object = {}
+        
+        for (let i = 0; i < lines.length; i++)
+        {
+            const line = lines[i].trim();
+
+            // Empty line
+            if (line.length == 0) {continue;}
+            
+            const line_split = line.split(":");
+            
+            timing_object[line_split[0]] = parseFloat(line_split[1]);
+        }
+        
+        this.props.socket.emit("timing data", timing_object);
     }
     
     write_game_code_to_file(path)

@@ -104,6 +104,16 @@ class Server
             client.player.version = version;
         })
         
+        client.on('timing data', (timing_data) => 
+        {
+            client.player.timing_data = timing_data;
+            
+            if (client.player.game)
+            {
+                client.player.game.check_player_timings(client.player);
+            }
+        })
+        
         client.on('leave game room', () => 
         {
             if (client.player.game)
