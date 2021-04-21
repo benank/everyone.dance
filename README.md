@@ -36,6 +36,7 @@ When in a game room, you can click the settings icon the top right corner to acc
 
 #### **ITG Mode**
 - Toggles whether or not ITG mode will be used. When active, the names of the judgements change to ITG style and also adds the "Way Off" judgement. When inactive, DDR style judgements will be used, with "Good" combining W4 and W5 judgements.
+- This also checks the player timing windows to ensure that all players are using proper ITG timing windows. See `server/ITG_Timing.js` for default timing windows. If a player's timings do not match these, they are kicked from the game room.
 
 #### **Version Check**
 - Toggles whether or not the game room will only allow players with the latest version of everyone.dance to join. If enabled, players in the game room with outdated clients will be kicked immediately, and players with outdated clients will not be able to join.
