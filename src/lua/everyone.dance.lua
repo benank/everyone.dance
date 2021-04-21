@@ -41,7 +41,7 @@ local function remove(tbl, num_to_remove)
     return new_tbl
 end
 
-local DEBUG_ON = true
+local DEBUG_ON = false
 
 -- Print for debugging, only enabled if DEBUG_ON is true
 local function print(t)
