@@ -296,7 +296,14 @@ local itg_timing_prefs =
 local function WriteTimingDataToFile(s)
     local data_to_write = ""
     for _, pref in pairs(itg_timing_prefs) do
-        local value = PREFSMAN:GetPreference(pref) or THEME:GetMetric("LifeMeterBar", pref)
+        local value = nil
+        
+        if PREFSMAN:PreferenceExists(pref) then
+            value = PREFSMAN:GetPreference(pref)
+        elseif THEME:HasMetric("LifeMeterBar", pref) then
+            value = THEME:GetMetric("LifeMeterBar", pref)
+        end
+        
         data_to_write = data_to_write .. tostring(pref) .. ":" .. tostring(value) .. "\n"
     end
     
