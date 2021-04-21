@@ -182,6 +182,7 @@ local function RefreshActiveSongData()
             difficulty = step_data:GetMeter(),
             difficulty_name = step_data:GetDifficulty():gsub("Difficulty_", ""),
             steps = step_data:GetRadarValues(pn):GetValue(5),
+            steps_type = step_data:GetStepsType(),
             song_dir = song:GetSongDir()
         }
         

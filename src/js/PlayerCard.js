@@ -218,6 +218,34 @@ export default class PlayerCard extends React.Component {
     {
         return this.get_player_data().ingame != "true" && this.props.popout;
     }
+    
+    getStepsTypeFromData()
+    {
+        const steps_type = this.get_player_data().song_info.steps_type;
+        console.log(this.get_player_data().song_info)
+        
+        // Legacy support
+        if (typeof steps_type == 'undefined')
+        {
+            return this.get_player_data().song_info.difficulty_name || "--";
+        }
+        
+        const types = 
+        [
+            "Single", "Double", "Couple", "Solo", "Threepanel", "Routine", "Halfdouble", "Real", "Versus",
+            "Five", "Nine", "Cabinet", "Human", "Quadarm", "Insect", "Arachnid"
+        ]
+        
+        for (let i = 0; i < types.length; i++)
+        {
+            if (steps_type.includes(types[i]))
+            {
+                return types[i];
+            }
+        }
+        
+        return "Unknown"
+    }
 
     render () {
         return (
@@ -256,7 +284,7 @@ export default class PlayerCard extends React.Component {
                         <div className="info song-artist"><CardIcon icon_type={ICON_TYPE.ARTIST}/>{this.get_player_data().song_info.artist || "--"}</div>
                         <div className="info song-charter"><CardIcon icon_type={ICON_TYPE.CHARTER}/>{this.get_player_data().song_info.charter || "--"}</div>
                         <div className="info song-pack"><CardIcon icon_type={ICON_TYPE.FOLDER}/>{this.get_player_data().song_info.pack || "--"}</div>
-                        <div className="info song-difficulty"><CardIcon icon_type={ICON_TYPE.LEVEL}/>{this.get_player_data().song_info.difficulty_name || "--"} {this.get_player_data().song_info.difficulty || "--"} ({this.get_player_data().song_info.steps || "--"})</div>
+                        <div className="info song-difficulty"><CardIcon icon_type={ICON_TYPE.LEVEL}/>{this.getStepsTypeFromData()} {this.get_player_data().song_info.difficulty || "--"} ({this.get_player_data().song_info.steps || "--"})</div>
                         {this.get_player_data().ingame == "true" && <div className="song-score">{this.get_player_score()}%</div>}
                     </div>
                     {(this.get_player_data().ingame == "true" || this.props.popout) && <div className="song-progress-bar" style={{opacity: `${this.isPopoutAndNotIngame() ? '0' : '1'}`}}>
