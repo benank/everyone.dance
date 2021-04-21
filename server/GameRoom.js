@@ -138,7 +138,7 @@ module.exports = class GameRoom
         }
         
         // Turned on ITG Mode, so check timings of everyone
-        if (option["itg_mode"] && !this.options["itg_mode"])
+        if (options["itg_mode"] && !this.options["itg_mode"])
         {
             // Check all player timings
             Object.values(this.players).forEach((player) => 
