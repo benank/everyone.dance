@@ -244,7 +244,6 @@ export default class PlayerCard extends React.Component {
     getStepsTypeFromData()
     {
         const steps_type = this.get_player_data().song_info.steps_type;
-        console.log(this.get_player_data().song_info)
         
         // Legacy support
         if (typeof steps_type == 'undefined')

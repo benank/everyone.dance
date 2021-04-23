@@ -334,14 +334,16 @@ export default class GameRoom extends React.Component {
 
             const sm_install = new SMInstallation(dir);
 
-            if (sm_install.install_variant == SM_INSTALL_VARIANT.SM_UNKNOWN)
+            if (sm_install.install_variant == SM_INSTALL_VARIANT.SM_UNKNOWN
+                || sm_install.score_file == null)
             {
                 // Unknown variant, won't work :(
                 this.props.createNotification({
                     bg_color: '#E54C4C', 
                     text_color: 'white',
-                    text: 'Error: failed to read score files. Your StepMania version may be incompatible.'
+                    text: 'Error: failed to read score files. Please try reinstalling through the Installation menu.'
                 })
+                return;
             }
 
             NOT_APPDATA = sm_install.is_portable;
