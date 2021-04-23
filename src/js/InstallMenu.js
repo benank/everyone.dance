@@ -382,6 +382,7 @@ export default class InstallMenu extends React.Component {
         for (let i = 0; i < theme.install_paths.length; i++)
         {
             const default_path = theme.install_paths[i] + "/default.lua";
+            console.log(`Installing to ${default_path}...`);
             const file = electron.fs.readFileSync(default_path, 'utf8').toString();
             const lines = file.split("\n");
 
@@ -391,7 +392,6 @@ export default class InstallMenu extends React.Component {
             for (let line_index = 0; line_index < lines.length; line_index++)
             {
                 const line = lines[line_index];
-                console.log(line)
                 new_file_contents += line + "\n";
 
                 if (inserted) {continue;}
@@ -460,11 +460,19 @@ export default class InstallMenu extends React.Component {
                     new_file_contents += `t[#t+1] = LoadActor("../everyone.dance.lua")\n`;
                     inserted = true;
                 }
+                
+                // WF Support
+                if (line.includes(`LoadActor("./TitleAndBanner.lua"),`))
+                {
+                    new_file_contents += `LoadActor("../everyone.dance.lua"),\n`;
+                    inserted = true;
+                }
             }
             
             // Display error message for unsupported themes
             if (!inserted)
             {
+                console.log(`Failed to install to ${default_path}!`);
                 this.uninstall_selected_theme();
                 this.props.createNotification({
                     bg_color: '#E54C4C', 
