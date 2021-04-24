@@ -57,13 +57,12 @@ export default class SMInstallation {
      * @param {String} platform Platform string from electron.process.platform
      */
     constructor(stepmania_dir, platform) {
-        // TODO: I wanted to import process from 'electron' in this file,
-        // but when I did that the app wouldn't start, error 'require is not defined'
+        
         this.platform = electron.os.platform();
 
-        this.install_variant = this._install_variant(stepmania_dir);
         this.variant_dir = this._locate_variant_install(stepmania_dir);
         this.is_portable = this._is_portable(this.variant_dir);
+        this.install_variant = this._install_variant(stepmania_dir);
         this.score_file = this._locate_score_file(this.variant_dir);
     }
 
@@ -80,16 +79,30 @@ export default class SMInstallation {
             dir = dir.replace("Appearance", "");
         }
 
-        if (!electron.fs.existsSync(dir + "/Logs"))
+        if (!electron.fs.existsSync(dir + "/Logs") && electron.fs.existsSync(dir + info_file_name))
         {
-            // Possibly NotITG
-            if (!electron.fs.existsSync(dir + info_file_name)) {return;}
-
             // Return contents of log file
             return electron.fs.readFileSync(dir + info_file_name, 'utf8').toString();
         }
-
-        if (!electron.fs.existsSync(dir + "/Logs" + info_file_name)) {return;}
+        else if (!electron.fs.existsSync(dir + "/Logs" + info_file_name))
+        {
+            // Try checking appdata
+            const keys = Object.keys(SM_DATA_PATHS[this.platform]);
+            for (let i = 0; i < keys.length; i++)
+            {
+                const key = keys[i];
+                if (key != "base_dir")
+                {
+                    dir = SM_DATA_PATHS[this.platform]["base_dir"] + "/" + SM_DATA_PATHS[this.platform][key];
+                    if (electron.fs.existsSync(dir + "/Logs" + info_file_name))
+                    {
+                        return electron.fs.readFileSync(dir + "/Logs" + info_file_name, 'utf8').toString();
+                    }
+                }
+            }
+            
+            return;
+        }
 
         return electron.fs.readFileSync(dir + "/Logs" + info_file_name, 'utf8').toString();
     }
@@ -103,6 +116,12 @@ export default class SMInstallation {
         if (!stepmania_dir) return SM_INSTALL_VARIANT.SM_UNKNOWN;
 
         const log_contents = this._get_log_contents(stepmania_dir);
+        if (typeof log_contents == 'undefined')
+        {
+            console.log(`Cannot get log contents`)
+            return SM_INSTALL_VARIANT.SM_UNKNOWN;
+        }
+        
         const log_first_line = log_contents.split("\n")[0];
         console.log(`StepMania Version: ${log_first_line}`);
 
@@ -147,10 +166,7 @@ export default class SMInstallation {
      * @returns {String} Updated directory to account for install variant
      */
     _locate_variant_install(stepmania_dir) {
-        if (this.install_variant && this.install_variant === SM_INSTALL_VARIANT.SM_5_3) {
-            return stepmania_dir.replace("Appearance", "");
-        }
-        return stepmania_dir;
+        return stepmania_dir.replace("Appearance", "");
     }
 
     /**
@@ -174,7 +190,7 @@ export default class SMInstallation {
         if (this.is_portable) {
             return this.variant_dir + "/Save/everyone.dance.txt";
         }
-
+        
         if (SM_DATA_PATHS[this.platform] && SM_DATA_PATHS[this.platform][this.install_variant])
         {
             const base_dir = SM_DATA_PATHS[this.platform].base_dir;
