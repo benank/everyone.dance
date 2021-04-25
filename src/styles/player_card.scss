@@ -69,7 +69,7 @@ div.player-card-container div.top-bar div.player-rank
 {
     display: inline-block;
     font-size: 16px;
-    width: 28px;
+    min-width: 28px;
     height: 28px;
     border-radius: 50px;
     background-color: black;
