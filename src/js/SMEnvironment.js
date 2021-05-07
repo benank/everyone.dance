@@ -84,32 +84,30 @@ export default class SMInstallation {
             // Return contents of log file
             return electron.fs.readFileSync(dir + info_file_name, 'utf8').toString();
         }
-        // else if (!electron.fs.existsSync(dir + "/Logs" + info_file_name))
-        // {
-        //     // Try checking appdata
-        //     // INACCURATE METHOD: will return first found, which may be wrong if multiple version of SM exist
-        //     const keys = Object.keys(SM_DATA_PATHS[this.platform]);
-        //     for (let i = 0; i < keys.length; i++)
-        //     {
-        //         const key = keys[i];
-        //         if (key != "base_dir")
-        //         {
-        //             dir = SM_DATA_PATHS[this.platform]["base_dir"] + "/" + SM_DATA_PATHS[this.platform][key];
-        //             if (electron.fs.existsSync(dir + "/Logs" + info_file_name))
-        //             {
-        //                 return electron.fs.readFileSync(dir + "/Logs" + info_file_name, 'utf8').toString();
-        //             }
-        //         }
-        //     }
-            
-        //     // Logs does not always exist - sometimes it is in AppData for 5.1, so we can use another method
-            
-        //     return;
-        // }
         else if (!electron.fs.existsSync(dir + "/Logs") && electron.fs.existsSync(dir + "/Docs/Changelog_sm5.txt"))
         {
-            // Return contents of log file
+            // Return contents of changelog file - works well enough
             return electron.fs.readFileSync(dir + "/Docs/Changelog_sm5.txt", 'utf8').toString();
+        }
+        else if (!electron.fs.existsSync(dir + "/Logs" + info_file_name))
+        {
+            // Try checking appdata
+            // INACCURATE METHOD: will return first found, which may be wrong if multiple version of SM exist
+            const keys = Object.keys(SM_DATA_PATHS[this.platform]);
+            for (let i = 0; i < keys.length; i++)
+            {
+                const key = keys[i];
+                if (key != "base_dir")
+                {
+                    dir = SM_DATA_PATHS[this.platform]["base_dir"] + "/" + SM_DATA_PATHS[this.platform][key];
+                    if (electron.fs.existsSync(dir + "/Logs" + info_file_name))
+                    {
+                        return electron.fs.readFileSync(dir + "/Logs" + info_file_name, 'utf8').toString();
+                    }
+                }
+            }
+            
+            return;
         }
         
         return electron.fs.readFileSync(dir + "/Logs" + info_file_name, 'utf8').toString();
@@ -151,6 +149,7 @@ export default class SMInstallation {
            if (log_first_line.includes("StepMania5.1")) {return SM_INSTALL_VARIANT.SM_5_1}
            if (log_first_line.includes("StepMania 5.1")) {return SM_INSTALL_VARIANT.SM_5_1}
            if (log_first_line.includes("StepMania5.3")) {return SM_INSTALL_VARIANT.SM_5_3}
+           if (log_first_line.includes("StepMania 5")) {return SM_INSTALL_VARIANT.SM_5_0}
         }
 
 
