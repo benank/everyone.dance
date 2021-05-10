@@ -290,7 +290,19 @@ local itg_timing_prefs =
     "LifePercentChangeMiss",
     "LifePercentChangeLetGo",
     "LifePercentChangeHeld",
-    "LifePercentChangeHitMine"
+    "LifePercentChangeHitMine",
+    "InitialValue",
+    "HarshHotLifePenalty",
+    
+    "PercentScoreWeightW1",
+    "PercentScoreWeightW2",
+    "PercentScoreWeightW3",
+    "PercentScoreWeightW4",
+    "PercentScoreWeightW5",
+    "PercentScoreWeightMiss",
+    "PercentScoreWeightLetGo",
+    "PercentScoreWeightHeld",
+    "PercentScoreWeightHitMine"
 }
 
 local function WriteTimingDataToFile(s)
@@ -302,6 +314,8 @@ local function WriteTimingDataToFile(s)
             value = PREFSMAN:GetPreference(pref)
         elseif THEME:HasMetric("LifeMeterBar", pref) then
             value = THEME:GetMetric("LifeMeterBar", pref)
+        elseif THEME:HasMetric("ScoreKeeperNormal", pref) then
+            value = THEME:GetMetric("ScoreKeeperNormal", pref)
         end
         
         data_to_write = data_to_write .. tostring(pref) .. ":" .. tostring(value) .. "\n"

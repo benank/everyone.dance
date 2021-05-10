@@ -378,7 +378,16 @@ export default class GameRoom extends React.Component {
             
             const line_split = line.split(":");
             
-            timing_object[line_split[0]] = parseFloat(line_split[1]);
+            if (isNaN(line_split[1]) || isNaN(parseFloat(line_split[1])))
+            {
+                // Strings
+                timing_object[line_split[0]] = line_split[1];
+            }
+            else
+            {
+                // Floats
+                timing_object[line_split[0]] = parseFloat(line_split[1]);
+            }
         }
         
         this.props.socket.emit("timing data", timing_object);

@@ -44,7 +44,7 @@ module.exports = class GameRoom
             const expected = ITG_TIMING[key];
             const actual = player.timing_data[key];
             
-            if (typeof actual == 'undefined')
+            if (typeof actual == 'undefined' || actual == 'nil')
             {
                 // Kick
                 player.client.emit("notification", {
@@ -55,7 +55,18 @@ module.exports = class GameRoom
                 this.remove_player(player);
                 return;
             }
-            else if (Math.abs(expected - actual) > 0.0001)
+            else if (Math.abs(expected - actual) > 0.0001 && key != 'HarshHotLifePenalty')
+            {
+                // Kick
+                player.client.emit("notification", {
+                    bg_color: '#E54C4C', 
+                    text_color: 'white',
+                    text: `You have been kicked: invalid ITG timing for ${key}`
+                });
+                this.remove_player(player);
+                return;
+            }
+            else if (key == 'HarshHotLifePenalty' && expected != actual)
             {
                 // Kick
                 player.client.emit("notification", {

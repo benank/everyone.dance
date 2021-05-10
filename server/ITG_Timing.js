@@ -23,4 +23,16 @@ module.exports =
     LifePercentChangeLetGo: -0.080,
     LifePercentChangeHeld: 0.008,
     LifePercentChangeHitMine: -0.050,
+    InitialValue: 0.5,
+    HarshHotLifePenalty: "true",
+    
+    PercentScoreWeightW1: 5,
+    PercentScoreWeightW2: 4,
+    PercentScoreWeightW3: 2,
+    PercentScoreWeightW4: 0,
+    PercentScoreWeightW5: -6,
+    PercentScoreWeightMiss: -12,
+    PercentScoreWeightLetGo: 0,
+    PercentScoreWeightHeld: 5,
+    PercentScoreWeightHitMine: -6
 }
