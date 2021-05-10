@@ -39,8 +39,10 @@ module.exports = class GameRoom
             return;
         }
         
-        Object.keys(ITG_TIMING).forEach((key) => 
+        const keys = Object.keys(ITG_TIMING);
+        for (let i = 0; i < keys.length; i++)
         {
+            const key = keys[i];
             const expected = ITG_TIMING[key];
             const actual = player.timing_data[key];
             
@@ -77,7 +79,7 @@ module.exports = class GameRoom
                 this.remove_player(player);
                 return;
             }
-        })
+        }
     }
 
     /**
