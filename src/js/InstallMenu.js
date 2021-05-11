@@ -415,6 +415,12 @@ export default class InstallMenu extends React.Component {
                 }
 
                 // Simply Love Support
+                if (line.includes(`LoadActor("./PlayerModifiers.lua"),`))
+                {
+                    new_file_contents += `LoadActor("../everyone.dance.lua"),\n`;
+                    inserted = true;
+                }
+                
                 if (line.includes(`LoadActor("./MenuTimer.lua"),`))
                 {
                     new_file_contents += `LoadActor("../everyone.dance.lua"),\n`;
