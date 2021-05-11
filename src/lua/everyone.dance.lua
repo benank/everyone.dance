@@ -1,19 +1,16 @@
+local f = RageFileUtil.CreateRageFile()
 local function ReadFile(filename)
-    local f = RageFileUtil.CreateRageFile()
     local contents
     if f:Open(filename, 1) then
         contents = f:Read()
     end
-    f:destroy()
     return contents
 end
 
 local function WriteFile(text, filename)
-    local f = RageFileUtil.CreateRageFile()
     if f:Open(filename, 2) then
         f:Write(text)
     end
-    f:destroy()
 end
 
 -- counts an associative Lua table (use #table for sequential tables)
