@@ -118,7 +118,7 @@ npm run make
 
 ### Developing: Deploy Webapp
 
-This deploys the app to a website. This is good if you want to display the spectator mode on your own domain. Probably won't work when developing on a local machine because it requires HTTPS and a signed certificate/key. This requirement is due to socket.io using an HTTPS connection that expects the signed certificate. The commend first bundles the React code together and then runs the web app.
+This deploys the app to a website. This is good if you want to display the spectator mode on your own domain. Probably won't work when developing on a local machine because it requires HTTPS and a signed certificate/key. This requirement is due to socket.io using an HTTPS connection that expects the signed certificate. The command first bundles the React code together and then runs the web app.
 
 ```
 npm run deploy
