@@ -58,6 +58,7 @@ These themes have been tested to work with this system and the installation proc
 - Soundwaves (OutFox)
 - Infinitesimal (OutFox)
 - Club Fantastic
+- Digital Dance
 
 ## StepMania 5.3
 StepMania 5.3 (OutFox) is supported! However, when installing, please select the Appearance folder within the StepMania directory instead of the root directory.

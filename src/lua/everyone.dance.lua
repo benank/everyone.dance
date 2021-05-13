@@ -169,6 +169,7 @@ local function RefreshActiveSongData()
         local step_data = GAMESTATE:GetCurrentSteps(pn)
 
         if not song then return end
+        if not step_data then return end
 
         player_data.song_info = 
         {
@@ -177,7 +178,7 @@ local function RefreshActiveSongData()
             pack = song:GetGroupName(),
             charter = step_data:GetAuthorCredit() or "???",
             difficulty = step_data:GetMeter(),
-            difficulty_name = step_data:GetDifficulty():gsub("Difficulty_", ""),
+            difficulty_name = step_data:GetDifficulty() and step_data:GetDifficulty():gsub("Difficulty_", ""),
             steps = step_data:GetRadarValues(pn):GetValue(5),
             steps_type = step_data:GetStepsType(),
             song_dir = song:GetSongDir()
@@ -210,8 +211,14 @@ local function RefreshActiveSongData()
         player_data.score = tonumber(dance_points) * 100
         
         local mw = nil --Initialize the object
-        if SCREENMAN:GetTopScreen() then -- Verify that the screen exists first before doing anything.
-            mw = SCREENMAN:GetTopScreen():GetChild("MusicWheel") --Check that the object is valid.
+        local top_screen = SCREENMAN:GetTopScreen()
+        if top_screen then -- Verify that the screen exists first before doing anything.
+            mw = top_screen:GetChild("MusicWheel")
+            
+            -- DD support
+            if top_screen:GetChild("Overlay") then
+                mw = top_screen:GetChild("Overlay"):GetChild("LeaderboardMaster")
+            end
         end
         player_data.ingame = mw == nil
 

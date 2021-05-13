@@ -154,9 +154,7 @@ export default class InstallMenu extends React.Component {
             {
                 console.log(`Getting theme data for ${theme_name_version.name}...`);
 
-                const data = this.getThemeData(theme_path);
-                data.name = theme_name_version.name;
-                data.theme_version = theme_name_version.version;
+                const data = this.getThemeData(theme_path, theme_name_version);
 
                 all_theme_data[theme_path] = data
             }
@@ -172,11 +170,13 @@ export default class InstallMenu extends React.Component {
      * @param {*} theme_path Path to the theme on disk
      * @returns {} An object containing: path, status (installed, not installed, incompatible, needs update), version
      */
-    getThemeData(theme_path)
+    getThemeData(theme_path, theme_name_version)
     {
         const theme_data = 
         {
             path: theme_path,
+            name: theme_name_version.name,
+            theme_version: theme_name_version.version,
             status: INSTALL_STATUS.NOT_INSTALLED,
             version: "--",
             sync_interval: DEFAULT_SYNC_INTERVAL,
@@ -189,6 +189,13 @@ export default class InstallMenu extends React.Component {
             'ScreenEvaluation': ['decorations', 'common', 'overlay', 'underlay'], // Currently unused because Init/Begin causes the game to hang
             'ScreenGameplay': ['overlay', 'decorations'],
             'ScreenSelectMusic': ['overlay', 'decorations'],
+        }
+        
+        // Digital Dance support
+        if (theme_data.name.includes('Digital Dance'))
+        {
+            valid_install_paths['ScreenSelectMusicDD'] = valid_install_paths['ScreenSelectMusic'];
+            delete valid_install_paths['ScreenSelectMusic'];
         }
 
         for (const index in Object.keys(valid_install_paths))
@@ -473,12 +480,19 @@ export default class InstallMenu extends React.Component {
                     new_file_contents += `LoadActor("../everyone.dance.lua"),\n`;
                     inserted = true;
                 }
+                
+                // DD Support
+                if (line.includes(`LoadActor('./OptionsMessage.lua'),`))
+                {
+                    new_file_contents += `LoadActor("../everyone.dance.lua"),\n`;
+                    inserted = true;
+                }
             }
             
             // Display error message for unsupported themes
             if (!inserted)
             {
-                console.log(`Failed to install to ${default_path}!`);
+                console.warn(`Failed to install to ${default_path}!`);
                 this.uninstall_selected_theme();
                 this.props.createNotification({
                     bg_color: '#E54C4C', 
