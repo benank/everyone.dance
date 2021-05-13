@@ -216,7 +216,7 @@ local function RefreshActiveSongData()
             mw = top_screen:GetChild("MusicWheel")
             
             -- DD support
-            if top_screen:GetChild("Overlay") then
+            if mw == nil and top_screen:GetChild("Overlay") then
                 mw = top_screen:GetChild("Overlay"):GetChild("LeaderboardMaster")
             end
         end
