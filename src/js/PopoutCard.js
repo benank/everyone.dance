@@ -10,6 +10,11 @@ export default class PopoutCard extends React.Component {
     {
         super(props);
     }
+    
+    componentDidMount()
+    {
+        window.document.title = `everyone.dance - Popout Card`;
+    }
 
     componentDidUpdate()
     {
