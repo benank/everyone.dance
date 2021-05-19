@@ -69,13 +69,27 @@ export default class App extends React.Component {
     {
         if (!isWebVersion)
         {
+            const compareVersion = (v1, v2) => {
+                if (v1 === v2) {
+                    return 0;
+                }
+    
+                const arrV1 = v1.replace('-dev', '').split('.').map(number => parseInt(number) || 0);
+                const arrV2 = v2.replace('-dev', '').split('.').map(number => parseInt(number) || 0);
+    
+                for (let j = 0; j < 3; j++) {
+                    if (arrV1[j] == arrV2[j]) { continue; }
+                    return arrV1[j] > arrV2[j] ? 1 : -1;
+                }
+            }
+            
             setTimeout(() => {
                 fetch("https://raw.githubusercontent.com/benank/everyone.dance/main/package.json").then((response) => 
                 {
                     if (response.ok) {
                         response.json().then((json) => 
                         {
-                            if (json.version > VERSION)
+                            if (compareVersion(json.version, VERSION) != 0)
                             {
                                 this.setState({
                                     latest_version: json.version,

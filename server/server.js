@@ -460,9 +460,23 @@ class Server
             });
             return;
         }
+        
+        const compareVersion = (v1, v2) => {
+            if (v1 === v2) {
+                return 0;
+            }
 
+            const arrV1 = v1.replace('-dev', '').split('.').map(number => parseInt(number) || 0);
+            const arrV2 = v2.replace('-dev', '').split('.').map(number => parseInt(number) || 0);
+
+            for (let j = 0; j < 3; j++) {
+                if (arrV1[j] == arrV2[j]) { continue; }
+                return arrV1[j] > arrV2[j] ? 1 : -1;
+            }
+        }
+        
         // If the room has version check enabled, disallow if not latest version
-        if (game_room.options.version_check && client.player.version < LATEST_VERSION)
+        if (game_room.options.version_check && compareVersion(client.player.version, LATEST_VERSION) != 0)
         {
             client.emit("notification", {
                 bg_color: '#E54C4C', 

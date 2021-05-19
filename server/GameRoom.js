@@ -132,13 +132,27 @@ module.exports = class GameRoom
 
     update_options(options)
     {
+        const compareVersion = (v1, v2) => {
+            if (v1 === v2) {
+                return 0;
+            }
+
+            const arrV1 = v1.replace('-dev', '').split('.').map(number => parseInt(number) || 0);
+            const arrV2 = v2.replace('-dev', '').split('.').map(number => parseInt(number) || 0);
+
+            for (let j = 0; j < 3; j++) {
+                if (arrV1[j] == arrV2[j]) { continue; }
+                return arrV1[j] > arrV2[j] ? 1 : -1;
+            }
+        }
+        
         // If they just turned on version check, check all client versions
         if (options["version_check"] && !this.options["version_check"])
         {
             // Check all client versions and kick if not latest
             Object.values(this.players).forEach((player) => 
             {
-                if (player.version < LATEST_VERSION)
+                if (compareVersion(player.version, LATEST_VERSION) != 0)
                 {
                     this.remove_player(player);
                     player.client.emit("notification", {
