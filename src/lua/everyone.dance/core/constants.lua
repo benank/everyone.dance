@@ -2,10 +2,10 @@ local constants = {}
 
 constants.DEBUG_ON = true
 
-constants.data_filename = "Save/everyone.dance.txt"
+constants.data_filename = "Save/everyone.dance.json"
 constants.data_timings_filename = "Save/everyone.dance.timings.txt"
 constants.data_game_code_filename = "Save/everyone.dance.gamecode.txt"
-constants.goto_filename = "Save/everyone.dance.txt.goto"
+constants.goto_filename = "Save/everyone.dance.json.goto"
 
 constants.timing_data_interval = 10
 

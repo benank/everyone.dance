@@ -20,7 +20,7 @@ import {SYNC_MODE} from "./constants/SyncMode"
 let sm_data = ""
 let sm_check_interval;
 let SM_CHECK_INTERVAL_TIME = 250;
-let SM_FILE_PATH = "/StepMania 5/Save/everyone.dance.txt"
+let SM_FILE_PATH = "/StepMania 5/Save/everyone.dance.json"
 let NOT_APPDATA = false
 
 export default class GameRoom extends React.Component {
@@ -35,7 +35,7 @@ export default class GameRoom extends React.Component {
             host_id: props.game_room_data.host_id,
             // Our player is guaranteed to exist
             my_id: Object.values(props.game_room_data.players).filter((player) => player.is_me)[0].id,
-            full_file_path: "", // Full file path to everyone.dance.txt
+            full_file_path: "", // Full file path to everyone.dance.json
             settings_open: false,
             options: props.game_room_data.options,
             css_open: false
@@ -349,7 +349,7 @@ export default class GameRoom extends React.Component {
             NOT_APPDATA = sm_install.is_portable;
             SM_FILE_PATH = sm_install.score_file;
             
-            this.write_game_code_to_file(SM_FILE_PATH.replace("everyone.dance.txt", "everyone.dance.gamecode.txt"));
+            this.write_game_code_to_file(SM_FILE_PATH.replace("everyone.dance.json", "everyone.dance.gamecode.txt"));
             
             this.sync_timing_data();
             setInterval(() => {
@@ -361,7 +361,7 @@ export default class GameRoom extends React.Component {
     
     sync_timing_data()
     {
-        const path = SM_FILE_PATH.replace("everyone.dance.txt", "everyone.dance.timings.txt");
+        const path = SM_FILE_PATH.replace("everyone.dance.json", "everyone.dance.timings.txt");
         if (!electron.fs.existsSync(path)) {return;}
         
         const timings = electron.fs.readFileSync(path, 'utf8').toString();
@@ -432,7 +432,7 @@ export default class GameRoom extends React.Component {
         }
         catch (e)
         {
-            console.log(`Error parsing json: ${e}`);
+            console.warn(`Error parsing json: ${e}`);
             console.log(`Reverting to old parsing method for non json...`);
             // Old nasty method
             data = this.parseOldFile(file);

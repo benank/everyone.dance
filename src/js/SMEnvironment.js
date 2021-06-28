@@ -15,7 +15,7 @@ export const SM_INSTALL_VARIANT = {
     SM_CLUB_FANTASTIC: 4
 };
 
-const SM_DATA_NAME = "Save/everyone.dance.txt"
+const SM_DATA_NAME = "Save/everyone.dance.json"
 
 // All paths to SM data if not in portable mode
 // Add support for more versions of SM here and in _install_variant()
@@ -189,14 +189,14 @@ export default class SMInstallation {
     }
 
     /**
-     * Locate everyone.dance.txt within the sm
+     * Locate everyone.dance.json within the sm
      * installation, or appdata directories
-     * @returns {String} Path to everyone.dance.txt
+     * @returns {String} Path to everyone.dance.json
      */
     _locate_score_file() {
         // Portable installs are simple - Save folder is next to executable
         if (this.is_portable) {
-            return this.variant_dir + "/Save/everyone.dance.txt";
+            return this.variant_dir + "/Save/everyone.dance.json";
         }
         
         if (SM_DATA_PATHS[this.platform] && SM_DATA_PATHS[this.platform][this.install_variant])
