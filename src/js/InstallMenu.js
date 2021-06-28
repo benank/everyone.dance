@@ -15,6 +15,7 @@ const LOCALSTORAGE_STEPMANIA_DIR = "stepmania_dir"
 const SCRIPT_VERSION = VERSION
 const SCRIPT_VERSION_PREFIX = "-- everyone.dance Version: "
 
+// TODO: fix this with new stuff
 const SCRIPT_SYNC_INTERVAL_PREFIX = "local SYNC_INTERVAL = "
 const DEFAULT_SYNC_INTERVAL = 500;
 
