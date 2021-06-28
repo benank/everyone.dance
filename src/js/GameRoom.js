@@ -422,11 +422,32 @@ export default class GameRoom extends React.Component {
         if (file == sm_data) {return;}
 
         sm_data = file;
+        
+        let data = {};
+        
+        try
+        {
+            // New JSON method
+            data = JSON.parse(file);
+        }
+        catch (e)
+        {
+            console.log(`Error parsing json: ${e}`);
+            console.log(`Reverting to old parsing method for non json...`);
+            // Old nasty method
+            data = this.parseOldFile(file);
+        }
+        
+        this.props.socket.emit("sync data", data)
+    }
+    
+    // Old, deprecated way of parsing a non-json file
+    parseOldFile(file)
+    {
+        const data = {};
         const lines = file.split("\n");
 
         let player = "";
-
-        const data = {}
 
         for (let i = 0; i < lines.length; i++)
         {
@@ -477,8 +498,8 @@ export default class GameRoom extends React.Component {
             }
 
         }
-
-        this.props.socket.emit("sync data", data)
+        
+        return data;
     }
 
     componentWillUnmount()
