@@ -1,6 +1,6 @@
 local constants = {}
 
-constants.DEBUG_ON = false
+constants.DEBUG_ON = true
 
 constants.data_filename = "Save/everyone.dance.txt"
 constants.data_timings_filename = "Save/everyone.dance.timings.txt"

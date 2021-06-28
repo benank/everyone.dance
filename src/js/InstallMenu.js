@@ -384,7 +384,7 @@ export default class InstallMenu extends React.Component {
         const theme = this.state.themes[this.state.selected_theme_path];
 
         // Install lua file to theme
-        this.write_lua_file_to_path(theme.path)
+        this.write_lua_files_to_path(theme.path)
 
         // Now edit the existing lua files to load the new file
         for (let i = 0; i < theme.install_paths.length; i++)
@@ -515,7 +515,7 @@ export default class InstallMenu extends React.Component {
     {
         // Get selected theme and write the lua file to the path, overwriting the old one
         const theme = this.state.themes[this.state.selected_theme_path];
-        this.write_lua_file_to_path(theme.path)
+        this.write_lua_files_to_path(theme.path)
 
         // Refresh themes info
         this.get_themes_info();
@@ -528,6 +528,10 @@ export default class InstallMenu extends React.Component {
         // Remove everyone.dance.lua
         const lua_path = theme.path + "/BGAnimations/everyone.dance.lua"
         electron.fs.unlinkSync(lua_path)
+        
+        // Remove everyone.dance folder
+        const lua_folder_path = theme.path + "/BGAnimations/everyone.dance/"
+        electron.fs.rmdirSync(lua_folder_path, {recursive: true})
 
         // Remove extra lines of code that load our lua file
         
@@ -563,20 +567,45 @@ export default class InstallMenu extends React.Component {
         this.get_themes_info();
     }
 
-    // Writes the everyone.dance lua file to the given path (minus the name)
-    write_lua_file_to_path(path)
+    // https://stackoverflow.com/questions/39106516/node-fs-copy-a-folder
+    copy_dir(src, dest) {
+        
+        function isDir(src)
+        {
+            return electron.path.extname(src) == ".dance" || electron.path.extname(src) == "";
+        }
+        
+        electron.fs.mkdirSync(dest, { recursive: true });
+        let entries = electron.fs.readdirSync(src, { withFileTypes: true });
+
+        for (let entry of entries) {
+            let srcPath = electron.path.join(src, entry.name);
+            let destPath = electron.path.join(dest, entry.name);
+
+            isDir(srcPath) ?
+                this.copy_dir(srcPath, destPath) :
+                electron.fs.copyFileSync(srcPath, destPath);
+        }
+    }
+
+    // Writes the everyone.dance lua files to the given path (minus the name)
+    write_lua_files_to_path(path)
     {
-        const lua_file_path = electron.dirname + "/../lua/everyone.dance.lua"
-        const dest_path = path + "/BGAnimations/everyone.dance.lua"
+        const lua_files_path = electron.dirname + "/../lua/";
+        const dest_path = path + "/BGAnimations/";
 
         // Copy lua file over
-        electron.fs.copyFileSync(lua_file_path, dest_path);
-
+        // electron.fs.copyFileSync(lua_file_path, dest_path);
+        this.copy_dir(lua_files_path, dest_path);
+        
+        
         // Now write version to the copied lua file
-        let data = electron.fs.readFileSync(dest_path, 'utf8').toString();
-        data = `${SCRIPT_VERSION_PREFIX}${SCRIPT_VERSION}\n` + `${SCRIPT_SYNC_INTERVAL_PREFIX}${this.state.sync_interval}\n` + data;
+        const lua_version_dest_path = electron.path.join(dest_path, "everyone.dance.lua");
+        let data = electron.fs.readFileSync(lua_version_dest_path, 'utf8').toString();
+        
+        data = `${SCRIPT_VERSION_PREFIX}${SCRIPT_VERSION}\n` + `${SCRIPT_SYNC_INTERVAL_PREFIX}${this.state.sync_interval}\n\n` + data;
 
-        electron.fs.writeFileSync(dest_path, data);
+        electron.fs.writeFileSync(lua_version_dest_path, data);
     }
 
     render () {

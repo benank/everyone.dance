@@ -8,6 +8,9 @@ ED.json              = LoadActor("./everyone.dance/core/json.lua")
 ED.file              = LoadActor("./everyone.dance/core/file.lua")
 ED.constants         = LoadActor("./everyone.dance/core/constants.lua")
 
+-- Written to during installation
+ED.constants.SYNC_INTERVAL = SYNC_INTERVAL
+
 -- Class related files
 ED.Event             = LoadActor("./everyone.dance/core/event.lua")
 ED.Events            = LoadActor("./everyone.dance/core/events.lua")
@@ -33,8 +36,10 @@ local function OnInit(s)
     ED.file.Write("", ED.constants.goto_filename)
     
     -- Begin timed intervals
-    s:sleep(SYNC_INTERVAL / 1000):queuecommand("Update")
-    s:sleep(timing_data_interval / 1000):queuecommand("Update2")
+    s:sleep(ED.constants.SYNC_INTERVAL / 1000):queuecommand("SyncInterval")
+    s:sleep(ED.constants.timing_data_interval / 1000):queuecommand("TimingDataInterval")
+    
+    ED.helpers.print("everyone.dance init finished")
 
 end
 
@@ -52,10 +57,10 @@ return Def.ActorFrame{
             s:sleep(ED.constants.timing_data_interval / 1000):queuecommand("TimingDataInterval")
         end,
         CurrentStepsP1ChangedMessageCommand = function(s, param) -- Called when difficulty or song changes for P1
-            OnCurrentStepsChanged(s, param)
+            ED.Events:Fire("CurrentStepsChanged", {actor = s, param = param})
         end,
         CurrentStepsP2ChangedMessageCommand = function(s, param) -- Called when difficulty or song changes for P2
-            OnCurrentStepsChanged(s, param)
+            ED.Events:Fire("CurrentStepsChanged", {actor = s, param = param})
         end
     }
 }

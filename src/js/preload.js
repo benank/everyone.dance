@@ -12,6 +12,7 @@ electron.contextBridge.exposeInMainWorld('electron', {
         electron.ipcRenderer.send(event, ...args);
     },
     fs: electron.remote.require('fs'),
+    path: electron.remote.require('path'),
     os: os,
     dirname: __dirname,
     dialog: electron.remote.dialog,

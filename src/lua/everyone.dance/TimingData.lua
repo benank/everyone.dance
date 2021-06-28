@@ -23,6 +23,7 @@ function TimingData:GetTimingData(s)
         
         data_to_write = data_to_write .. tostring(pref) .. ":" .. tostring(value) .. "\n"
     end
+    return data_to_write
 end
 
 return TimingData()

@@ -3,6 +3,7 @@ local ActiveSongData = ED.class()
 -- Gets all the data of the current song/selection and outputs it to a file for everyone.dance to read
 function ActiveSongData:__init()
     ED.Events:Subscribe("SyncInterval", self, self.Interval)
+    ED.Events:Subscribe("CurrentStepsChanged", self, self.Refresh)
 end
 
 function ActiveSongData:Interval()
