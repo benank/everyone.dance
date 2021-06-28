@@ -1,3 +1,5 @@
+if ED.initialized then return end
+
 -- do not collect inits beyond the initial frame & do not collect nested init's
 ED.__collect_inits = false
 
@@ -24,3 +26,6 @@ end
 -- Finished initializing classes
 
 ED.__init_list = nil
+ED.initialized = true
+
+ED.Events:Fire("Initialized")

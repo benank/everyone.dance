@@ -1,6 +1,6 @@
 -- Originally written by Dev_34
 
-ED.__collect_inits = true
+ED.__collect_inits = false
 ED.__init_list = {}
 
 -- returns a function that runs a class instance init
@@ -11,7 +11,7 @@ function ED.generate_init_function(class_instance, args)
     end
 end
 
-local function class(...)
+local function create_class(...)
     -- "cls" is the new class (not the instance, the actual class table / class metadata)
     local cls, bases = {}, {...}
 
@@ -51,8 +51,8 @@ local function class(...)
 
         if init then
             local args = {...}
-            if __collect_inits then
-                ED.table.insert(__init_list, {instance, ED.generate_init_function(instance, args)})
+            if ED.__collect_inits then
+                table.insert(ED.__init_list, {instance, ED.generate_init_function(instance, args)})
             else
                 ED.generate_init_function(instance, args)()
             end
@@ -65,4 +65,4 @@ local function class(...)
     return cls
 end
 
-return class
+return create_class

@@ -1,4 +1,4 @@
-local Events = class()
+local Events = ED.class()
 
 function Events:__init()
     self.subs = {}
@@ -29,7 +29,7 @@ function Events:Subscribe(name, instance, callback)
         self.subs[name] = {}
     end
 
-    local event = Event(name, instance, callback)
+    local event = ED.Event(name, instance, callback)
     self.subs[name][event.id] = event
 
     return event

@@ -11,11 +11,6 @@ function helpers.count_table(table)
     return count
 end
 
-function helpers.insert(tbl, t)
-    tbl[#tbl+1] = t
-    return tbl
-end
-
 function helpers.remove(tbl, num_to_remove)
     local table_size = count_table(tbl)
     local new_tbl = {}
@@ -27,7 +22,7 @@ end
 
 -- Print for debugging, only enabled if DEBUG_ON is true
 function helpers.print(t)
-    if not ED.DEBUG_ON then return end
+    if not ED.constants.DEBUG_ON then return end
     SCREENMAN:SystemMessage(tostring(t))
 end
 
@@ -141,7 +136,7 @@ function helpers.get_local_player_data()
         local cur_stats = STATSMAN:GetCurStageStats()
         local player_stats = cur_stats:GetPlayerStageStats(pn);
 
-        player_data.fc = FullComboType(player_stats) -- Returns nil if no FC
+        player_data.fc = ED.helpers.FullComboType(player_stats) -- Returns nil if no FC
 
         
         local dance_points = player_stats:GetPercentDancePoints()

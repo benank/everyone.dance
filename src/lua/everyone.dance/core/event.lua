@@ -1,12 +1,12 @@
-local Event = class()
+local Event = ED.class()
 
-ED.event_id = 0
+local event_id = 0
 function Event:__init(name, instance, callback)
     self.name = name
     self.instance = instance
     self.callback = callback
     self.id = event_id
-    ED.event_id = ED.event_id + 1
+    event_id = event_id + 1
 end
 
 function Event:Unsubscribe()

@@ -1,52 +1,41 @@
 -- Global everyone.dance table
 ED = {}
 
--- Load helpers
-ED.helpers           = LoadActor("./everyone.dance/core/helpers.lua")
-ED.class             = LoadActor("./everyone.dance/core/class.lua")
-ED.json              = LoadActor("./everyone.dance/core/json.lua")
-ED.file              = LoadActor("./everyone.dance/core/file.lua")
-ED.constants         = LoadActor("./everyone.dance/core/constants.lua")
+if not ED.initialized then
+    -- Load helpers
+    ED.helpers           = LoadActor("./everyone.dance/core/helpers.lua")
+    ED.class             = LoadActor("./everyone.dance/core/class.lua")
+    ED.json              = LoadActor("./everyone.dance/core/json.lua")
+    ED.constants         = LoadActor("./everyone.dance/core/constants.lua")
 
--- Written to during installation
-ED.constants.SYNC_INTERVAL = SYNC_INTERVAL
+    -- Written to during installation
+    ED.constants.SYNC_INTERVAL = SYNC_INTERVAL
 
--- Class related files
-ED.Event             = LoadActor("./everyone.dance/core/event.lua")
-ED.Events            = LoadActor("./everyone.dance/core/events.lua")
+    -- Class related files
+    ED.Event             = LoadActor("./everyone.dance/core/event.lua")
+    ED.Events            = LoadActor("./everyone.dance/core/events.lua")
 
-ED.ActiveSongData    = LoadActor("./everyone.dance/ActiveSongData.lua")
-ED.GameCode          = LoadActor("./everyone.dance/GameCode.lua")
-ED.GotoData          = LoadActor("./everyone.dance/GotoData.lua")
-ED.TimingData        = LoadActor("./everyone.dance/TimingData.lua")
+    ED.file              = LoadActor("./everyone.dance/core/file.lua")
 
+    ED.ActiveSongData    = LoadActor("./everyone.dance/ActiveSongData.lua")
+    ED.GameCode          = LoadActor("./everyone.dance/GameCode.lua")
+    ED.GotoData          = LoadActor("./everyone.dance/GotoData.lua")
+    ED.TimingData        = LoadActor("./everyone.dance/TimingData.lua")
+    ED.Initialize        = LoadActor("./everyone.dance/Initialize.lua")
+
+end
 
 local function OnCurrentStepsChanged(s)
     ED.ActiveSongData:Refresh()
 end
 
-local function OnInit(s)
-
-    ED.helpers.print("Init everyone.dance")
-
-    -- Initialize all classes
-    LoadActor("./everyone.dance/core/class_init.lua")
-    
-    -- Clear file so we don't crash
-    ED.file.Write("", ED.constants.goto_filename)
-    
-    -- Begin timed intervals
-    s:sleep(ED.constants.SYNC_INTERVAL / 1000):queuecommand("SyncInterval")
-    s:sleep(ED.constants.timing_data_interval / 1000):queuecommand("TimingDataInterval")
-    
-    ED.helpers.print("everyone.dance init finished")
-
-end
+-- Initialize all classes
+LoadActor("./everyone.dance/core/class_init.lua")
 
 return Def.ActorFrame{
     Def.Actor{
         BeginCommand = function(s)
-            OnInit(s)
+            ED.Events:Fire("Begin", {actor = s})
         end,
         SyncIntervalCommand = function(s)
             ED.Events:Fire("SyncInterval", {actor = s})
@@ -61,6 +50,9 @@ return Def.ActorFrame{
         end,
         CurrentStepsP2ChangedMessageCommand = function(s, param) -- Called when difficulty or song changes for P2
             ED.Events:Fire("CurrentStepsChanged", {actor = s, param = param})
+        end,
+        OffCommand = function(s)
+            ED.Events:Fire("OffCommand") 
         end
     }
 }

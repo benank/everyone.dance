@@ -534,8 +534,6 @@ export default class InstallMenu extends React.Component {
         electron.fs.rmdirSync(lua_folder_path, {recursive: true})
 
         // Remove extra lines of code that load our lua file
-        
-        // Now edit the existing lua files to load the new file
         for (let i = 0; i < theme.install_paths.length; i++)
         {
             const default_path = theme.install_paths[i] + "/default.lua";
@@ -595,7 +593,6 @@ export default class InstallMenu extends React.Component {
         const dest_path = path + "/BGAnimations/";
 
         // Copy lua file over
-        // electron.fs.copyFileSync(lua_file_path, dest_path);
         this.copy_dir(lua_files_path, dest_path);
         
         
