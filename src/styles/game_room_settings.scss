@@ -51,7 +51,7 @@ div.game-room-settings div.settings-content
     grid-template-rows: auto;
     grid-template-columns: 50% 50%;
     column-gap: 30px;
-    height: 90%;
+    height: calc(95% - 40px);
 }
 
 div.game-room-settings div.container

@@ -23,6 +23,9 @@ let SM_CHECK_INTERVAL_TIME = 250;
 let SM_FILE_PATH = "/StepMania 5/Save/everyone.dance.json"
 let NOT_APPDATA = false
 
+const PLAYERS_API_NAME = "everyone.dance.players.json"
+const OPTIONS_API_NAME = "everyone.dance.options.json"
+
 export default class GameRoom extends React.Component {
 
     constructor (props)
@@ -69,7 +72,7 @@ export default class GameRoom extends React.Component {
         })
     }
 
-    componentDidUpdate()
+    componentDidUpdate(prevProps, prevState, snapshot)
     {
         if (!isWebVersion)
         {
@@ -77,7 +80,31 @@ export default class GameRoom extends React.Component {
                 players: this.state.players,
                 options: this.state.options
             })
+            
+            // Players updated, so write new data to SM
+            if (JSON.stringify(prevState.players) != JSON.stringify(this.state.players))
+            {
+                const players_data = this.state.options["api"] == true ?
+                    this.state.players :
+                    {}; 
+                this.write_api_data_to_sm(players_data, PLAYERS_API_NAME);
+            }
+            
+            // Options updated, so write new data to SM
+            if (JSON.stringify(prevState.options) != JSON.stringify(this.state.options))
+            {
+                this.write_api_data_to_sm(this.state.options, OPTIONS_API_NAME);
+            }
         }
+    }
+    
+    /**
+     * Writes all player data to StepMania as a JSON so SM can use the data to display live stats.
+     */
+    write_api_data_to_sm(data, filename)
+    {
+        const path = SM_FILE_PATH.replace("everyone.dance.json", filename);
+        electron.fs.writeFileSync(path, JSON.stringify(data), { flag: 'w' });
     }
 
     /**
@@ -356,6 +383,8 @@ export default class GameRoom extends React.Component {
                 // Check timing data every 10 seconds and sync to server
                 this.sync_timing_data();
             }, 1000 * 10);
+            
+            this.write_api_data_to_sm(this.state.options, OPTIONS_API_NAME);
         }
     }
     

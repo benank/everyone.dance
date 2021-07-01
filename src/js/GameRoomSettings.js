@@ -192,6 +192,13 @@ export default class GameRoomSettings extends React.Component {
                                 active={this.props.options["version_check"]}></ToggleComponent>
                             </div>
                             <div className='option'>
+                                <div className='text'>API Enabled</div>
+                                <ToggleComponent 
+                                clickToggle={() => this.props.click_toggle("api")}
+                                {...this.props}
+                                active={this.props.options["api"]}></ToggleComponent>
+                            </div>
+                            <div className='option'>
                                 <div className='text'>Game Mode</div>
                                 <select 
                                 disabled={!this.am_i_host()} 

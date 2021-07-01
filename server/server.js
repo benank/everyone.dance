@@ -289,6 +289,7 @@ class Server
             typeof options["version_check"] == 'undefined' ||
             typeof options["rank_players"] == 'undefined' ||
             typeof options["player_limit"] == 'undefined' ||
+            typeof options["api"] == 'undefined' ||
             typeof options["sync_mode"] == 'undefined')
         {
             return false;   
@@ -296,6 +297,12 @@ class Server
 
         if (options["show_game_code"] != true &&
             options["show_game_code"] != false)
+        {
+            return false;   
+        }
+
+        if (options["api"] != true &&
+            options["api"] != false)
         {
             return false;   
         }

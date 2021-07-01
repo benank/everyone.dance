@@ -17,16 +17,13 @@ if not ED.initialized then
 
     ED.file              = LoadActor("./everyone.dance/core/file.lua")
 
+    ED.API               = LoadActor("./everyone.dance/API.lua")
     ED.ActiveSongData    = LoadActor("./everyone.dance/ActiveSongData.lua")
     ED.GameCode          = LoadActor("./everyone.dance/GameCode.lua")
     ED.GotoData          = LoadActor("./everyone.dance/GotoData.lua")
     ED.TimingData        = LoadActor("./everyone.dance/TimingData.lua")
     ED.Initialize        = LoadActor("./everyone.dance/Initialize.lua")
 
-end
-
-local function OnCurrentStepsChanged(s)
-    ED.ActiveSongData:Refresh()
 end
 
 -- Initialize all classes
