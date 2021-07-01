@@ -12,10 +12,27 @@ function API:__init()
     self.enabled = false
     
     ED.Events:Subscribe("SyncInterval", self, self.Interval)
+    ED.Events:Subscribe("ScreenChanged", self, self.ScreenChanged)
+    
+    -- Clear the API files on startup
+    self:ClearFiles()
     
     -- To hook into the API from a non-ED-class based system, wait until 
     -- ED.API.ready is true, then you can use ED.API.
     self.ready = true
+end
+
+function API:ScreenChanged(args)
+    -- On a screen change, clear the API files.
+    -- This way, the API will never have out of date data (in case the ED client closes but SM is open).
+    -- After clearing the files, it will wait for the next interval to read the data and refresh the API.
+    self:ClearFiles() 
+end
+
+-- Clears all data from the files so the ED client has to write to them again.
+function API:ClearFiles()
+    ED.file.Write("{}", ED.constants.data_options_filename) 
+    ED.file.Write("{}", ED.constants.data_players_filename) 
 end
 
 function API:GetEnabled()
@@ -105,9 +122,8 @@ function API:RefreshOptionsData()
     
     self.enabled = self.options.api == true
     
-    if not self.enabled then
-        self:RefreshPlayersData()
-    end
+    -- Refresh players data if options changed
+    self:RefreshPlayersData()
     
     ED.Events:Fire("API/OptionsChanged", {options = self.options, old_options = old_options})
 end

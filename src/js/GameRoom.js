@@ -84,18 +84,28 @@ export default class GameRoom extends React.Component {
             // Players updated, so write new data to SM
             if (JSON.stringify(prevState.players) != JSON.stringify(this.state.players))
             {
-                const players_data = this.state.options["api"] == true ?
-                    this.state.players :
-                    {}; 
-                this.write_api_data_to_sm(players_data, PLAYERS_API_NAME);
+                this.refresh_player_api_data();
             }
             
             // Options updated, so write new data to SM
             if (JSON.stringify(prevState.options) != JSON.stringify(this.state.options))
             {
                 this.write_api_data_to_sm(this.state.options, OPTIONS_API_NAME);
+                this.refresh_player_api_data();
             }
         }
+    }
+    
+    /**
+     * Refresh the player API data based on the state of the API option.
+     *
+    */
+    refresh_player_api_data()
+    {
+        const players_data = this.state.options["api"] == true ?
+            this.state.players :
+            {}; 
+        this.write_api_data_to_sm(players_data, PLAYERS_API_NAME);
     }
     
     /**
@@ -384,6 +394,7 @@ export default class GameRoom extends React.Component {
                 this.sync_timing_data();
             }, 1000 * 10);
             
+            this.refresh_player_api_data();
             this.write_api_data_to_sm(this.state.options, OPTIONS_API_NAME);
         }
     }
@@ -537,6 +548,10 @@ export default class GameRoom extends React.Component {
         {
             clearInterval(sm_check_interval);
         }
+        
+        // Clear API data
+        this.write_api_data_to_sm({}, PLAYERS_API_NAME);
+        this.write_api_data_to_sm({}, OPTIONS_API_NAME);
     }
 
     leave_game_room()

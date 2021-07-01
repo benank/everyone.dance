@@ -1,6 +1,10 @@
 -- Global everyone.dance table
 ED = {}
 
+-- Temporary container for API.
+-- To use any API functions, you must first check if ED.API.ready is true.
+ED.API = {ready = false}
+
 if not ED.initialized then
     -- Load helpers
     ED.helpers           = LoadActor("./everyone.dance/core/helpers.lua")
@@ -22,6 +26,7 @@ if not ED.initialized then
     ED.GameCode          = LoadActor("./everyone.dance/GameCode.lua")
     ED.GotoData          = LoadActor("./everyone.dance/GotoData.lua")
     ED.TimingData        = LoadActor("./everyone.dance/TimingData.lua")
+    ED.ScreenManager     = LoadActor("./everyone.dance/ScreenManager.lua")
     ED.Initialize        = LoadActor("./everyone.dance/Initialize.lua")
 
 end
