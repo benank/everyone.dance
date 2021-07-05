@@ -487,6 +487,13 @@ export default class InstallMenu extends React.Component {
                     new_file_contents += `LoadActor("../everyone.dance.lua"),\n`;
                     inserted = true;
                 }
+                
+                // Pump Delta Support
+                if (line.includes(`local song = GAMESTATE:GetCurrentSong();`))
+                {
+                    new_file_contents += `t[#t+1] = LoadActor("../everyone.dance.lua")\n`;
+                    inserted = true;
+                }
             }
             
             // Display error message for unsupported themes
