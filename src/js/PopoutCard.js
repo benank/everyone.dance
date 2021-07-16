@@ -15,10 +15,10 @@ export default class PopoutCard extends React.Component {
     {
         if (this.have_valid_player_data())
         {
-            window.document.title = `everyone.dance - Popout Card (${this.get_player_data().name})`;
+            window.document.title = `everyone.dance - Popout Card (${this.get_player_data().name}${this.props.p2 == true ? " (2)" : ""})`;
         }
     }
-
+    
     componentDidUpdate()
     {
         electron.send('update-popout-size', 
