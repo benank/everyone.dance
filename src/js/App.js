@@ -315,7 +315,7 @@ export default class App extends React.Component {
                     latest_version={this.state.latest_version}
                     setAppState={(state) => this.setAppState(state)}></UpdateMenu>} */}
                 {this.state.app_state == APP_STATE.POPOUT_VIEW && <PopoutCard p2={this.state.popout_p2} id={this.state.popout_id} game_room_data={this.state.game_room_data}></PopoutCard>}
-                {this.state.notification != null && 
+                {(this.state.app_state != APP_STATE.POPOUT_VIEW && this.state.notification != null) && 
                     <div 
                     style={{
                         backgroundColor: this.state.notification.bg_color,
