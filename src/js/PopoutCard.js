@@ -11,9 +11,12 @@ export default class PopoutCard extends React.Component {
         super(props);
     }
     
-    componentDidMount()
+    updateCardTitle()
     {
-        window.document.title = `everyone.dance - Popout Card`;
+        if (this.have_valid_player_data())
+        {
+            window.document.title = `everyone.dance - Popout Card (${this.get_player_data().name})`;
+        }
     }
 
     componentDidUpdate()
@@ -23,6 +26,8 @@ export default class PopoutCard extends React.Component {
             width: window.document.getElementById('popout-card').clientWidth,
             height: window.document.getElementById('popout-card').clientHeight
         })
+        
+        this.updateCardTitle();
     }
 
     get_player_data()
