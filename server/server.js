@@ -289,7 +289,8 @@ class Server
             typeof options["version_check"] == 'undefined' ||
             typeof options["rank_players"] == 'undefined' ||
             typeof options["player_limit"] == 'undefined' ||
-            typeof options["sync_mode"] == 'undefined')
+            typeof options["sync_mode"] == 'undefined' || 
+            typeof options["force_ingame_layout"] == 'undefined')
         {
             return false;   
         }
@@ -326,13 +327,19 @@ class Server
         {
             return false;   
         }
-
+        
         if (options["version_check"] != true &&
             options["version_check"] != false)
         {
             return false;   
         }
 
+        if (options["force_ingame_layout"] != true &&
+            options["force_ingame_layout"] != false)
+        {
+            return false;   
+        }
+        
         if (options["player_limit"] < -1 ||
             options["player_limit"] > 99)
         {

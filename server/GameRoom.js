@@ -126,7 +126,8 @@ module.exports = class GameRoom
             ["game_mode"]: "DDR", // Can be DDR, ITG, ITG (Strict), Pump
             ["version_check"]: false,
             ["player_limit"]: -1,
-            ["sync_mode"]: SYNC_MODE.Realtime
+            ["sync_mode"]: SYNC_MODE.Realtime,
+            ["force_ingame_layout"]: false
         }
     }
 

@@ -238,7 +238,7 @@ export default class PlayerCard extends React.Component {
 
     isPopoutAndNotIngame()
     {
-        return this.get_player_data().ingame != "true" && this.props.popout;
+        return !this.is_ingame() && this.props.popout;
     }
     
     getStepsTypeFromData()
@@ -267,6 +267,11 @@ export default class PlayerCard extends React.Component {
         
         return "Unknown"
     }
+    
+    is_ingame()
+    {
+        return this.get_player_data().ingame == "true" || this.props.options["force_ingame_layout"]
+    }
 
     render () {
         return (
@@ -277,7 +282,7 @@ export default class PlayerCard extends React.Component {
                 <div className='player-card-background'></div>
                 <div className="top-bar">
                     {(this.props.options["rank_players"]) && (
-                        (typeof this.get_player_data().rank != 'undefined' && this.get_player_data().ingame == "true") ? 
+                        (typeof this.get_player_data().rank != 'undefined' && this.is_ingame()) ? 
                             <div className={`player-rank rank${this.get_player_data().rank}`}>{this.get_player_data().rank}</div> :
                             <div className={`player-rank`}>?</div>
                         )}
@@ -306,12 +311,12 @@ export default class PlayerCard extends React.Component {
                         <div className="info song-charter"><CardIcon icon_type={ICON_TYPE.CHARTER}/>{this.get_player_data().song_info.charter || "--"}</div>
                         <div className="info song-pack"><CardIcon icon_type={ICON_TYPE.FOLDER}/>{this.get_player_data().song_info.pack || "--"}</div>
                         <div className="info song-difficulty"><CardIcon icon_type={ICON_TYPE.LEVEL}/>{this.getStepsTypeFromData()} {this.get_player_data().song_info.difficulty || "--"} ({this.get_player_data().song_info.steps || "--"})</div>
-                        {this.get_player_data().ingame == "true" && <div className="song-score">{this.get_player_score()}%</div>}
+                        {this.is_ingame() && <div className="song-score">{this.get_player_score()}%</div>}
                     </div>
-                    {(this.get_player_data().ingame == "true" || this.props.popout) && <div className="song-progress-bar" style={{opacity: `${this.isPopoutAndNotIngame() ? '0' : '1'}`}}>
+                    {(this.is_ingame() || this.props.popout) && <div className="song-progress-bar" style={{opacity: `${this.isPopoutAndNotIngame() ? '0' : '1'}`}}>
                         <div className="song-progress-bar-fill" style={{width: `${this.get_player_data().progress * 100}%`}}></div>
                     </div>}
-                    {(this.get_player_data().ingame == "true" || this.props.popout) && <div className="step-scores-container" style={{opacity: `${this.isPopoutAndNotIngame() ? '0' : '1'}`}}>
+                    {(this.is_ingame() || this.props.popout) && <div className="step-scores-container" style={{opacity: `${this.isPopoutAndNotIngame() ? '0' : '1'}`}}>
                         {this.renderJudgements()}
                     </div>}
                 </div>

@@ -192,6 +192,13 @@ export default class GameRoomSettings extends React.Component {
                                 active={this.props.options["version_check"]}></ToggleComponent>
                             </div>
                             <div className='option'>
+                                <div className='text'>Force Ingame Layout</div>
+                                <ToggleComponent 
+                                clickToggle={() => this.props.click_toggle("force_ingame_layout")}
+                                {...this.props}
+                                active={this.props.options["force_ingame_layout"]}></ToggleComponent>
+                            </div>
+                            <div className='option'>
                                 <div className='text'>Game Mode</div>
                                 <select 
                                 disabled={!this.am_i_host()} 
