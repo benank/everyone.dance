@@ -37,6 +37,9 @@ When in a game room, you can click the settings icon the top right corner to acc
 #### **Version Check**
 - Toggles whether or not the game room will only allow players with the latest version of everyone.dance to join. If enabled, players in the game room with outdated clients will be kicked immediately, and players with outdated clients will not be able to join.
 
+#### **Force Ingame Layout**
+- Toggles whether or not all player cards in the room will always display as if the player is ingame. This will always show their song progress and scores.
+
 #### **Game Mode**
 - Changes the game mode for the game room. When this is changed, the names of the judgements will change according to the game mode selected.
 - In `ITG (Strict)` mode, it checks the player timing windows to ensure that all players are using proper ITG timing windows. See `server/ITG_Timing.js` for default timing windows. If a player's timings do not match these, they are kicked from the game room.
