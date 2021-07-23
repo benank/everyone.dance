@@ -38,6 +38,7 @@ function createWindow() {
             enableRemoteModule: true,
             contextIsolation: true,
             preload: path.join(__dirname, 'src', 'js', 'preload.js'),
+            backgroundThrottling: false
         },
         icon: path.join(__dirname, 'src', require('os').platform() == 'darwin' ? 'favicon.icns' : 'favicon.ico'),
         show: false
@@ -108,6 +109,7 @@ ipcMain.on('popout-player', (_, args) => {
             enableRemoteModule: true,
             contextIsolation: true,
             preload: path.join(__dirname, 'src', 'js', 'preload.js'),
+            backgroundThrottling: false
         },
         icon: path.join(__dirname, 'src', require('os').platform() == 'darwin' ? 'favicon.icns' : 'favicon.ico'),
         frame: false,
