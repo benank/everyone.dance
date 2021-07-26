@@ -110,7 +110,7 @@ export default class MainMenu extends React.Component {
             electron.shell.openExternal(link);
             setTimeout(() => {
                 electron.closeWindow();
-            }, 500);
+            }, 4000);
         }
     }
 
