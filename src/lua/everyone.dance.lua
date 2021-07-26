@@ -1,5 +1,5 @@
 local f = RageFileUtil.CreateRageFile()
-local data_file = nil
+
 local function ReadFile(filename)
     local contents
     if f:Open(filename, 1) then
@@ -19,12 +19,15 @@ end
 -- rewinding to the first byte.
 local function OpenFileForRepeatedWriting(filename)
   local file = RageFileUtil.CreateRageFile()
-  file:Open(filename, 2)
-  return file
+  if file:Open(filename, 2) then
+    return file
+  else
+    error("Unable to open file " .. filename .. " for writing")
+  end
 end
 
 local function RewindAndWriteToFile(file, data)
-  file:Rewind(0)
+  file:Seek(0)
   file:Write(data)
 end
 
@@ -65,6 +68,8 @@ local data_filename = "Save/everyone.dance.txt"
 local data_timings_filename = "Save/everyone.dance.timings.txt"
 local data_game_code_filename = "Save/everyone.dance.gamecode.txt"
 local goto_filename = "Save/everyone.dance.txt.goto"
+
+local data_file = OpenFileForRepeatedWriting(data_filename)
 
 -- Originally from STARLIGHT theme
 function FullComboType(pss)
@@ -359,10 +364,10 @@ end
 local function OnInit(s)
     print("Init everyone.dance")
 
+    -- OpenFileForRepeatedWriting(data_filename)
+
     -- Clear file so we don't crash
     WriteFile("", goto_filename)
-
-    data_file = OpenFileForRepeatedWriting(data_filename)
 
     s:sleep(SYNC_INTERVAL / 1000):queuecommand("Update")
     s:sleep(timing_data_interval / 1000):queuecommand("Update2")
