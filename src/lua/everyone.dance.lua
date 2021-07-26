@@ -1,4 +1,5 @@
 local f = RageFileUtil.CreateRageFile()
+
 local function ReadFile(filename)
     local contents
     if f:Open(filename, 1) then
@@ -11,6 +12,23 @@ local function WriteFile(text, filename)
     if f:Open(filename, 2) then
         f:Write(text)
     end
+end
+
+-- For files that are written during performance-critical times
+-- like song data. Returns a file handle that can be reused by
+-- rewinding to the first byte.
+local function OpenFileForRepeatedWriting(filename)
+  local file = RageFileUtil.CreateRageFile()
+  if file:Open(filename, 2) then
+    return file
+  else
+    error("Unable to open file " .. filename .. " for writing")
+  end
+end
+
+local function RewindAndWriteToFile(file, data)
+  file:Seek(0)
+  file:Write(data)
 end
 
 -- counts an associative Lua table (use #table for sequential tables)
@@ -50,6 +68,8 @@ local data_filename = "Save/everyone.dance.txt"
 local data_timings_filename = "Save/everyone.dance.timings.txt"
 local data_game_code_filename = "Save/everyone.dance.gamecode.txt"
 local goto_filename = "Save/everyone.dance.txt.goto"
+
+local data_file = OpenFileForRepeatedWriting(data_filename)
 
 -- Originally from STARLIGHT theme
 function FullComboType(pss)
@@ -259,11 +279,15 @@ local function RefreshActiveSongData()
                 data = data .. key .. ":" .. tostring(value) .. "\n"
             end
         end
+
+        -- Add some closing empty lines since writing the file by rewinding/overwriting might
+        -- leave some garbage data at the end of the file. This gives the parser something
+        -- to search for and consider the end of the relevant data.
+        data = data .. "\n\n"
         
     end
 
-    WriteFile(data, data_filename)
-
+    RewindAndWriteToFile(data_file, data)
 end
 
 local running_time = 0
@@ -338,15 +362,15 @@ local function OnCurrentStepsChanged(s)
 end
 
 local function OnInit(s)
-
     print("Init everyone.dance")
+
+    -- OpenFileForRepeatedWriting(data_filename)
 
     -- Clear file so we don't crash
     WriteFile("", goto_filename)
-    
+
     s:sleep(SYNC_INTERVAL / 1000):queuecommand("Update")
     s:sleep(timing_data_interval / 1000):queuecommand("Update2")
-
 end
 
 return Def.ActorFrame{

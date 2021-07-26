@@ -432,8 +432,11 @@ export default class GameRoom extends React.Component {
         {
             const line = lines[i].trim();
 
-            // Empty line
-            if (line.length == 0) {continue;}
+            // Empty line - This indicates the end of the written file.
+            // Because this file is written without closing the file, it may
+            // contain overflow data that was written in previous iterations.
+            // We signal the end of the most recent write with a blank line.
+            if (line.length == 0) {break;}
 
             if (line.includes("PlayerNumber"))
             {
