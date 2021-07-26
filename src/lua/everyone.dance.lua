@@ -3,6 +3,7 @@ local function ReadFile(filename)
     local contents
     if f:Open(filename, 1) then
         contents = f:Read()
+        f:Close()
     end
     return contents
 end
@@ -10,32 +11,8 @@ end
 local function WriteFile(text, filename)
     if f:Open(filename, 2) then
         f:Write(text)
+        f:Close()
     end
-end
-
--- counts an associative Lua table (use #table for sequential tables)
-local function count_table(table)
-    local count = 0
-
-    for k, v in pairs(table) do
-        count = count + 1
-    end
-
-    return count
-end
-
-local function insert(tbl, t)
-    tbl[#tbl+1] = t
-    return tbl
-end
-
-local function remove(tbl, num_to_remove)
-    local table_size = count_table(tbl)
-    local new_tbl = {}
-    for i = math.min(num_to_remove + 1, table_size), table_size do
-        new_tbl[i - num_to_remove] = tbl[i]
-    end
-    return new_tbl
 end
 
 local DEBUG_ON = false
@@ -116,6 +93,28 @@ local function ReadGotoData()
     end
 
 end
+
+local function IsPlayerInEvalScreen()
+    local top_screen = SCREENMAN:GetTopScreen()
+    if top_screen and top_screen.GetName then
+        local screen_name = SCREENMAN:GetTopScreen():GetName()
+        return screen_name:find("ScreenEvaluation") ~= nil
+    else
+        return ""
+    end
+end
+
+-- Returns true if the player is playing a song / in end screen, false otherwise (aka in the music wheel or otherwise)
+local function IsPlayerInGameplayScreen()
+    local top_screen = SCREENMAN:GetTopScreen()
+    if top_screen and top_screen.GetName then
+        local screen_name = SCREENMAN:GetTopScreen():GetName()
+        return screen_name == "ScreenGameplay"
+    else
+        return ""
+    end
+end
+
 -- Gets all the data of the current song/selection and outputs it to a file for everyone.dance to read
 local function RefreshActiveSongData()
 
@@ -192,9 +191,8 @@ local function RefreshActiveSongData()
 
         player_data.progress = math.min(1, song_progress)
 
-        local top_screen = SCREENMAN:GetTopScreen()
         -- Set progress to 1 after finishing
-        if top_screen and top_screen:GetName() and top_screen:GetName():find("ScreenEvaluation") then
+        if IsPlayerInEvalScreen() then
             player_data.progress = 1
         end
 
@@ -205,22 +203,11 @@ local function RefreshActiveSongData()
 
         player_data.fc = FullComboType(player_stats); -- Returns nil if no FC
 
-        
         local dance_points = player_stats:GetPercentDancePoints()
         -- player_data.score = player_stats:GetScore()
         player_data.score = tonumber(dance_points) * 100
         
-        local mw = nil --Initialize the object
-        local top_screen = SCREENMAN:GetTopScreen()
-        if top_screen then -- Verify that the screen exists first before doing anything.
-            mw = top_screen:GetChild("MusicWheel")
-            
-            -- DD support
-            if mw == nil and top_screen:GetChild("Overlay") then
-                mw = top_screen:GetChild("Overlay"):GetChild("LeaderboardMaster")
-            end
-        end
-        player_data.ingame = mw == nil
+        player_data.ingame = IsPlayerInGameplayScreen() or IsPlayerInEvalScreen()
 
         local failed = player_stats:GetFailed()
 
@@ -268,7 +255,7 @@ end
 
 local running_time = 0
 
-local timing_data_interval = 10
+local timing_data_interval = 10 * 1000
 
 local itg_timing_prefs = 
 {
@@ -333,42 +320,38 @@ local function ReadGameCodeFromFile(s)
     EVERYONE_DANCE_GAME_CODE = contents
 end
 
-local function OnCurrentStepsChanged(s)
-    RefreshActiveSongData()
-end
-
-local function OnInit(s)
-
-    print("Init everyone.dance")
-
-    -- Clear file so we don't crash
-    WriteFile("", goto_filename)
-    
-    s:sleep(SYNC_INTERVAL / 1000):queuecommand("Update")
-    s:sleep(timing_data_interval / 1000):queuecommand("Update2")
-
-end
-
+-- Player is ingame and playing a song
 return Def.ActorFrame{
     Def.Actor{
-        BeginCommand = function(s)
-            OnInit(s)
-        end,
-        UpdateCommand = function(s)
-            RefreshActiveSongData()
-            ReadGotoData()
-            s:sleep(SYNC_INTERVAL / 1000):queuecommand("Update")
-        end,
-        Update2Command = function(s)
+        OnCommand = function(s)
+            print("Init everyone.dance in " .. SCREENMAN:GetTopScreen():GetName())
+            
             WriteTimingDataToFile(s)
             ReadGameCodeFromFile(s)
-            s:sleep(timing_data_interval / 1000):queuecommand("Update2")
+            RefreshActiveSongData()
+
+            if not IsPlayerInEvalScreen() then
+                s:sleep(SYNC_INTERVAL / 1000):queuecommand("SyncInterval")
+            end
+        end,
+        SyncIntervalCommand = function(s)
+            if IsPlayerInGameplayScreen() then
+                RefreshActiveSongData()
+            else
+                ReadGotoData()
+            end
+            
+            s:sleep(SYNC_INTERVAL / 1000):queuecommand("SyncInterval")
         end,
         CurrentStepsP1ChangedMessageCommand = function(s, param) -- Called when difficulty or song changes for P1
-            OnCurrentStepsChanged(s, param)
+            if not IsPlayerInGameplayScreen() then
+                RefreshActiveSongData()
+            end
         end,
         CurrentStepsP2ChangedMessageCommand = function(s, param) -- Called when difficulty or song changes for P2
-            OnCurrentStepsChanged(s, param)
+            if not IsPlayerInGameplayScreen() then
+                RefreshActiveSongData()
+            end
         end
     }
 }
