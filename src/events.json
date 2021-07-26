@@ -1,0 +1,25 @@
+{
+    "events": 
+    [
+        {
+            "title": "UPSMH Online",
+            "description": "UPSMH Online Tournament 2021",
+            "icon": "https://everyone.dance/upsmh.png",
+            "start_time": "2021-07-31T18:00:00.000Z",
+            "end_time": "2021-08-02T03:00:00.000Z",
+            "text_color": "black",
+            "background": "white",
+            "links":
+            [
+                {
+                    "url": "https://discord.gg/M4UZjcJaTt",
+                    "type": "discord"
+                },
+                {
+                    "url": "https://www.twitch.tv/teejusb",
+                    "type": "twitch"
+                }
+            ]
+        }
+    ]
+}
