@@ -244,7 +244,21 @@ export default class InstallMenu extends React.Component {
             theme_data.status = INSTALL_STATUS.INSTALLED;
             
             const file = electron.fs.readFileSync(lua_file_path, 'utf8').toString();
-            const version = file.split("\n").filter((line) => line.includes(SCRIPT_VERSION_PREFIX))[0].replace(SCRIPT_VERSION_PREFIX, "").trim();
+            const version_line_arr = file.split("\n").filter((line) => line.includes(SCRIPT_VERSION_PREFIX));
+            
+            if (version_line_arr.length == 0)
+            {
+                console.warn(`Failed to read ${lua_file_path} due to invalid install!`);
+                this.props.createNotification({
+                    bg_color: '#E54C4C', 
+                    text_color: 'white',
+                    text: `Failed to read everyone.dance file from theme: ${theme_data.name}. Please contact StepOnIt to fix this issue!`
+                })
+                theme_data.status = INSTALL_STATUS.INCOMPATIBLE;
+                return theme_data;
+            }
+            
+            const version = version_line_arr[0].replace(SCRIPT_VERSION_PREFIX, "").trim();
 
             theme_data.version = version;
 
