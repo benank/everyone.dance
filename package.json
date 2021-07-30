@@ -1,6 +1,6 @@
 {
     "name": "everyone.dance",
-    "version": "2.3.17-dev",
+    "version": "2.3.17",
     "description": "everyone.dance",
     "main": "main.js",
     "repository": {
