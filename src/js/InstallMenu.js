@@ -191,114 +191,136 @@ export default class InstallMenu extends React.Component {
             'ScreenSelectMusic': ['overlay', 'decorations'],
         }
         
-        // Digital Dance support
-        if (theme_data.name.includes('Digital Dance'))
+        try
         {
-            valid_install_paths['ScreenSelectMusicDD'] = valid_install_paths['ScreenSelectMusic'];
-            delete valid_install_paths['ScreenSelectMusic'];
-        }
-
-        for (const index in Object.keys(valid_install_paths))
-        {
-            const key = Object.keys(valid_install_paths)[index];
-            const path = "";
-
-            for (let i = 0; i < valid_install_paths[key].length; i++)
+            // Digital Dance support
+            if (theme_data.name.includes('Digital Dance'))
             {
-                const suffix = valid_install_paths[key][i];
-                const full_path = `${theme_path}/BGAnimations/${key} ${suffix}`;
-
-                if (electron.fs.existsSync(full_path))
-                {
-                    path = full_path;
-                    break;
-                }
+                valid_install_paths['ScreenSelectMusicDD'] = valid_install_paths['ScreenSelectMusic'];
+                delete valid_install_paths['ScreenSelectMusic'];
             }
 
-            // No path found - cannot install
-            if (path.length == 0)
+            for (const index in Object.keys(valid_install_paths))
             {
+                const key = Object.keys(valid_install_paths)[index];
+                const path = "";
+
+                for (let i = 0; i < valid_install_paths[key].length; i++)
+                {
+                    const suffix = valid_install_paths[key][i];
+                    const full_path = `${theme_path}/BGAnimations/${key} ${suffix}`;
+
+                    if (electron.fs.existsSync(full_path))
+                    {
+                        path = full_path;
+                        break;
+                    }
+                }
+
+                // No path found - cannot install
+                if (path.length == 0)
+                {
+                    theme_data.status = INSTALL_STATUS.INCOMPATIBLE;
+                    return theme_data;
+                }
+                
+                // Add this path to the list of install paths
+                theme_data.install_paths.push(path);
+                console.log(`Found install path (${theme_data.install_paths.length}/${Object.keys(valid_install_paths).length}): ${path}`)
+            }
+
+            // Didn't find all the install paths, so this theme is incompatible
+            if (theme_data.install_paths.length != Object.keys(valid_install_paths).length)
+            {
+                console.log(`Did not find valid install paths. (${theme_data.install_paths.length}/${Object.keys(valid_install_paths).length})`);
                 theme_data.status = INSTALL_STATUS.INCOMPATIBLE;
                 return theme_data;
             }
-            
-            // Add this path to the list of install paths
-            theme_data.install_paths.push(path);
-            console.log(`Found install path (${theme_data.install_paths.length}/${Object.keys(valid_install_paths).length}): ${path}`)
-        }
 
-        // Didn't find all the install paths, so this theme is incompatible
-        if (theme_data.install_paths.length != Object.keys(valid_install_paths).length)
+            // Now check for the installed lua file
+            const lua_file_path = `${theme_path}/BGAnimations/everyone.dance.lua`;
+            
+            if (electron.fs.existsSync(lua_file_path))
+            {
+                // Installed, so get version and sync interval
+                theme_data.status = INSTALL_STATUS.INSTALLED;
+                
+                const file = electron.fs.readFileSync(lua_file_path, 'utf8').toString();
+                const version_line_arr = file.split("\n").filter((line) => line.includes(SCRIPT_VERSION_PREFIX));
+                
+                if (version_line_arr.length == 0)
+                {
+                    console.warn(`Failed to read ${lua_file_path} due to invalid install!`);
+                    this.props.createNotification({
+                        bg_color: '#E54C4C', 
+                        text_color: 'white',
+                        text: `Failed to read everyone.dance file from theme: ${theme_data.name}. Please contact StepOnIt to fix this issue!`
+                    })
+                    theme_data.status = INSTALL_STATUS.INCOMPATIBLE;
+                    return theme_data;
+                }
+                
+                const version = version_line_arr[0].replace(SCRIPT_VERSION_PREFIX, "").trim();
+
+                theme_data.version = version;
+
+                // SCRIPT_SYNC_INTERVAL_PREFIX
+                if (file.split("\n").filter((line) => line.includes(SCRIPT_SYNC_INTERVAL_PREFIX)).length > 0)
+                {
+                    const sync_interval = file.split("\n").filter((line) => line.includes(SCRIPT_SYNC_INTERVAL_PREFIX))[0].replace(SCRIPT_SYNC_INTERVAL_PREFIX, "").trim();
+                    theme_data.sync_interval = sync_interval;
+                }
+            }   
+            else
+            {
+                // Not installed
+                theme_data.status = INSTALL_STATUS.NOT_INSTALLED;
+            }
+
+            // Now check to see if we find an acceptable pattern to insert at
+            for (let i = 0; i < theme_data.install_paths.length; i++)
+            {
+                const path = theme_data.install_paths[i];
+                const default_file = path + "/default.lua";
+
+                console.log(`Checking if ${default_file} exists...`);
+
+                // Could not find default.lua in the folder
+                if (!electron.fs.existsSync(default_file))
+                {
+                    console.log(`File does not exist`)
+                    theme_data.status = INSTALL_STATUS.INCOMPATIBLE;
+                    return theme_data;
+                }
+
+                console.log("Exists!")
+
+                const file = electron.fs.readFileSync(default_file, 'utf8').toString();
+                const installable = file.split("\n").filter((line) => 
+                    line.includes("LoadActor") || line.includes("LoadFallbackB")).length > 0
+
+                if (!installable)
+                {
+                    console.log(`Unable to find entry point`)
+                    theme_data.status = INSTALL_STATUS.INCOMPATIBLE;
+                    return theme_data;
+                }
+
+            }
+
+            // They have an old version
+            if (theme_data.version != SCRIPT_VERSION && theme_data.version != '--')
+            {
+                theme_data.status = INSTALL_STATUS.UPDATE_READY;
+            }
+
+            return theme_data;
+        } catch (e)
         {
-            console.log(`Did not find valid install paths. (${theme_data.install_paths.length}/${Object.keys(valid_install_paths).length})`);
+            console.warn(`Error: ${e}`);
             theme_data.status = INSTALL_STATUS.INCOMPATIBLE;
             return theme_data;
         }
-
-        // Now check for the installed lua file
-        const lua_file_path = `${theme_path}/BGAnimations/everyone.dance.lua`;
-        
-        if (electron.fs.existsSync(lua_file_path))
-        {
-            // Installed, so get version and sync interval
-            theme_data.status = INSTALL_STATUS.INSTALLED;
-            
-            const file = electron.fs.readFileSync(lua_file_path, 'utf8').toString();
-            const version = file.split("\n").filter((line) => line.includes(SCRIPT_VERSION_PREFIX))[0].replace(SCRIPT_VERSION_PREFIX, "").trim();
-
-            theme_data.version = version;
-
-            // SCRIPT_SYNC_INTERVAL_PREFIX
-            if (file.split("\n").filter((line) => line.includes(SCRIPT_SYNC_INTERVAL_PREFIX)).length > 0)
-            {
-                const sync_interval = file.split("\n").filter((line) => line.includes(SCRIPT_SYNC_INTERVAL_PREFIX))[0].replace(SCRIPT_SYNC_INTERVAL_PREFIX, "").trim();
-                theme_data.sync_interval = sync_interval;
-            }
-        }   
-        else
-        {
-            // Not installed
-            theme_data.status = INSTALL_STATUS.NOT_INSTALLED;
-        }
-
-        // Now check to see if we find an acceptable pattern to insert at
-        for (let i = 0; i < theme_data.install_paths.length; i++)
-        {
-            const path = theme_data.install_paths[i];
-            const default_file = path + "/default.lua";
-
-            console.log(`Checking if ${default_file} exists...`);
-
-            // Could not find default.lua in the folder
-            if (!electron.fs.existsSync(default_file))
-            {
-                console.log(`File does not exist`)
-                theme_data.status = INSTALL_STATUS.INCOMPATIBLE;
-                return theme_data;
-            }
-
-            console.log("Exists!")
-
-            const file = electron.fs.readFileSync(default_file, 'utf8').toString();
-            const installable = file.split("\n").filter((line) => 
-                line.includes("LoadActor") || line.includes("LoadFallbackB")).length > 0
-
-            if (!installable)
-            {
-                console.log(`Unable to find entry point`)
-                theme_data.status = INSTALL_STATUS.INCOMPATIBLE;
-                return theme_data;
-            }
-
-        }
-
-        // They have an old version
-        if (theme_data.version != SCRIPT_VERSION && theme_data.version != '--')
-        {
-            theme_data.status = INSTALL_STATUS.UPDATE_READY;
-        }
-
-        return theme_data;
     }
 
     select_theme(theme_name)
